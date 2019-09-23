@@ -1,0 +1,10 @@
+## Interface: 40300
+## Title: oUF ClickSet
+## Notes: Adds ClickSet to oUF.
+## Author: Ljxx.net
+## Version: 1.0
+## X-Category: UnitFrame
+## Dependencies: oUF
+
+oUF_ClickSet.lua
+

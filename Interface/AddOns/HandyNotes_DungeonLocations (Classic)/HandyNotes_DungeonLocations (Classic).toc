@@ -1,0 +1,15 @@
+## Interface: 11302
+## Title: |cffC495DDEUI|rHandyNotes_DungeonLocations (Classic)
+## Title-zhCN: |cffC495DDEUI|r地图标记-副本位置模块
+## Title-zhTW: |cffC495DDEUI|r地圖標記-地下城位置模块
+## Version: 1.03
+## Notes: Shows locations of old world dungeon and raid entrances
+## Author: Caliaha of Cairne
+## RequiredDeps: HandyNotes
+## SavedVariables: HandyNotes_DungeonLocationsClassicDB
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+
+locales\Locales.xml
+HandyNotes_DungeonLocations (Classic).lua

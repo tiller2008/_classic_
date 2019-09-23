@@ -1,0 +1,10 @@
+## Interface: 30200
+## Title: oUF_QuickHealth2
+## Notes: Makes oUF QuickHealth aware
+## Author: Rubin
+## X-Embeds: LibQuickHealth-2.0
+## Dependencies: oUF
+## OptionalDeps: LibQuickHealth-2.0, LibStub, CallbackHandler-1.0
+
+libs\LibQuickHealth-2.0\LibQuickHealth-2.0.xml
+oUF_QuickHealth2.lua

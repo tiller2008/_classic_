@@ -1,0 +1,29 @@
+## Interface: 11302
+## Version: 5.7.149
+## Title: |cffC495DDEUI|rMik's Scrolling Battle Text
+## Title-zhCN: |cffC495DDEUI|r战斗文字
+## Title-zhTW: |cffC495DDEUI|r戰鬥文字
+## Author: Mikord
+## Notes: Scrolls battle information around the character model.
+## SavedVariables: MSBTProfiles_SavedVars, MSBT_SavedMedia
+## SavedVariablesPerCharacter: MSBTProfiles_SavedVarsPerChar
+## OptionalDeps: LibSharedMedia-3.0
+## LoadOnDemand: 1
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+
+..\Libs\LibStub\LibStub.lua
+..\Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+..\Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+
+MikSBT.lua
+Localization\localization.xml
+MSBTProfiles.lua
+MSBTParser.lua
+MSBTMedia.lua
+MSBTAnimations.lua
+MSBTTriggers.lua
+MSBTCooldowns.lua
+MSBTLoot.lua
+MSBTMain.lua
+MSBTAnimationStyles.lua

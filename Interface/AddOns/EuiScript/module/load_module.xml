@@ -1,0 +1,44 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file='drag.lua'/>
+	<Script file='Durability.lua'/>
+	<Script file="tradetabs.lua"/>
+	<Script file="RaidCD.lua"/>
+	<Script file="chatmod.lua"/>
+	<Script file="CombatNotification.lua"/>
+	<Script file="SR.lua"/>
+	<Script file="idQuestAutomation.lua"/>
+	<Script file="dispel.lua"/>
+
+	<Script file="autodez.lua"/>
+	<Script file="AlreadyKnown.lua"/>
+
+	<Script file="ClassColors.lua"/>
+	<Script file="DoomCooldownPulse.lua"/>
+	<Script file="AutoBuy.lua"/>
+	<Script file="AutoButton.lua"/>
+	<Script file="Symbols.lua"/>
+	<Script file='RaidCheck.lua'/>
+	<!-- <Script file='kill.lua'/> -->
+
+	<Script file='QuestNotifier.lua'/>
+	<Script file='ObjectiveTracker.lua'/>
+	<Script file='EuiThreat.lua'/>
+	<Script file='InfoFilter.lua'/>
+
+	<Script file="UnitPrice.lua"/>
+	<!-- <Script file="Quester.lua"/> -->
+	<Script file="QuestLevelPatch.lua"/>
+	<!-- <Script file="AuraBarsMovers.lua"/> -->
+
+	<Script file="RightButtonMenu.lua"/>
+
+	<Script file="AutoTrackQuests.lua"/>
+	<Script file="QuestFrameFixer.lua"/>
+	<Script file="QuestIconDesaturation.lua"/>
+
+	<Script file="CharacterStatsClassic\CharacterStatsClassicUI.lua"/>
+	<Script file="CharacterStatsClassic\CharacterStatsClassicCore.lua"/>
+	<Script file="CharacterStatsClassic\CharacterStatsClassicUtils.lua"/>
+	
+	<Script file="ClassicSpellActivations.lua"/>
+</Ui>

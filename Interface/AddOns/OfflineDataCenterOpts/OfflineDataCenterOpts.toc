@@ -1,0 +1,12 @@
+## Interface: 11302
+## Author: Henrui @ 幽暗沼泽 zhengruiw02@gmail.com 
+## Title: |cffC495DDEUI|rOffline Inventory Options
+## Title-zhCN: |cffC495DDEUI|r离线数据中心设置界面
+## Title-zhTW: |cffC495DDEUI|r離線數據中心设置界面
+## Version: r1
+### SavedVariables:
+## RequiredDeps: OfflineDataCenter
+## LoadOnDemand: 1
+
+..\Libs\AceGUI-3.0\AceGUI-3.0.xml
+..\Libs\AceConfig-3.0\AceConfig-3.0.xml

@@ -1,0 +1,30 @@
+## Interface: 11302
+## Title: |cfffe7b2cEUI|r Script
+## Title-zhCN: |cfffe7b2cEUI|r增强功能
+## Title-zhTW: |cfffe7b2cEUI|r增強功能
+## Author: eui.cc
+## X-Category: ElvUI
+## Version: C20190924A
+## RequiredDeps: ElvUI
+## SavedVariables: CharacterStatsClassicDB
+## SavedVariablesPerCharacter: CharacterStatsClassicCharacterDB
+
+init.lua
+..\libs\LibStub\LibStub.lua
+..\libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+..\libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+..\libs\LibEvent.lua
+..\libs\LibSchedule.lua
+..\libs\LibItemInfo.lua
+..\libs\LibSink-2.0\lib.xml
+..\libs\AceGUI-3.0\AceGUI-3.0.xml
+..\libs\AceConfig-3.0\AceConfig-3.0.xml
+
+
+Media.lua
+overlay.xml
+module\load_module.xml
+
+Bindings.xml
+
+changelog.lua

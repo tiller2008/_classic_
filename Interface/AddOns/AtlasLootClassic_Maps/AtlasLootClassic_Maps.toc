@@ -1,0 +1,15 @@
+## Interface: 11302
+## Author: Atlas Team
+## Version: v1.0.0
+## Dependencies: AtlasLootClassic
+## LoadOnDemand: 1
+
+## Title: AtlasLoot |cFF0099FF[Maps]|r
+
+## Title-zhCN: |cffC495DDEUI|r副本战利品查询 |cFF0099FF[副本地图]|r
+## Title-zhTW: |cffC495DDEUI|r副本戰利品查詢經典版 |cFF0099FF[副本地圖]|r
+## Notes: AtlasLoot maps module
+
+## X-Curse-Project-ID: 340018
+
+core.lua

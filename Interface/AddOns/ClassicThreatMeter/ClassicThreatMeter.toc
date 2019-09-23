@@ -1,0 +1,18 @@
+## Interface: 11302
+## Title: |cffC495DDEUI|rClassicThreatMeter
+## Notes: Simple threat meter for WoW Classic.
+## Title-zhCN: |cffC495DDEUI|r仇恨助手
+## Title-zhTW: |cffC495DDEUI|r仇恨助手
+## Author: Es (EsreverWoW)
+## X-Curse-Project-ID: 336512
+## X-WoWI-ID: 25165
+## Version: 1.08
+## SavedVariables: CTM_Options
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+
+## X-License: MIT
+## X-Website: https://github.com/EsreverWoW/ClassicThreatMeter
+
+ClassicThreatMeter.xml

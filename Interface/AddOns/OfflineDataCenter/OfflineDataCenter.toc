@@ -1,0 +1,27 @@
+## Interface: 11302
+## Author: Henrui @ 幽暗沼泽 zhengruiw02@gmail.com 
+## Title: |cffC495DDEUI|rOffline Inventory
+## Title-zhCN: |cffC495DDEUI|r离线数据中心
+## Title-zhTW: |cffC495DDEUI|r離線數據中心
+## Version: r53
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+## SavedVariables: ODC_DB, ODC_Config,  MB_DB, BB_DB, IN_DB, MB_Config
+
+..\Libs\LibStub\LibStub.lua
+..\Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+..\Libs\AceAddon-3.0\AceAddon-3.0.xml
+#Libs\AceGUI-3.0\AceGUI-3.0.xml
+#Libs\AceConfig-3.0\AceConfig-3.0.xml
+..\Libs\AceEvent-3.0\AceEvent-3.0.xml
+
+..\Libs\AceLocale-3.0\AceLocale-3.0.xml
+..\Libs\AceTimer-3.0\AceTimer-3.0.xml
+..\Libs\AceHook-3.0\AceHook-3.0.xml
+#..\Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+..\Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+
+Locales\locales.xml
+main.lua
+Modules\Modules.xml

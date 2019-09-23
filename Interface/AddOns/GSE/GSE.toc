@@ -1,0 +1,59 @@
+## Interface: 11302
+## Title: |cffff0000GSE2:|r |cFF00D1FFGnome Sequencer Enhanced|r
+## Title-zhCN: |cffC495DDEUI|r|cFF00D1FF一键宏增强版|r
+## Title-zhTW: |cffC495DDEUI|r|cFF00D1FF一鍵宏增強版|r
+## Notes: Allows you to execute a sequence of macros without stopping on unusable spells.
+## Author: TimothyLuke
+## Version: 2.4.19
+## SavedVariables: GSEOptions GSELibrary
+## SavedVariablesPerCharacter: GSE_C
+## OptionalDeps: WeakAuras
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+## X-WoWI-ID: 23921
+## X-Curse-Project-ID: 101161
+
+# Lib
+embeds.xml
+
+# Setup Localization
+Localization\ModL_enUS.lua
+Localization\ModL_zhCN.lua
+Localization\ModL_zhTW.lua
+
+# Startup
+API\Init.lua
+API\Statics.lua
+API\InitialOptions.lua
+
+
+# Storage and core
+API\StaticPopup.lua
+API\StringFunctions.lua
+API\CharacterFunctions.lua
+SampleMacros.lua
+API\Storage.lua
+API\Translator.lua
+API\Plugins.lua
+API\Serialisation.lua
+API\Options.lua
+API\OneOffEvents.lua
+API\Events.lua
+
+#GUI
+GUI\Import.lua
+GUI\Export.lua
+GUI\DebugWindow.lua
+GUI\Transmission.lua
+GUI\VersionManagement.lua
+GUI\Recorder.lua
+GUI\Editor.lua
+GUI\Viewer.lua
+GUI\GUIFunctions.lua
+GUI\CompressSequence.lua
+GUI\MacroCompare.lua
+GUI\Init.lua
+
+#LDB
+LDB\LDBProvider.lua

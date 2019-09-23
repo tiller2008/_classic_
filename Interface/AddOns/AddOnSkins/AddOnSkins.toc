@@ -1,0 +1,10 @@
+## Interface: 11302
+## Title: |cffC495DDEUI|r|cff1784d1AddOnSkins|r Classic
+## Title-zhCN: |cffC495DDEUI|r插件美化模块
+## Title-zhTW: |cffC495DDEUI|r插件美化模塊
+## Version: 4.31
+## Author: Azilroka, NihilisticPandemonium
+## SavedVariables: AddOnSkinsDB, AddOnSkinsDS
+## OptionalDeps: ElvUI
+
+Load_AddOnSkins.xml

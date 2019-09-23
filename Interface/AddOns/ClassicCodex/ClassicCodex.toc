@@ -1,0 +1,62 @@
+## Interface: 11302
+## Title: |cffC495DDEUI|rClassicCodex
+## Title-zhCN: |cffC495DDEUI|r任务助手
+## Title-zhTW: |cffC495DDEUI|r任務助手
+## Notes: ClassicCodex
+## Notes-zhCN: 任务助手
+## Notes-zhTW: 任務助手
+## Author: Pgarneau, Shagu
+## Version: 1.2.1
+## SavedVariablesPerCharacter: CodexConfig, CodexHiddenQuests, CodexBrowserFavorites, CodexColors
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+
+# database index
+db\init.lua
+db\items.lua
+db\units.lua
+db\objects.lua
+db\refloot.lua
+db\quests.lua
+db\meta.lua
+
+# database enUS
+db\enUS\items.lua
+db\enUS\units.lua
+db\enUS\objects.lua
+db\enUS\quests.lua
+db\enUS\zones.lua
+db\enUS\professions.lua
+
+# database zhCN
+db\zhCN\items.lua
+db\zhCN\units.lua
+db\zhCN\objects.lua
+db\zhCN\quests.lua
+db\zhCN\zones.lua
+db\zhCN\professions.lua
+
+# database zhTW
+db\zhTW\items.lua
+db\zhTW\units.lua
+db\zhTW\objects.lua
+db\zhTW\quests.lua
+db\zhTW\zones.lua
+db\zhTW\professions.lua
+
+# libs
+..\libs\LibStub\LibStub.lua
+..\libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+..\libs\HereBeDragons\HereBeDragons-2.0.lua
+..\libs\HereBeDragons\HereBeDragons-Pins-2.0.lua
+
+# main
+command.lua
+config.lua
+core.lua
+database.lua
+map.lua
+quest.lua
+ui.lua
+browser.lua

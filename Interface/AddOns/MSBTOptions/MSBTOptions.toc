@@ -1,0 +1,16 @@
+## Interface: 11302
+## Title: |cffC495DDEUI|rMSBT
+## Title-zhCN: |cffC495DDEUI|r战斗文字设置
+## Title-zhTW: |cffC495DDEUI|r戰鬥文字設置
+## Author: Mikord
+## Notes: Load on demand options for Mik's Scrolling Battle Text.
+## Dependencies: MikScrollingBattleText
+## LoadOnDemand: 1
+## X-Child-Of: MikScrollingBattleText
+
+Localization\localization.xml
+
+MSBTOptionsControls.lua
+MSBTOptionsPopups.lua
+MSBTOptionsMain.lua
+MSBTOptionsTabs.lua

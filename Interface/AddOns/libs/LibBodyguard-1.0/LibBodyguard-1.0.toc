@@ -1,0 +1,9 @@
+## Interface: 80200
+## Title: Lib: Bodyguard-1.0
+## Notes: Provides information about the player's bodyguard.
+## Author: Sharparam
+## Version: v1.4.4
+## X-Category: Library
+
+LibStub\LibStub.lua
+load.xml

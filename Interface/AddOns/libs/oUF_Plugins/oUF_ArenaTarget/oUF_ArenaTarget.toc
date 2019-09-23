@@ -1,0 +1,9 @@
+## Interface: 70000
+## Title: oUF Arena Target Icons
+## Notes: Adds target icons to arena frames.
+## Author: cadcamzy
+## Version: 1.00
+## X-Category: oUF
+## Dependencies: oUF
+
+oUF_ArenaTarget.lua
