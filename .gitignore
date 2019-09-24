@@ -1,0 +1,6 @@
+*.exe
+*.info
+*.DLL
+Logs/
+UTILS/
+WoW.mfil
