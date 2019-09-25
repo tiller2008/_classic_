@@ -2,10 +2,11 @@
 仅适用于WOW怀旧版的EUI的MAC版本，有需求的朋友
 
 ## 新手办法
-在本仓库首页，点击`Clone or download`，接着点击`Download ZIP`，将下载下来的zip包解压至WOW怀旧服的`_classic_`文件夹下（首次使用，需删除Cache，Fonts，Interface和WTF）
+在本仓库首页，点击`Clone or download`，接着点击`Download ZIP`，将下载下来的zip包解压至WOW怀旧服的`_classic_`文件夹下（__首次使用，需删除Cache，Fonts，Interface和WTF__）
 
 ## 懒人方法（进阶）
-### 准备：下载git客户端（貌似mac默认就装的，可以试试看本地可否执行git）
+### 准备
+下载git客户端（貌似mac默认就装的，可以试试看本地可否执行git）
 
 ### 首次
 进入`/Applications/World of Warcraft/_classic_`（取决于你安装目录，此为默认路径），用命令行执行以下命令
