@@ -2,7 +2,8 @@
 仅适用于WOW怀旧版的EUI的MAC版本，有需求的朋友，放入收藏夹，或者star一下，算是给作者的支持的同时，可以让作者给E大推广的理由
 
 ## 新手办法
-在本仓库首页，点击`Clone or download`，接着点击`Download ZIP`，将下载下来的zip包解压至WOW怀旧服的`_classic_`文件夹下（__首次使用，需删除Cache，Fonts，Interface和WTF__）
+1. 在本仓库首页，点击`Clone or download`，接着点击`Download ZIP`
+2. 将下载下来的zip包解压至WOW怀旧服的`_classic_`文件夹下（__首次使用，需删除Cache，Fonts，Interface和WTF__）
 
 ## 懒人方法（进阶）
 ### 准备
@@ -10,7 +11,11 @@
 2. 注册github账号
 
 ### 首次
-进入`/Applications/World of Warcraft/_classic_`（取决于你安装目录，此为默认路径），用命令行执行以下命令
+1. 进入`/Applications/World of Warcraft/_classic_`（取决于你安装目录，此为默认路径）
+```sh
+cd /Applications/World\ of\ Warcraft/_classic_
+```
+2. 用命令行执行以下命令
 ```sh
 git init
 git remote add origin https://github.com/tiller2008/_classic_.git（如果在github上关联过ssh的话可以执行如下命令：git remote add origin git@github.com:tiller2008/_classic_.git）
