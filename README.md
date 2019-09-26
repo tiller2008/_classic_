@@ -27,7 +27,11 @@ git checkout master
 > 如果中间执行失败的话，可以`rm -rf .git`重新执行一遍
 
 ### 以后
-只需要执行一次命令，在wow安装目录`/Applications/World of Warcraft/_classic_`
+1. 在wow安装目录`/Applications/World of Warcraft/_classic_`
+```sh
+cd /Applications/World\ of\ Warcraft/_classic_
+```
+2. 只需要执行一次命令
 ```sh
 git pull
 ```
