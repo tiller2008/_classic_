@@ -5,6 +5,8 @@ local ODC_SMF = ODC:GetModule("ScrollingMessageFrame")
 if not ODC_SMF then return end
 local Module = ODC:NewModule("OfflineTradeLog", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("OfflineDataCenter")
+local alreadySend = false
+
 Module.description = L["Offline Trade Log"]
 Module.type = "tab"
 Module.name = "OfflineTradeLog"
@@ -360,9 +362,15 @@ local function TradeLog_OutputLog()
 		ODC_SMF:CreateOrShowSubFrame("tradelog", Module.OutputFunc)
 	end
 
-	TradeLog_Output(GetTrade(), function(m, r, g, b) DEFAULT_CHAT_FRAME:AddMessage(m, r, g, b) end);
 	if(ODC_Config.Options.tradelog.autowhisper ~= "none") then
-		TradeLog_Output(GetTrade(), function(m) SendChatMessage(m,OutputChannel[ODC_Config.Options.tradelog.autowhisper],nil,GetTrade().target) end, true);
+		TradeLog_Output(GetTrade(), function(m)
+			if not alreadySend then
+				SendChatMessage(m,OutputChannel[ODC_Config.Options.tradelog.autowhisper],nil,GetTrade().target)
+				alreadySend = true
+			end
+		end, true);
+	else
+		TradeLog_Output(GetTrade(), function(m, r, g, b) DEFAULT_CHAT_FRAME:AddMessage(m, r, g, b) end);
 	end
 end
 
@@ -399,6 +407,7 @@ local function TradeLog_LogTradeAndReset()
 		GetTrade().reason = GetTrade().reason;
 	end
 	TradeLog_OutputLog();
+	alreadySend = false
 	currentTrade = nil;
 end
 
@@ -485,6 +494,7 @@ function Module:UI_INFO_MESSAGE(event, arg1, arg2)
 	elseif arg2==ERR_TRADE_COMPLETE then
 		GetTrade().result = "complete"
 	end
+
 	TradeLog_LogTradeAndReset();
 end
 

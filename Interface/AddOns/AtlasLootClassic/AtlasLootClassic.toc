@@ -1,6 +1,6 @@
 ﻿## Interface: 11302
 ## Author: Lag
-## Version: v1.1.10
+## Version: v1.3.3
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1, LibClassicItemSets-1.0
 ## DefaultState: Enabled
@@ -53,6 +53,8 @@ Data\Profession.lua
 Data\Recipe.lua
 Data\Mount.lua
 Data\ContentPhase.lua
+Data\Droprate.lua
+Data\AutoSelect.lua
 
 ItemDB\ItemDB.lua
 ItemDB\SoundData.lua
@@ -80,5 +82,6 @@ GUI\ModelFrame.lua
 GUI\SoundFrame.lua
 
 Addons\Addons.lua
+Addons\Sources.lua
 Addons\Favourites.lua
 Addons\Favourites_GUI.lua

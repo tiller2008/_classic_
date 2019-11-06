@@ -44,6 +44,7 @@ local UnitPVPName = UnitPVPName
 local UnitRace = UnitRace
 local UnitReaction = UnitReaction
 local UnitPlayerControlled = UnitPlayerControlled
+local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
 
 -- GLOBALS: ElvUI_KeyBinder, ElvUI_ContainerFrame
 
@@ -58,13 +59,6 @@ local TAPPED_COLOR = { r=.6, g=.6, b=.6 }
 local AFK_LABEL = " |cffFFFFFF[|r|cffFF0000"..L["AFK"].."|r|cffFFFFFF]|r"
 local DND_LABEL = " |cffFFFFFF[|r|cffFFFF00"..L["DND"].."|r|cffFFFFFF]|r"
 local keybindFrame
-
-local classification = {
-	worldboss = format("|cffAF5050 %s|r", _G.BOSS),
-	rareelite = format("|cffAF5050+ %s|r", _G.ITEM_QUALITY3_DESC),
-	elite = "|cffAF5050+|r",
-	rare = format("|cffAF5050 %s|r", _G.ITEM_QUALITY3_DESC)
-}
 
 function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 	if tt:IsForbidden() then return end
@@ -224,15 +218,13 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 		local guildName, guildRankName = GetGuildInfo(unit)
 		local pvpName = UnitPVPName(unit)
 
-		color = _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class]
-
-		if not color then
-			color = _G.RAID_CLASS_COLORS.PRIEST
-		end
+		color = E:ClassColor(class) or PRIEST_COLOR
 
 		if self.db.playerTitles and pvpName then
 			name = pvpName
 		end
+
+		if not color then color = PRIEST_COLOR end
 
 		if UnitIsAFK(unit) then
 			name = name..AFK_LABEL
@@ -240,7 +232,7 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 			name = name..DND_LABEL
 		end
 
-		_G.GameTooltipTextLeft1:SetFormattedText("|c%s%s|r", color.colorStr, name)
+		_G.GameTooltipTextLeft1:SetFormattedText("|c%s%s|r", color.colorStr, name or UNKNOWN)
 
 		local lineOffset = 2
 		if guildName then
@@ -295,6 +287,25 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 
 		if not color then
 			color = _G.RAID_CLASS_COLORS.PRIEST
+		end
+
+		local levelLine = self:GetLevelLine(tt, 2)
+		if levelLine then
+			local creatureClassification = UnitClassification(unit)
+			local creatureType = UnitCreatureType(unit)
+			local pvpFlag = ""
+			local diffColor = GetCreatureDifficultyColor(level)
+
+			if(UnitIsPVP(unit)) then
+				pvpFlag = format(" (%s)", _G.PVP)
+			end
+
+			local classificationString = ''
+			if (creatureClassification == 'rare' or creatureClassification == 'elite' or creatureClassification == 'rareelite' or creatureClassification == 'worldboss') then
+				classificationString = format('%s %s|r', ElvUF.Tags.Methods['classificationcolor'](unit), ElvUF.Tags.Methods["classification"](unit))
+			end
+
+			levelLine:SetFormattedText("|cff%02x%02x%02x%s|r%s %s%s", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", classificationString, creatureType or "", pvpFlag)
 		end
 	end
 
@@ -433,7 +444,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 			local targetColor
 			if(UnitIsPlayer(unitTarget)) then
 				local _, class = UnitClass(unitTarget)
-				targetColor = _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class]
+				targetColor = E:ClassColor(class) or PRIEST_COLOR
 			else
 				targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unitTarget, "player")] or _G.FACTION_BAR_COLORS[UnitReaction(unitTarget, "player")]
 			end
@@ -446,8 +457,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 				local groupUnit = (IsInRaid() and "raid"..i or "party"..i);
 				if (UnitIsUnit(groupUnit.."target", unit)) and (not UnitIsUnit(groupUnit,"player")) then
 					local _, class = UnitClass(groupUnit);
-					local classColor = _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class]
-					if not classColor then classColor = _G.RAID_CLASS_COLORS.PRIEST end
+					local classColor = E:ClassColor(class) or PRIEST_COLOR
 					tinsert(targetList, format("|c%s%s|r", classColor.colorStr, UnitName(groupUnit)))
 				end
 			end
@@ -549,11 +559,6 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 		local left = " "
 		local right = " "
 		local bankCount = " "
-		local quality = select(3, GetItemInfo(link))
-
-		if quality and quality > 1 then
-			tt:SetBackdropBorderColor(GetItemQualityColor(quality))
-		end
 
 		if link ~= nil and self.db.spellID then
 			left = (("|cFFCA3C3C%s|r %s"):format(_G.ID, link)):match(":(%w+)")
@@ -639,6 +644,29 @@ function TT:CheckBackdropColor(tt)
 	end
 end
 
+
+function TT:SetBorderColor(_, tt)
+	if not tt.GetItem then return end
+
+	local _, link = tt:GetItem()
+	if link then
+		local _, _, quality = GetItemInfo(link)
+		if quality and quality > 1 then
+			tt:SetBackdropBorderColor(GetItemQualityColor(quality))
+		end
+	end
+end
+
+function TT:ToggleItemQualityBorderColor()
+	if E.db.tooltip.itemQualityBorderColor then
+		if not self:IsHooked(TT, "SetStyle", "SetBorderColor") then
+			self:SecureHook(TT, "SetStyle", "SetBorderColor")
+		end
+	else
+		self:Unhook(TT, "SetStyle", "SetBorderColor")
+	end
+end
+
 function TT:SetStyle(tt)
 	if not tt or tt:IsForbidden() then return end
 	if E.db.general.transparent and not self.db.transparent then
@@ -670,8 +698,7 @@ function TT:SetUnitAura(tt, unit, index, filter)
 			if caster then
 				local name = UnitName(caster)
 				local _, class = UnitClass(caster)
-				local color = _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class]
-				if not color then color = _G.RAID_CLASS_COLORS.PRIEST end
+				local color = E:ClassColor(class) or PRIEST_COLOR
 				tt:AddDoubleLine(("|cFFCA3C3C%s|r %d"):format(_G.ID, id), format("|c%s%s|r", color.colorStr, name))
 			else
 				tt:AddLine(("|cFFCA3C3C%s|r %d"):format(_G.ID, id))
@@ -815,6 +842,8 @@ function TT:Initialize()
 	GameTooltipAnchor:SetFrameLevel(GameTooltipAnchor:GetFrameLevel() + 400)
 	E:CreateMover(GameTooltipAnchor, 'TooltipMover', L["Tooltip"], nil, nil, nil, nil, nil, 'tooltip,general')
 
+	self:ToggleItemQualityBorderColor()
+
 	self:SecureHook('SetItemRef')
 	self:SecureHook('GameTooltip_SetDefaultAnchor')
 	self:SecureHook(GameTooltip, 'SetUnitAura')
@@ -827,6 +856,8 @@ function TT:Initialize()
 	self:SecureHookScript(GameTooltip.StatusBar, 'OnValueChanged', 'GameTooltipStatusBar_OnValueChanged')
 	self:RegisterEvent("MODIFIER_STATE_CHANGED")
 
+	self:LoadProfessionIcons()
+	
 	--Variable is localized at top of file, then set here when we're sure the frame has been created
 	--Used to check if keybinding is active, if so then don't hide tooltips on actionbars
 	keybindFrame = ElvUI_KeyBinder

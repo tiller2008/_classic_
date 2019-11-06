@@ -73,7 +73,11 @@ L["Choose import action:"] = "選擇導入動作:"
 L["Choose Language"] = "選擇語言"
 L["Classwide Macro"] = "職業通用巨集"
 L["Clear"] = "清除"
+--[[Translation missing --]]
+L["Clear Common Keybindings"] = "Clear Common Keybindings"
 L["Clear Errors"] = "清除錯誤"
+--[[Translation missing --]]
+L["Clear Keybindings"] = "Clear Keybindings"
 L["Close"] = "關閉"
 L["Close to Maximum Macros.|r  You can have a maximum of "] = "超過最大巨集上限.|r 你最多可以有"
 L["Close to Maximum Personal Macros.|r  You can have a maximum of "] = "超過最大角色巨集上限.|r 你最多可以有"
@@ -285,6 +289,8 @@ L["Raid"] = "Raid"
 --[[Translation missing --]]
 L["Raid setting changed to Default."] = "Raid setting changed to Default."
 L["Random - It will select .... a spell, any spell"] = "隨機 - 它將選擇......一個咒語，任何咒語"
+--[[Translation missing --]]
+L["Rank"] = "Rank"
 L["Ready to Send"] = "準備發送"
 L["Received Sequence "] = "接收序列"
 L["Record"] = "記錄"
@@ -388,6 +394,8 @@ L["These lines are executed every time you click this macro.  They are evaluated
 L["These options combine to allow you to reset a macro while it is running.  These options are Cumulative ie they add to each other.  Options Like LeftClick and RightClick won't work together very well."] = "這些選項組合允許你在運行巨集時重置巨集.這些選項是累加的.類似同時選擇左鍵單擊和右鍵單擊,無法很好的協作."
 L["These tick boxes have three settings for each slot.  Gold = Definately use this item. Blank = Do not use this item automatically.  Silver = Either use or not based on my default settings store in GSE's Options."] = "這些複選框對每個插槽都有三個設置. 黃金=絕對使用此項目. 空白=不要自動使用此項目. 銀色 =根據我在GSE選項中的默認設置存儲使用與否."
 L["This change will not come into effect until you save this macro."] = "此更改將不會生效,直到你保存此巨集."
+--[[Translation missing --]]
+L["This function will remove the SHIFT+N, ALT+N and CTRL+N keybindings for this character.  Useful if [mod:shift] etc conditions don't work in game."] = "This function will remove the SHIFT+N, ALT+N and CTRL+N keybindings for this character.  Useful if [mod:shift] etc conditions don't work in game."
 L["This function will update macro stubs to support listening to the options below.  This is required to be completed 1 time per character."] = "此功能將更新巨集存根以支持下面的選項.每個角色都需要運行一次."
 L["This is a small addon that allows you create a sequence of macros to be executed at the push of a button."] = "這是一個小插件,允許你創建一個巨集序列以便在按下按鈕時執行."
 L["This is the only version of this macro.  Delete the entire macro to delete this version."] = "這是此巨集的唯一版本. 刪除整個巨集以刪除此版本."

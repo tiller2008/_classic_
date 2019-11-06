@@ -8,7 +8,7 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.8.4
+## Version: 1.8.5-1-g3e96752
 ## Dependencies: ElvUI
 ## X-Revision: ElvUI
 ## X-License: All rights reserved.
@@ -33,6 +33,8 @@
 ..\Libs\AceConfig-3.0\AceConfig-3.0.xml
 
 ..\Libs\LibWindow-1.1\LibWindow-1.1.lua
+..\Libs\LibTouristClassic-1.0\lib.xml
+
 #@end-no-lib-strip@
 
 Locale\locale.xml
@@ -45,3 +47,6 @@ Coords.lua
 # BattleMap.lua
 FogClear.lua
 Scaling.lua
+
+#ZoneInfoClassic
+ZoneInfoClassic.lua

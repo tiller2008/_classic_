@@ -852,41 +852,75 @@ E.Options.args.euiscript = {
 							min = 0, max = 10,step = 1,
 							disabled = function() return not E.db.euiscript.questnoti.enable end,
 						},
+						idq = {
+							order = 10,
+							type = 'toggle',
+							name = L["idQuestAutomation"],
+							desc = L["idQuestAutomation_desc"],
+							get = function(info) return E.db.euiscript.idq; end,
+							set = function(info, value)
+								E.db.euiscript.idq = value;
+								if CodexConfig and value then
+									CodexConfig.autoAccept = false
+									CodexConfig.autoTurnin = false
+								end
+							end,
+						},
 						autoTrackQuest = {
 							order = 11,
 							type = 'toggle',
 							name = L['autoTrackQuest'],
+							disabled = function() return IsAddOnLoaded('ButterQuestTracker') end,
 							get = function(info) return E.db.euiscript.autoTrackQuest; end,
 							set = function(info, value) E.db.euiscript.autoTrackQuest = value; end,
 						},
-						objectiveTrackerFrame = {
-							order = 12,
-							type = 'toggle',
-							name = L['objectiveTrackerFrame'],
-							get = function(info) return E.db.euiscript.objectiveTrackerFrame; end,
-							set = function(info, value) E.db.euiscript.objectiveTrackerFrame = value;E:StaticPopup_Show("CONFIG_RL"); end,
-						},
-						questfontSize = {
-							order = 13,
-							name = L["Quest Font Size"],
-							type = "range",
-							min = 4, max = 32, step = 1,
-							disabled = function() return not E.db.euiscript.objectiveTrackerFrame end,
-							set = function(info, value) E.db.general.questfontSize = value; E:StaticPopup_Show("PRIVATE_RL"); end,
-							get = function(info) return E.db.general.questfontSize; end,
-						},
-						auto_collapse = {
-							order = 20,
-							type = 'toggle',
-							name = L["auto Collapse Objective InInstance"],
-							disabled = function() return not E.db.euiscript.objectiveTrackerFrame end,
-							get = function(info) return E.db.euiscript.auto_collapse; end,
-							set = function(info, value) E.db.euiscript.auto_collapse = value end,
-						},
+						-- objectiveTrackerFrame = {
+							-- order = 12,
+							-- type = 'toggle',
+							-- name = L['objectiveTrackerFrame'],
+							-- get = function(info) return E.db.euiscript.objectiveTrackerFrame; end,
+							-- set = function(info, value) E.db.euiscript.objectiveTrackerFrame = value;E:StaticPopup_Show("CONFIG_RL"); end,
+						-- },
+						-- questfontSize = {
+							-- order = 13,
+							-- name = L["Quest Font Size"],
+							-- type = "range",
+							-- min = 4, max = 32, step = 1,
+							-- disabled = function() return not BetterQuestFrame end,
+							-- set = function(info, value) E.db.general.questfontSize = value; BetterQuestFrame:LoadQuests() end,
+							-- get = function(info) return E.db.general.questfontSize; end,
+						-- },
+						-- frameWidth = {
+							-- order  = 15,
+							-- type = "range",
+							-- name = L["Width"],
+							-- disabled = function() return not BetterQuestFrame end,
+							-- min = 100,max = BetterQuestFrame:GetResolution().width, step = 1,
+							-- set = function(info, value) BetterQuestFrameDB.frameWidth = value;BetterQuestFrame:LoadQuests() end,
+							-- get = function(info) return BetterQuestFrameDB.frameWidth end,
+						-- },
+						-- frameHeight = {
+							-- order  = 16,
+							-- type = "range",
+							-- name = L["Height"],
+							-- disabled = function() return not BetterQuestFrame end,
+							-- min = 100,max = BetterQuestFrame:GetResolution().height, step = 1,
+							-- set = function(info, value) BetterQuestFrameDB.frameHeight = value;BetterQuestFrame:LoadQuests() end,
+							-- get = function(info) return BetterQuestFrameDB.frameHeight end,
+						-- },
+						-- auto_collapse = {
+							-- order = 20,
+							-- type = 'toggle',
+							-- name = L["auto Collapse Objective InInstance"],
+							-- disabled = function() return not BetterQuestFrame end,
+							-- get = function(info) return E.db.euiscript.auto_collapse; end,
+							-- set = function(info, value) E.db.euiscript.auto_collapse = value end,
+						-- },
 						QuestLevel = {
 							order = 21,
 							type = 'toggle',
 							name = L["Quest Level"],
+							disabled = function() return IsAddOnLoaded('ButterQuestTracker') end,
 							get = function(info) return E.db.euiscript.QuestLevel; end,
 							set = function(info, value) E.db.euiscript.QuestLevel = value;E:StaticPopup_Show("CONFIG_RL"); end,
 						},
@@ -1353,39 +1387,6 @@ E.Options.args.euiscript = {
 							},
 						},
 					},
-				},
-			},
-		},	
-		euiscript_priestpet = {
-			order = 5,
-			type = "group",
-			name = GetSpellInfo(34433) or '?',
-			hidden = function() return class ~= "PRIEST" end,
-			get = function(info) return E.db.euiscript[ info[#info] ] end,
-			set = function(info, value) E.db.euiscript[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL") end,
-			args = {
-				priestpet = {
-					order = 1,
-					type = "toggle",
-					name = GetSpellInfo(34433) or '?',
-				},
-				priestpet_lv = {
-					order = 2,
-					type = "range",
-					name = L["priestpet_lv"],
-					min = 0, max = 5, step = 1,
-				},
-				priestpet_width = {
-					order = 2,
-					type = "range",
-					name = L["wildmushroom_width"],
-					min = 10, max = 200, step = 1,
-				},
-				priestpet_height = {
-					order = 3,
-					type = "range",
-					name = L["wildmushroom_height"],
-					min = 1, max = 100, step = 1,
 				},
 			},
 		},
@@ -2730,41 +2731,6 @@ end
 for k, v in pairs(E.global.InfoFilter.blackList) do
 	E.Options.args.InfoFilter.args.blackList.args.List.values[k] = k
 end
-
-E.Options.args.Sequences = {
-	type = "group",
-	name = '|cee880303'.. L['Sequences']..'|r',
-	disabled = function() return not E:IsConfigurableAddOn('GSE'); end,
-	args = {
-		desc = {
-			order = 0,
-			type = "description",
-			name = L["Sequences description"],
-		},
-		CreateMacroButton = {
-			order = 3,
-			type = 'execute',
-			name = L["Create Macro"],
-			func = function()
-				if GSE then
-					GSE.GUIShowViewer()
-					E:ToggleOptionsUI();
-				end;
-			end,
-		},
-		MacroText = {
-			order = 4,
-			type = 'execute',
-			name = L['Open Config'],
-			func = function()
-				if GSE then
-					GSE.OpenOptionsPanel()
-					E:ToggleOptionsUI();
-				end
-			end,
-		},
-	},
-}
 
 if E.zhlocale then
 	local QASTRING = ''

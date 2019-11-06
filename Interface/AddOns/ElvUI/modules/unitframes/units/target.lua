@@ -19,6 +19,7 @@ function UF:Construct_TargetFrame(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, 'model')
 	frame.Portrait2D = self:Construct_Portrait(frame, 'texture')
 	frame.Buffs = self:Construct_Buffs(frame)
+	frame.Rare = self:Construct_RareElite(frame) --Rare Elite Texture
 	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.Castbar = self:Construct_Castbar(frame, L["Target Castbar"])
 	frame.Castbar.SafeZone = nil
@@ -34,6 +35,9 @@ function UF:Construct_TargetFrame(frame)
 	frame.PvPIndicator = self:Construct_PvPIcon(frame)
 	frame.Fader = self:Construct_Fader()
 	frame.Cutaway = self:Construct_Cutaway(frame)
+	frame.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(frame)
+	frame.ResurrectIndicator = UF:Construct_ResurrectionIcon(frame)
+
 	frame.customTexts = {}
 	frame:Point('BOTTOMRIGHT', E.UIParent, 'BOTTOM', 413, 135)
 	E:CreateMover(frame, frame:GetName()..'Mover', L["Target Frame"], nil, nil, nil, 'ALL,SOLO', nil, 'unitframe,target,generalGroup')
@@ -106,6 +110,9 @@ function UF:Update_TargetFrame(frame, db)
 	UF:Configure_Auras(frame, 'Buffs')
 	UF:Configure_Auras(frame, 'Debuffs')
 
+	-- Resurrect
+	UF:Configure_ResurrectionIcon(frame)
+
 	--Castbar
 	UF:Configure_Castbar(frame)
 
@@ -121,6 +128,8 @@ function UF:Update_TargetFrame(frame, db)
 	--Raid Icon
 	UF:Configure_RaidIcon(frame)
 
+	UF:Configure_RaidRoleIcons(frame)
+
 	--AuraBars
 	UF:Configure_AuraBars(frame)
 
@@ -129,6 +138,9 @@ function UF:Update_TargetFrame(frame, db)
 
 	--Cutaway
 	UF:Configure_Cutaway(frame)
+
+	--Rare
+	UF:Configure_RareElite(frame)
 
 	--CustomTexts
 	UF:Configure_CustomTexts(frame)

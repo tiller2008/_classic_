@@ -75,7 +75,11 @@ L["Choose import action:"] = "选择导入动作:"
 L["Choose Language"] = "选择语言"
 L["Classwide Macro"] = "职业通用宏"
 L["Clear"] = "清除"
+--[[Translation missing --]]
+L["Clear Common Keybindings"] = "Clear Common Keybindings"
 L["Clear Errors"] = "清除错误"
+--[[Translation missing --]]
+L["Clear Keybindings"] = "Clear Keybindings"
 L["Close"] = "关闭"
 L["Close to Maximum Macros.|r  You can have a maximum of "] = "超过最大宏上限.|r  你最多可以有 "
 L["Close to Maximum Personal Macros.|r  You can have a maximum of "] = "超过最大角色宏上限.|r  你最多可以有 "
@@ -308,6 +312,8 @@ L["Raid"] = "Raid"
 L["Raid setting changed to Default."] = "Raid setting changed to Default."
 L["Random - It will select .... a spell, any spell"] = [=[随机 - 将会选择一个...一个法术,任意法术
 ]=]
+--[[Translation missing --]]
+L["Rank"] = "Rank"
 L["Ready to Send"] = "准备发送"
 L["Received Sequence "] = "接收序列 "
 L["Record"] = "记录"
@@ -442,6 +448,8 @@ L["These options combine to allow you to reset a macro while it is running.  The
 --[[Translation missing --]]
 L["These tick boxes have three settings for each slot.  Gold = Definately use this item. Blank = Do not use this item automatically.  Silver = Either use or not based on my default settings store in GSE's Options."] = "These tick boxes have three settings for each slot.  Gold = Definately use this item. Blank = Do not use this item automatically.  Silver = Either use or not based on my default settings store in GSE's Options."
 L["This change will not come into effect until you save this macro."] = "此更改将不会生效,直到你保存此宏."
+--[[Translation missing --]]
+L["This function will remove the SHIFT+N, ALT+N and CTRL+N keybindings for this character.  Useful if [mod:shift] etc conditions don't work in game."] = "This function will remove the SHIFT+N, ALT+N and CTRL+N keybindings for this character.  Useful if [mod:shift] etc conditions don't work in game."
 L["This function will update macro stubs to support listening to the options below.  This is required to be completed 1 time per character."] = "此功能将更新宏存根以支持下面的选项.每个角色都需要运行一次."
 L["This is a small addon that allows you create a sequence of macros to be executed at the push of a button."] = "这是一个小插件,允许你创建一个宏序列以便在按下按钮时执行."
 L["This is the only version of this macro.  Delete the entire macro to delete this version."] = "这是此宏的唯一版本. 删除整个宏以删除此版本."

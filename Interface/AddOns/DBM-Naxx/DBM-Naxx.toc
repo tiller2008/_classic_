@@ -31,7 +31,7 @@
 localization.en.lua
 localization.tw.lua
 localization.cn.lua
-ArachnidQuarter\Anub'Rekhan.lua
+ArachnidQuarter\AnubRekhan.lua
 ArachnidQuarter\Faerlina.lua
 ArachnidQuarter\Maexxna.lua
 ConstructQuarter\Patchwerk.lua
@@ -45,4 +45,4 @@ MilitaryQuarter\Razuvious.lua
 MilitaryQuarter\Gothik.lua
 MilitaryQuarter\Horsemen.lua
 FrostwyrmLair\Sapphiron.lua
-FrostwyrmLair\Kel'Thuzad.lua
+FrostwyrmLair\KelThuzad.lua

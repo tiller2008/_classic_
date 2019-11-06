@@ -9,6 +9,17 @@
 	
 	You can post the file here for it to be added to default ElvUI files: http://www.tukui.org/forums/forum.php?id=88
 ]]
+L['AH Enhance'] = '拍卖增强'
+L["Disabled? Re-enabled please enable in single-addon management!"] = '禁用？重新启用需在单体插件管理中启用！'
+L["Unit Price"] = '一口单价'
+L['Searching...'] = '搜索中'
+L['Search Complete'] = '搜索完成'
+L['<You are the highest bidder>'] = "<你是最高出价者>"
+L['<There is a bidding for this item.>'] = "<此物品有人竞标>"
+L['Search Cancelled'] = "搜索已取消"
+L["Today: "] = "今日: "
+L["For compatibility issues, please select an auctioneer addon"] = "因兼容性问题, 请选择一个拍卖行插件！"
+
 --Static Popup
 do
 	L["A new major release of ElvUI is coming with patch 8.1.5 on March 12th. Nameplate settings will be reset in this release. Make sure you are prepared. Visit the link below for details."] = "姓名版配置在20190314A版本中被重置。"
@@ -51,7 +62,6 @@ L["Old"] = "旧的"
 L["Current - Remaining"] = "当前值 - 剩余值";
 L["Direction the bar moves on gains/losses"] = "状态条的延展方向,你仍需手工调整长宽值";
 L["Artifact"] = "神器"
-L["Azerite Bar"] = "艾泽里特能量条"
 L["Hide At Max Level"] = "在最高等级时隐藏"
 L["DATABAR_DESC"] = "设置声望、经验等数据条"
 L["Thin Border Theme"] = "瘦边框主题"
@@ -2484,6 +2494,7 @@ end
 
 --euiscript
 do
+	L["MISC_BUY_STACK"] = "Alt+右键批量购买"
 	L["SlotItemLevel"] = "装备等级"
 	L["CrucibleWeight"] = "熔炉模拟模块";
 	L["Click Show/Hide Member Info"] = "点击 显示/隐藏 成员资料"

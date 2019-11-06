@@ -60,6 +60,13 @@ do
 end
 
 do
+	local arg1,arg2 = '([%(%)%.%%%+%-%*%?%[%^%$])','%%%1'
+	function AddOn:EscapeString(str)
+		return gsub(str,arg1,arg2)
+	end
+end
+
+do
 	AddOn.Libs = {}
 	AddOn.LibsMinor = {}
 	function AddOn:AddLib(name, major, minor)
@@ -183,6 +190,10 @@ function AddOn:OnInitialize()
 	self:RegisterEvent('PLAYER_REGEN_DISABLED')
 	self:Contruct_StaticPopups()
 	self:InitializeInitialModules()
+
+	if self.private.general.minimap.enable then
+		self.Minimap:SetGetMinimapShape()
+	end
 
 	if GetAddOnEnableState(self.myname, "Tukui") == 2 then
 		self:StaticPopup_Show("TUKUI_ELVUI_INCOMPATIBLE")

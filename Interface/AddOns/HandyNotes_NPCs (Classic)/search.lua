@@ -1,6 +1,7 @@
 local name, data = ...
 
-local Search = LibStub("AceAddon-3.0"):NewAddon("HandyNotes_NPCs", "AceConsole-3.0")
+local Main = LibStub("AceAddon-3.0"):GetAddon("HandyNotes_NPCs (Classic)")
+local Search = Main:NewModule("Search", "AceConsole-3.0")
 local HBD = LibStub("HereBeDragons-2.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes_NPCs (Classic)")
 
@@ -39,7 +40,7 @@ local function update(self)
 				frame:SetScript("OnEnter", function(self) Search:TooltipShow(self, entry.itemID) end)
 				frame:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 			end
-			if entry.type == "npc" or entry.type == "weaponmaster" then
+			if entry.type == "npc" or entry.type == "weaponmaster" or entry.type == "mountTrainer" then
 				lastSearchedItem = entry.type == "npc" and entry.itemID or nil
 				local distanceText = ''
 				local zoneName = HBD:GetLocalizedMap(entry.zone)
@@ -55,6 +56,20 @@ local function update(self)
 				end
 				frame.rtext:SetText(distanceText)
 				frame:SetScript("OnEnter", nil)
+				if entry.type == "mountTrainer" then
+					frame:SetScript("OnEnter", function(self)
+						local tooltip = GameTooltip
+						if ( frame:GetCenter() > UIParent:GetCenter() ) then -- compare X coordinate
+							tooltip:SetOwner(frame, "ANCHOR_LEFT")
+						else
+							tooltip:SetOwner(frame, "ANCHOR_RIGHT")
+						end
+						tooltip:AddLine(entry.name)
+						tooltip:AddLine(entry.desc, 0, 0.6, 0.1)
+						tooltip:Show()
+						return
+					end)
+				end
 				if entry.type == "weaponmaster" then
 					frame:SetScript("OnEnter", function(self)
 						local tooltip = GameTooltip
@@ -210,7 +225,7 @@ function Search:OnInitialize()
 	window.closeButton:SetPoint("LEFT", window.editbox, "RIGHT", 10, 0)
 	window.closeButton:SetScript("OnClick", function(self) window:Hide() end)
 	
-	window.zoneButton = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+	window.zoneButton = CreateFrame("Button", nil, window, "UIPanelButtonTemplate") -- TODO Make a generator for all these buttons
 	window.zoneButton:SetSize(26, 26)
 	window.zoneButton:SetText('Z')
 	window.zoneButton:SetPoint("TOPLEFT", window, "BOTTOMLEFT", 0, -2)
@@ -219,10 +234,22 @@ function Search:OnInitialize()
 	window.wmButton = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
 	window.wmButton:SetSize(36, 26)
 	window.wmButton:SetText('WM')
-	window.wmButton:SetPoint("LEFT", window.zoneButton, "RIGHT", 10, 0)
+	window.wmButton:SetPoint("LEFT", window.zoneButton, "RIGHT", 6, 0)
 	window.wmButton:SetScript("OnClick", function() self:DumpWeaponMasters() end)
+	
+	window.recipeButton = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+	window.recipeButton:SetSize(36, 26)
+	window.recipeButton:SetText('R')
+	window.recipeButton:SetPoint("LEFT", window.wmButton, "RIGHT", 6, 0)
+	window.recipeButton:SetScript("OnClick", function() self:DumpRecipesForZone() end)
+	
+	window.mtButton = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+	window.mtButton:SetSize(36, 26)
+	window.mtButton:SetText('MT')
+	window.mtButton:SetPoint("LEFT", window.recipeButton, "RIGHT", 6, 0)
+	window.mtButton:SetScript("OnClick", function() self:DumpMountTrainers() end)
 
-	self:RegisterChatCommand("npcs", "SlashCommand")
+	self:RegisterChatCommand("npcs", "SlashCommand") -- Maybe move this into the main file
 	self.window = window
 	window:Hide()
 	tinsert(UISpecialFrames, window:GetName()) -- Makes Search Window closable with the escape key
@@ -242,6 +269,16 @@ function Search:SlashCommand(input)
 		self:DumpWeaponMasters()
 		return
 	end
+	
+	if command == "recipes" then
+		self:DumpRecipesForZone()
+		return
+	end
+	
+	if command == "options" then
+		Main:GetModule("Options"):ShowOptions()
+		return
+	end
 	self:ShowWindow()
 end
 
@@ -258,7 +295,7 @@ function Search:SearchNPCs()
 	table.wipe(list)
 	
 	for k,v in pairs(data["items"]) do
-		if string.find(v.name:lower(), text:lower(), 1, true) then
+		if v.icon and string.find(v.name:lower(), text:lower(), 1, true) then -- Items added for altrecipes.lua may not be buyable, filter them out
 			table.insert(list, { itemID = k, type = "item" })
 		end
 	end
@@ -354,6 +391,33 @@ function Search:SetWaypoint(mapFile, coord, title)
 	})
 end
 
+function Search:DumpRecipesForZone(zone)
+	if not zone then
+		zone = (select(3, HBD:GetPlayerZonePosition()))
+	end
+	if not data["nodes"][zone] then return end
+	table.wipe(list)
+	local recipes = { }
+	for coord, npc in pairs(data["nodes"][zone]) do
+		if npc.npcID and data["vendors"][npc.npcID] then
+			for item in data["vendors"][npc.npcID]:gmatch("([^,]+)") do
+				item = tonumber(item)
+				if data["items"][item] and data["items"][item].teaches then -- This is a recipe
+					if not recipes[item] then
+						recipes[item] = true
+					end
+				end
+			end
+		end
+	end
+	
+	for k, v in pairs(recipes) do
+		table.insert(list, { itemID = k, type = "item" })
+	end
+	self:UpdateHeader(L["Recipes"], L["Cost"]) -- Maybe replace cost with vendor name and distance
+	update(self.window.f)
+end
+
 function Search:DumpWeaponMasters()
 	--print(data.class)
 	table.wipe(list)
@@ -363,7 +427,6 @@ function Search:DumpWeaponMasters()
 			skillsWeCanLearn[k] = true
 		end
 	end
-	local npcsThatCanTeachUs = { }
 	for zone, coords in pairs(data["nodes"]) do
 		for coord, npc in pairs(data["nodes"][zone]) do
 			if npc.npcID and data["weaponmasters"][npc.npcID] then
@@ -384,7 +447,28 @@ function Search:DumpWeaponMasters()
 		end
 	end
 	table.sort(list, function(a,b) return a.distance < b.distance or a.distance == b.distance and a.name < b.name end)
-	self:UpdateHeader(L["Weapon Masters"], nil)
+	self:UpdateHeader(L["Weapon Masters"], L["Distance"])
+	update(self.window.f)
+end
+
+function Search:DumpMountTrainers()
+	table.wipe(list)
+	local playerX, playerY, playerMapID = HBD:GetPlayerZonePosition()
+
+	for zone, coords in pairs(data["nodes"]) do
+		for coord, npc in pairs(data["nodes"][zone]) do
+			if npc.category == "mountTrainer" and npc.npcID and (npc.faction == "Neutral" or npc.faction == data.faction) then
+				local npcX, npcY = HandyNotes:getXY(coord)
+				distance = HBD:GetZoneDistance(playerMapID, playerX, playerY, zone, npcX, npcY)
+				if distance == nil then
+					distance = 10000000 -- Just some unreasonably large value for sorting
+				end
+				table.insert(list, { name = npc.name, npcID = npc.npcID, type = "mountTrainer", desc = npc.description, distance = Round(distance), zone = zone, coord = coord })
+			end
+		end
+	end
+	table.sort(list, function(a,b) return a.distance < b.distance or a.distance == b.distance and a.name < b.name end)
+	self:UpdateHeader(L["Mount Trainers"], L["Distance"])
 	update(self.window.f)
 end
 

@@ -1,0 +1,17 @@
+Ex_AutoEquip: enabled
+OfflineDataCenter: enabled
+ButterQuestTracker: enabled
+SilverDragon: enabled
+ClassicCodex: enabled
+FriendsMenuXP: enabled
+HandyNotes_DungeonLocations (Classic): enabled
+MerInspect: enabled
+HandyNotes_NPCs (Classic): enabled
+GSE: enabled
+Mapster: enabled
+GatherMate2: enabled
+Recount: enabled
+AuctionFaster: enabled
+MikScrollingBattleText: enabled
+AtlasLootClassic: enabled
+Masque: enabled

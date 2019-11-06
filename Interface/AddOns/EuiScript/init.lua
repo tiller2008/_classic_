@@ -370,6 +370,7 @@ local BlackList = {
 }
 local WhiteList = {
 	["BagSync_MinimapButton"] = true,
+	["WebDKP_MinimapButton"] = true,
 }
 
 local buttons = {}
@@ -579,20 +580,6 @@ function S:Pop_ShowMenu(self)
 	E.Friends_Source = OPEN_DROPDOWNMENUS[1] and OPEN_DROPDOWNMENUS[1].which or self.owner
 end
 
-local function CreateAutoQuestButton()
-	if not E.db.euiscript.idq_toggle then return; end
-
-	if EuiAutoQuestButton then return; end
-	local accept = CreateFrame("CheckButton", "EuiAutoQuestButton", QuestWatchFrame, "UICheckButtonTemplate")
-	accept:Size(24, 24)
-	accept.text:SetText(L["idQuestAutomation"]);
-	accept:Point("TOPLEFT", QuestWatchFrame, "TOPLEFT", -4, 10)
-	accept:SetScript("OnClick", function(self)
-		E.db["euiscript"].idq = not E.db["euiscript"].idq;
-	end)
-	accept:SetChecked(E.db["euiscript"].idq);
-end
-
 local function CreatePOI()
 	local f = CreateFrame("Frame", "EuiScriptPOI", E.UIParent)
 	f:SetFrameStrata("DIALOG")
@@ -691,6 +678,8 @@ function S:Dismount(event, ...)
 	-- Title: LetMeCast
 	-- Author: Anilusion
 	-- Version: 1.3
+	if not E.db.euiscript.dismount then return end
+
 	if event == "UI_ERROR_MESSAGE" then
 		local arg1, arg2 = ...
 		if arg1 == 50 then
@@ -722,7 +711,7 @@ function S:Dismount(event, ...)
 end
 
 function S:Initialize()
-	CreateAutoQuestButton()
+--	CreateAutoQuestButton()
 	self:CreateVehicleExit()
 --	self:AutoCollect()
 	self:ToggleEuiScriptPoi()
@@ -733,28 +722,58 @@ function S:Initialize()
 	SetCVar("xpBarText", 1) --显示经验条数值
 
 	E.db.combattext = nil
-	
-	local isClassicWow = select(4,GetBuildInfo()) < 20000
-	
+
 	if E.db.euiscript.hovertip then
 		SetCVar("alwaysCompareItems", "1")
 	end
-	
-	if isClassicWow then
-		QuestFrameGreetingPanel:HookScript("OnShow", function()
-			for i = 1, MAX_NUM_QUESTS do
-				local titleLine = _G["QuestTitleButton"..i];
-				if (titleLine:IsVisible()) then
-					local bulletPointTexture = _G[titleLine:GetName().."QuestIcon"];
-					if (titleLine.isActive == 1) then
-						bulletPointTexture:SetTexture("Interface\\GossipFrame\\ActiveQuestIcon");
-					else
-						bulletPointTexture:SetTexture("Interface\\GossipFrame\\AvailableQuestIcon");
-					end
+
+	QuestFrameGreetingPanel:HookScript("OnShow", function()
+		for i = 1, MAX_NUM_QUESTS do
+			local titleLine = _G["QuestTitleButton"..i];
+			if (titleLine:IsVisible()) then
+				local bulletPointTexture = _G[titleLine:GetName().."QuestIcon"];
+				if (titleLine.isActive == 1) then
+					bulletPointTexture:SetTexture("Interface\\GossipFrame\\ActiveQuestIcon");
+				else
+					bulletPointTexture:SetTexture("Interface\\GossipFrame\\AvailableQuestIcon");
 				end
 			end
-		end)
+		end
+	end)
+
+	---------------------------------------------------------------------------------------
+	--	Alt+Click to buy a stack
+	----------------------------------------------------------------------------------------
+	hooksecurefunc("MerchantItemButton_OnModifiedClick", function(self)
+		if IsAltKeyDown() then
+			local itemLink = GetMerchantItemLink(self:GetID())
+			if not itemLink then return end
+
+			local maxStack = select(8, GetItemInfo(itemLink))
+			if maxStack and maxStack > 1 then
+				local numAvailable = select(5, GetMerchantItemInfo(self:GetID()))
+				if numAvailable > -1 then
+					BuyMerchantItem(self:GetID(), numAvailable)
+				else
+					BuyMerchantItem(self:GetID(), GetMerchantItemMaxStack(self:GetID()))
+				end
+			end
+		end
+	end)
+
+	local function IsMerchantButtonOver()
+		return GetMouseFocus():GetName() and GetMouseFocus():GetName():find("MerchantItem%d")
 	end
+
+	GameTooltip:HookScript("OnTooltipSetItem", function(self)
+		if MerchantFrame:IsShown() and IsMerchantButtonOver() then
+			for i = 2, GameTooltip:NumLines() do
+				if _G["GameTooltipTextLeft"..i]:GetText():find(ITEM_VENDOR_STACK_BUY) then
+					GameTooltip:AddLine("|cff00ff00<"..L["MISC_BUY_STACK"]..">|r")
+				end
+			end
+		end
+	end)
 
 	----------------------------------------------------------------------------------------
 	--	Fix compare tooltips(by Blizzard)(../FrameXML/GameTooltip.lua)

@@ -9,7 +9,6 @@ local _G = _G
 local max = math.max
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local InCombatLockdown = InCombatLockdown
 local RegisterAttributeDriver = RegisterAttributeDriver
 
 function UF:Construct_AssistFrames()
@@ -23,9 +22,9 @@ function UF:Construct_AssistFrames()
 	if E.db["clickset"].enable then  
 		self.ClickSet = E.db["clickset"]
 	end
+
 	self.Health = UF:Construct_HealthBar(self, true)
 	self.Name = UF:Construct_NameText(self)
-	self.ThreatIndicator = UF:Construct_Threat(self)
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 	self.MouseGlow = UF:Construct_MouseGlow(self)
 	self.TargetGlow = UF:Construct_TargetGlow(self)
@@ -46,7 +45,6 @@ function UF:Construct_AssistFrames()
 
 	self.originalParent = self:GetParent()
 
-	UF:Update_AssistFrames(self, E.db.unitframe.units.assist)
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
@@ -143,19 +141,16 @@ function UF:Update_AssistFrames(frame, db)
 	--Health
 	UF:Configure_HealthBar(frame)
 
-	--Threat
-	UF:Configure_Threat(frame)
-
 	--Name
 	UF:UpdateNameSettings(frame)
 
 	--Fader
 	UF:Configure_Fader(frame)
 
+	UF:Configure_RaidIcon(frame)
+
 	--Cutaway
 	UF:Configure_Cutaway(frame)
-
-	UF:Configure_RaidIcon(frame)
 
 	if not frame.isChild then
 		--Auras
@@ -170,7 +165,7 @@ function UF:Update_AssistFrames(frame, db)
 		UF:Configure_DebuffHighlight(frame)
 
 		--Buff Indicator
-		UF:UpdateAuraWatch(frame)
+		UF:Configure_AuraWatch(frame)
 	end
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

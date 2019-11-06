@@ -223,6 +223,11 @@ E.Options.args.databars = {
 			type = "group",
 			name = L["Pet Experience"],
 			args = {
+				header = {
+					order = 0,
+					type = "header",
+					name = L["Pet Experience"],
+				},
 				enable = {
 					order = 1,
 					type = "toggle",

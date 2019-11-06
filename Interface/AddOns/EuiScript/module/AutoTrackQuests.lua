@@ -2,6 +2,10 @@ local E = unpack(ElvUI)
 local AutoTrackQuests = {}
 AutoTrackQuests.Frame = CreateFrame("Frame")
 AutoTrackQuests.Frame:SetScript("OnEvent", function(self, event, ...)
+	if IsAddOnLoaded('ButterQuestTracker') then
+		E.db.euiscript.autoTrackQuest = false
+		return
+	end
 	if event == "QUEST_ACCEPTED" then
 		local qindex = ...
 		if E.db.euiscript.autoTrackQuest then

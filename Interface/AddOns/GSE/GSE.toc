@@ -4,7 +4,7 @@
 ## Title-zhTW: |cffC495DDEUI|r|cFF00D1FF一鍵宏增強版|r
 ## Notes: Allows you to execute a sequence of macros without stopping on unusable spells.
 ## Author: TimothyLuke
-## Version: 2.4.19
+## Version: 2.4.23
 ## SavedVariables: GSEOptions GSELibrary
 ## SavedVariablesPerCharacter: GSE_C
 ## OptionalDeps: WeakAuras

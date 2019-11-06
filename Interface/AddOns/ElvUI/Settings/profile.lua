@@ -22,6 +22,8 @@ P.general = {
 	bonusObjectivePosition = 'LEFT',
 	talkingHeadFrameScale = 0.9,
 	talkingHeadFrameBackdrop = false,
+	objectiveTracker = true,
+	questRewardMostValueIcon = true,
 	itemLevel = {
 		displayCharacterInfo = true,
 		displayInspectInfo = true,
@@ -29,6 +31,7 @@ P.general = {
 		itemLevelFontSize = 12,
 		itemLevelFontOutline = 'OUTLINE',
 	},
+	durabilityScale = 1,
 	afk = true,
 	numberPrefixStyle = 'ENGLISH',
 	decimalLength = 1,
@@ -186,19 +189,16 @@ P.bags = {
 	useBlizzardCleanup = false,
 	strata = 'MEDIUM',
 	qualityColors = true,
+	specialtyColors = true,
 	showBindType = false,
 	transparent = false,
 	colors = {
 		profession = {
-			leatherworking = { r = .88, g = .73, b = .29 },
-			inscription = { r = .29, g = .30, b = .88 },
+			quiver = {r = 1, g = 0.69, b = 0.41},
+			ammoPouch = {r = 1, g = 0.69, b = 0.41},
+			soulBag = {r = 1, g = 0.69, b = 0.41},
 			herbs = { r = .07, g = .71, b = .13 },
 			enchanting = { r = .76, g = .02, b = .8 },
-			engineering = { r = .91, g = .46, b = .18 },
-			gems = { r = .03, g = .71, b = .81 },
-			mining = { r = .54, g = .40, b = .04 },
-			fishing = { r = .42, g = .59, b = 1 },
-			cooking = { r = .87, g = .05, b = .25 },
 		},
 		assignment = {
 			equipment = { r = 0, g = .50, b = .47 },
@@ -237,11 +237,17 @@ P.bags = {
 		override = false,
 		reverse = false,
 		hideBlizzard = false,
+		useIndicatorColor = false,
 		expiringColor = { r = 1, g = 0, b = 0 },
 		secondsColor = { r = 1, g = 1, b = 1 },
 		minutesColor = { r = 1, g = 1, b = 1 },
 		hoursColor = { r = 1, g = 1, b = 1 },
 		daysColor = { r = 1, g = 1, b = 1 },
+		expireIndicator = { r = 1, g = 1, b = 1 },
+		secondsIndicator = { r = 1, g = 1, b = 1 },
+		minutesIndicator = { r = 1, g = 1, b = 1 },
+		hoursIndicator = { r = 1, g = 1, b = 1 },
+		daysIndicator = { r = 1, g = 1, b = 1 },
 
 		checkSeconds = false,
 		hhmmColor = { r = 1, g = 1, b = 1 },
@@ -365,11 +371,17 @@ P.nameplates = {
 		override = true,
 		reverse = false,
 		hideBlizzard = false,
+		useIndicatorColor = false,
 		expiringColor = { r = 1, g = 0, b = 0 },
 		secondsColor = { r = 1, g = 1, b = 1 },
 		minutesColor = { r = 1, g = 1, b = 1 },
 		hoursColor = { r = 1, g = 1, b = 1 },
 		daysColor = { r = 1, g = 1, b = 1 },
+		expireIndicator = { r = 1, g = 1, b = 1 },
+		secondsIndicator = { r = 1, g = 1, b = 1 },
+		minutesIndicator = { r = 1, g = 1, b = 1 },
+		hoursIndicator = { r = 1, g = 1, b = 1 },
+		daysIndicator = { r = 1, g = 1, b = 1 },
 
 		checkSeconds = false,
 		hhmmColor = { r = 1, g = 1, b = 1 },
@@ -590,33 +602,9 @@ P.nameplates = {
 				fontOutline = 'OUTLINE',
 				fontSize = 11,
 			},
-			auras = {
-				enable = false,
-				size = 27,
-				width = 18,
-				height = 18,
-				yOffset = 0,
-				xOffset = 0,
-				anchorPoint = 'TOPLEFT',
-				growthX = 'RIGHT',
-				growthY = 'UP',
-				spacing = 1,
-				font = 'EUI',
-				fontOutline = 'OUTLINE',
-				fontSize = 11,
-				countFont = 'EUI',
-				countFontOutline = 'OUTLINE',
-				countFontSize = 9,
-				countPosition = 'BOTTOMRIGHT',
-				durationPosition = 'CENTER',
-				filters = {
-					minDuration = 0,
-					maxDuration = 0,
-					priority = ''
-				},
-			},
 			buffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -638,12 +626,13 @@ P.nameplates = {
 				durationPosition = 'CENTER',
 				filters = {
 					minDuration = 0,
-					maxDuration = 0,
-					priority = '' --NamePlate Player Buffs
+					maxDuration = 300,
+					priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs' --NamePlate Player Buffs
 				},
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -666,7 +655,7 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate Player Debuffs
+					priority = 'Blacklist,blockNoDuration,Personal,Boss,CCDebuffs,RaidDebuffs,Dispellable' --NamePlate Player Debuffs
 				},
 			},
 		},
@@ -817,33 +806,9 @@ P.nameplates = {
 				fontOutline = 'OUTLINE',
 				fontSize = 11,
 			},
-			auras = {
-				enable = false,
-				size = 27,
-				width = 18,
-				height = 18,
-				yOffset = 0,
-				xOffset = 0,
-				anchorPoint = 'TOPLEFT',
-				growthX = 'RIGHT',
-				growthY = 'UP',
-				spacing = 1,
-				font = 'EUI',
-				fontOutline = 'OUTLINE',
-				fontSize = 11,
-				countFont = 'EUI',
-				countFontOutline = 'OUTLINE',
-				countFontSize = 9,
-				countPosition = 'BOTTOMRIGHT',
-				durationPosition = 'CENTER',
-				filters = {
-					minDuration = 0,
-					maxDuration = 0,
-					priority = ''
-				},
-			},
 			buffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -866,11 +831,12 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate FriendlyPlayer Buffs
+					priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs' --NamePlate FriendlyPlayer Buffs
 				},
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -893,7 +859,7 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate FriendlyPlayer Debuffs
+					priority = 'Blacklist,Dispellable,blockNoDuration,Personal,Boss,CCDebuffs' --NamePlate FriendlyPlayer Debuffs
 				},
 			},
 		},
@@ -1031,34 +997,10 @@ P.nameplates = {
 				fontOutline = 'OUTLINE',
 				fontSize = 11,
 			},
-			auras = {
-				enable = false,
-				size = 27,
-				width = 18,
-				height = 18,
-				yOffset = 0,
-				xOffset = 0,
-				anchorPoint = 'TOPLEFT',
-				growthX = 'RIGHT',
-				growthY = 'UP',
-				spacing = 1,
-				font = 'EUI',
-				fontOutline = 'OUTLINE',
-				fontSize = 11,
-				countFont = 'EUI',
-				countFontOutline = 'OUTLINE',
-				countFontSize = 9,
-				countPosition = 'BOTTOMRIGHT',
-				durationPosition = 'CENTER',
-				filters = {
-					minDuration = 0,
-					maxDuration = 0,
-					priority = ''
-				},
-			},
 			buffs = {
 				enable = true,
 				numAuras = 5,
+				desaturate = true,
 				size = 27,
 				width = 18,
 				height = 18,
@@ -1079,13 +1021,14 @@ P.nameplates = {
 				durationPosition = 'CENTER',
 				filters = {
 					minDuration = 0,
-					maxDuration = 0,
-					priority = '' --NamePlate EnemyPlayer Buffs
+					maxDuration = 300,
+					priority = 'Blacklist,Dispellable,PlayerBuffs,TurtleBuffs' --NamePlate EnemyPlayer Buffs
 				},
 			},
 			debuffs = {
 				enable = true,
 				numAuras = 5,
+				desaturate = true,
 				size = 27,
 				width = 18,
 				height = 18,
@@ -1107,7 +1050,7 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate EnemyPlayer Debuffs
+					priority = 'Blacklist,blockNoDuration,Personal,Boss,CCDebuffs,RaidDebuffs' --NamePlate EnemyPlayer Debuffs
 				},
 			},
 		},
@@ -1220,33 +1163,9 @@ P.nameplates = {
 				fontOutline = 'OUTLINE',
 				fontSize = 11,
 			},
-			auras = {
-				enable = false,
-				size = 27,
-				width = 18,
-				height = 18,
-				yOffset = 0,
-				xOffset = 0,
-				anchorPoint = 'TOPLEFT',
-				growthX = 'RIGHT',
-				growthY = 'UP',
-				spacing = 1,
-				font = 'EUI',
-				fontOutline = 'OUTLINE',
-				fontSize = 11,
-				countFont = 'EUI',
-				countFontOutline = 'OUTLINE',
-				countFontSize = 9,
-				countPosition = 'BOTTOMRIGHT',
-				durationPosition = 'CENTER',
-				filters = {
-					minDuration = 0,
-					maxDuration = 0,
-					priority = ''
-				},
-			},
 			buffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -1269,11 +1188,12 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate FriendlyNPC Buffs
+					priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs' --NamePlate FriendlyNPC Buffs
 				},
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -1296,7 +1216,7 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate FriendlyNPC Debuffs
+					priority = 'Blacklist,Boss,CCDebuffs,RaidDebuffs,Dispellable' --NamePlate FriendlyNPC Debuffs
 				},
 			},
 			eliteIcon = {
@@ -1445,33 +1365,9 @@ P.nameplates = {
 				fontOutline = 'OUTLINE',
 				fontSize = 11,
 			},
-			auras = {
-				enable = false,
-				size = 27,
-				width = 18,
-				height = 18,
-				yOffset = 0,
-				xOffset = 0,
-				anchorPoint = 'TOPLEFT',
-				growthX = 'RIGHT',
-				growthY = 'UP',
-				spacing = 1,
-				font = 'EUI',
-				fontOutline = 'OUTLINE',
-				fontSize = 11,
-				countFont = 'EUI',
-				countFontOutline = 'OUTLINE',
-				countFontSize = 9,
-				countPosition = 'BOTTOMRIGHT',
-				durationPosition = 'CENTER',
-				filters = {
-					minDuration = 0,
-					maxDuration = 0,
-					priority = ''
-				},
-			},
 			buffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -1493,11 +1389,12 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate EnemyNPC Buffs
+					priority = 'Blacklist,RaidBuffsElvUI,Dispellable,blockNoDuration,PlayerBuffs,TurtleBuffs,CastByUnit' --NamePlate EnemyNPC Buffs
 				},
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				numAuras = 5,
 				size = 27,
 				width = 18,
@@ -1519,7 +1416,7 @@ P.nameplates = {
 				filters = {
 					minDuration = 0,
 					maxDuration = 0,
-					priority = '' --NamePlate EnemyNPC Debuffs
+					priority = 'Blacklist,Personal,CCDebuffs' --NamePlate EnemyNPC Debuffs
 				},
 			},
 			eliteIcon = {
@@ -1557,6 +1454,16 @@ P.auras = {
 	timeYOffset = 0,
 	timeXOffset = 0,
 	fadeThreshold = 6,
+	showDuration = true,
+	barShow = false,
+	barTexture = 'ElvUI Norm',
+	barPosition = 'BOTTOM',
+	barWidth = 2,
+	barHeight = 2,
+	barSpacing = 2,
+	barColor = { r = 0, g = .8, b = 0 },
+	barColorGradient = false,
+	barNoDuration = true,
 	buffs = {
 		growthDirection = 'LEFT_DOWN',
 		wrapAfter = 12,
@@ -1588,11 +1495,17 @@ P.auras = {
 		override = true,
 		reverse = false,
 		hideBlizzard = false,
+		useIndicatorColor = false,
 		expiringColor = { r = 1, g = 0, b = 0 },
 		secondsColor = { r = 1, g = 1, b = 1 },
 		minutesColor = { r = 1, g = 1, b = 1 },
 		hoursColor = { r = 1, g = 1, b = 1 },
 		daysColor = { r = 1, g = 1, b = 1 },
+		expireIndicator = { r = 1, g = 1, b = 1 },
+		secondsIndicator = { r = 1, g = 1, b = 1 },
+		minutesIndicator = { r = 1, g = 1, b = 1 },
+		hoursIndicator = { r = 1, g = 1, b = 1 },
+		daysIndicator = { r = 1, g = 1, b = 1 },
 
 		checkSeconds = false,
 		hhmmColor = { r = 1, g = 1, b = 1 },
@@ -1746,6 +1659,7 @@ P.tooltip = {
 	playerTitles = true,
 	guildRanks = true,
 	itemCount = 'BAGS_ONLY',
+	itemQualityBorderColor = true,
 	spellID = true,
 	showMount = true,
 	npcID = true,
@@ -1806,6 +1720,12 @@ P.unitframe = {
 		minutesColor = { r = 1, g = 1, b = 1 },
 		hoursColor = { r = 1, g = 1, b = 1 },
 		daysColor = { r = 1, g = 1, b = 1 },
+		useIndicatorColor = false,
+		expireIndicator = { r = 1, g = 1, b = 1 },
+		secondsIndicator = { r = 1, g = 1, b = 1 },
+		minutesIndicator = { r = 1, g = 1, b = 1 },
+		hoursIndicator = { r = 1, g = 1, b = 1 },
+		daysIndicator = { r = 1, g = 1, b = 1 },
 
 		checkSeconds = false,
 		hhmmColor = { r = 1, g = 1, b = 1 },
@@ -1881,12 +1801,6 @@ P.unitframe = {
 			BAD = { r = 199/255, g = 64/255, b = 64/255 },
 			NEUTRAL = { r = 218/255, g = 197/255, b = 92/255 },
 			GOOD = { r = 75/255, g = 175/255, b = 76/255 },
-		},
-		threat = {
-			[ 0] = {r = 0.5, g = 0.5, b = 0.5}, -- low
-			[ 1] = {r = 1.0, g = 1.0, b = 0.5}, -- overnuking
-			[ 2] = {r = 1.0, g = 0.5, b = 0.0}, -- losing threat
-			[ 3] = {r = 1.0, g = 0.2, b = 0.2}, -- tanking securely
 		},
 		selection = {
 			[ 0] = {r = 254/255, g = 045/255, b = 045/255}, -- HOSTILE
@@ -1968,8 +1882,7 @@ P.unitframe = {
 			lowmana = 30,
 			healPrediction = {
 				enable = true,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			threatStyle = 'GLOW',
 			smartAuraPosition = 'DISABLED',
@@ -2001,7 +1914,9 @@ P.unitframe = {
 			},
 			power = {
 				enable = true,
+				autoHide = false,
 				powerPrediction = false,
+				EnergyManaRegen = true,
 				reverseFill = false,
 				text_format = '[powercolor][power:current]',
 				width = 'fill',
@@ -2085,6 +2000,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 8,
 				numrows = 1,
 				attachTo = 'DEBUFFS',
@@ -2098,12 +2014,13 @@ P.unitframe = {
 				clickThrough = false,
 				minDuration = 0,
 				maxDuration = 0,
-				priority = '', --Player Buffs
+				priority = 'Blacklist,Personal,PlayerBuffs,Whitelist,blockNoDuration,nonPersonal', --Player Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				perrow = 8,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2117,7 +2034,7 @@ P.unitframe = {
 				clickThrough = false,
 				minDuration = 0,
 				maxDuration = 0,
-				priority = '', --Player Debuffs
+				priority = 'Blacklist,Personal,nonPersonal', --Player Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -2140,6 +2057,13 @@ P.unitframe = {
 				iconYOffset = 0,
 				tickWidth = 1,
 				tickColor = {r = 0, g = 0, b = 0, a = 0.8},
+				hidetext = false,
+				textColor = {r = 0.84, g = 0.75, b = 0.65, a = 1},
+				xOffsetText = 4,
+				yOffsetText = 0,
+				xOffsetTime = -4,
+				yOffsetTime = 0,
+				overlayOnFrame = 'None',
 				timeToHold = 0,
 				strataAndLevel = {
 					useCustomStrata = false,
@@ -2175,12 +2099,13 @@ P.unitframe = {
 				maxBars = 6,
 				minDuration = 0,
 				maxDuration = 120,
-				priority = '', --Player AuraBars
+				priority = 'Blacklist,blockNoDuration,Personal,Boss,RaidDebuffs,PlayerBuffs', --Player AuraBars
 				friendlyAuraType = 'HELPFUL',
 				enemyAuraType = 'HARMFUL',
 				height = 20,
-				sort = 'TIME_REMAINING',
-				uniformThreshold = 0,
+				detachedWidth = 270,
+				sortMethod = 'TIME_REMAINING',
+				sortDirection = 'DESCENDING',
 				yOffset = 0,
 				spacing = 0,
 			},
@@ -2191,6 +2116,14 @@ P.unitframe = {
 				attachToObject = 'Frame',
 				xOffset = 0,
 				yOffset = 8,
+			},
+			resurrectIcon = {
+				enable = true,
+				size = 30,
+				attachTo = 'CENTER',
+				attachToObject = 'Frame',
+				xOffset = 0,
+				yOffset = 0,
 			},
 			stagger = {
 				enable = true,
@@ -2221,8 +2154,7 @@ P.unitframe = {
 			colorOverride = 'USE_DEFAULT',
 			healPrediction = {
 				enable = true,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			middleClickFocus = true,
 			disableMouseoverGlow = false,
@@ -2310,8 +2242,21 @@ P.unitframe = {
 				yOffset = 0,
 				overlayAlpha = 0.35,
 			},
+			raidRoleIcons = {
+				enable = true,
+				position = 'TOPLEFT',
+			},
+			resurrectIcon = {
+				enable = true,
+				size = 30,
+				attachTo = 'CENTER',
+				attachToObject = 'Frame',
+				xOffset = 0,
+				yOffset = 0,
+			},
 			buffs = {
 				enable = true,
+				desaturate = true,
 				perrow = 8,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2325,12 +2270,13 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
 				maxDuration = 0,
-				priority = '', --Target Buffs
+				priority = 'Blacklist,Personal,nonPersonal', --Target Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				perrow = 8,
 				numrows = 1,
 				attachTo = 'BUFFS',
@@ -2343,8 +2289,8 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Target Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,RaidDebuffs,CCDebuffs,Friendly:Dispellable', --Target Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -2363,6 +2309,13 @@ P.unitframe = {
 				iconXOffset = -10,
 				iconYOffset = 0,
 				timeToHold = 0,
+				hidetext = false,
+				textColor = {r = 0.84, g = 0.75, b = 0.65, a = 1},
+				xOffsetText = 4,
+				yOffsetText = 0,
+				xOffsetTime = -4,
+				yOffsetTime = 0,
+				overlayOnFrame = 'None',
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = 'LOW',
@@ -2377,12 +2330,13 @@ P.unitframe = {
 				maxBars = 6,
 				minDuration = 0,
 				maxDuration = 120,
-				priority = '', --Target AuraBars
+				priority = 'Blacklist,Personal,blockNoDuration,PlayerBuffs,Boss,RaidDebuffs', --Target AuraBars
 				friendlyAuraType = 'HELPFUL',
 				enemyAuraType = 'HARMFUL',
 				height = 20,
-				sort = 'TIME_REMAINING',
-				uniformThreshold = 0,
+				detachedWidth = 270,
+				sortMethod = 'TIME_REMAINING',
+				sortDirection = 'DESCENDING',
 				yOffset = 0,
 				spacing = 0,
 			},
@@ -2479,6 +2433,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 7,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2491,13 +2446,14 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --TargetTarget Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,PlayerBuffs,Dispellable', --TargetTarget Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				perrow = 5,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2510,8 +2466,8 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --TargetTarget Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,Boss,RaidDebuffs,CCDebuffs,Dispellable,Whitelist', --TargetTarget Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -2607,6 +2563,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 7,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2619,13 +2576,14 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --TargetTargetTarget Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,nonPersonal', --TargetTargetTarget Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				perrow = 5,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2638,8 +2596,8 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --TargetTargetTarget Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,nonPersonal', --TargetTargetTarget Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -2676,8 +2634,7 @@ P.unitframe = {
 			height = 36,
 			healPrediction = {
 				enable = true,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			disableMouseoverGlow = false,
 			disableTargetGlow = true,
@@ -2740,6 +2697,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 7,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2752,13 +2710,14 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Pet Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,PlayerBuffs', --Pet Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 5,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2771,8 +2730,8 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Pet Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Boss,RaidDebuffs,Dispellable,Whitelist', --Pet Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -2787,7 +2746,9 @@ P.unitframe = {
 				friendlyAuraType = 'HELPFUL',
 				enemyAuraType = 'HARMFUL',
 				height = 20,
-				sort = 'TIME_REMAINING',
+				detachedWidth = 190,
+				sortMethod = 'TIME_REMAINING',
+				sortDirection = 'DESCENDING',
 				uniformThreshold = 0,
 				yOffset = 2,
 				spacing = 2,
@@ -2795,7 +2756,7 @@ P.unitframe = {
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 			},
 			castbar = {
 				enable = true,
@@ -2812,6 +2773,13 @@ P.unitframe = {
 				iconXOffset = -10,
 				iconYOffset = 0,
 				timeToHold = 0,
+				hidetext = false,
+				textColor = {r = 0.84, g = 0.75, b = 0.65, a = 1},
+				xOffsetText = 4,
+				yOffsetText = 0,
+				xOffsetTime = -4,
+				yOffsetTime = 0,
+				overlayOnFrame = 'None',
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = 'LOW',
@@ -2910,6 +2878,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 7,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2922,13 +2891,14 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --PetTarget Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,PlayerBuffs,CastByUnit,Whitelist,RaidBuffsElvUI', --PetTarget Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 5,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -2941,8 +2911,8 @@ P.unitframe = {
 				sortMethod = 'TIME_REMAINING',
 				sortDirection = 'DESCENDING',
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --PetTarget Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Personal,Boss,RaidDebuffs', --PetTarget Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -2979,8 +2949,7 @@ P.unitframe = {
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			colorOverride = 'USE_DEFAULT',
 			width = 184,
@@ -3059,6 +3028,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 4,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3071,13 +3041,14 @@ P.unitframe = {
 				durationPosition = 'CENTER',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Party Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,CastByPlayers', --Party Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = true,
+				desaturate = true,
 				perrow = 4,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3090,8 +3061,8 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Party Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Boss,RaidDebuffs,CCDebuffs,Dispellable,Whitelist', --Party Debuffs
 				xOffset = 0,
 				yOffset = 0,
 				sizeOverride = 52,
@@ -3099,7 +3070,7 @@ P.unitframe = {
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 				profileSpecific = false,
 			},
 			rdebuffs = {
@@ -3140,6 +3111,13 @@ P.unitframe = {
 				iconXOffset = -10,
 				iconYOffset = 0,
 				timeToHold = 0,
+				hidetext = false,
+				textColor = {r = 0.84, g = 0.75, b = 0.65, a = 1},
+				xOffsetText = 4,
+				yOffsetText = 0,
+				xOffsetTime = -4,
+				yOffsetTime = 0,
+				overlayOnFrame = 'None',
 				strataAndLevel = {
 					useCustomStrata = false,
 					frameStrata = 'LOW',
@@ -3261,8 +3239,7 @@ P.unitframe = {
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			colorOverride = 'USE_DEFAULT',
 			width = 80,
@@ -3334,6 +3311,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 3,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3346,13 +3324,14 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Raid Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,TurtleBuffs', --Raid Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 3,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3365,15 +3344,15 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Raid Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Boss,RaidDebuffs,CCDebuffs,Dispellable', --Raid Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 				profileSpecific = false,
 			},
 			rdebuffs = {
@@ -3484,8 +3463,7 @@ P.unitframe = {
 			showPlayer = true,
 			healPrediction = {
 				enable = false,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			colorOverride = 'USE_DEFAULT',
 			width = 80,
@@ -3556,6 +3534,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 3,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3568,13 +3547,14 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Raid40 Buffs
+				maxDuration = 300,
+				priority = 'Blacklist,TurtleBuffs', --Raid40 Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 3,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3587,8 +3567,8 @@ P.unitframe = {
 				sortDirection = 'DESCENDING',
 				clickThrough = false,
 				minDuration = 0,
-				maxDuration = 0,
-				priority = '', --Raid40 Debuffs
+				maxDuration = 300,
+				priority = 'Blacklist,Boss,RaidDebuffs,CCDebuffs,Dispellable,Whitelist', --Raid40 Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
@@ -3634,7 +3614,7 @@ P.unitframe = {
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 				profileSpecific = false,
 			},
 			raidicon = {
@@ -3708,8 +3688,7 @@ P.unitframe = {
 			startFromCenter = false,
 			healPrediction = {
 				enable = true,
-				showOverAbsorbs = true,
-				showAbsorbAmount = false,
+				healType = 'ALL_HEALS',
 			},
 			colorOverride = 'USE_DEFAULT',
 			width = 80,
@@ -3762,6 +3741,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 3,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3775,12 +3755,13 @@ P.unitframe = {
 				clickThrough = false,
 				minDuration = 0,
 				maxDuration = 0,
-				priority = '', --RaidPet Buffs
+				priority = 'Blacklist,Personal,Boss,PlayerBuffs,blockNoDuration,nonPersonal', --RaidPet Buffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 3,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3794,14 +3775,14 @@ P.unitframe = {
 				clickThrough = false,
 				minDuration = 0,
 				maxDuration = 0,
-				priority = '', --RaidPet Debuffs
+				priority = 'Blacklist,Personal,Boss,Whitelist,RaidDebuffs,blockNoDuration,nonPersonal', --RaidPet Debuffs
 				xOffset = 0,
 				yOffset = 0,
 			},
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 			},
 			rdebuffs = {
 				enable = true,
@@ -3878,6 +3859,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 6,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -3897,6 +3879,7 @@ P.unitframe = {
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 6,
 				numrows = 1,
 				attachTo = 'BUFFS',
@@ -3917,7 +3900,7 @@ P.unitframe = {
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 				profileSpecific = false,
 			},
 			rdebuffs = {
@@ -4019,6 +4002,7 @@ P.unitframe = {
 			},
 			buffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 6,
 				numrows = 1,
 				attachTo = 'FRAME',
@@ -4038,6 +4022,7 @@ P.unitframe = {
 			},
 			debuffs = {
 				enable = false,
+				desaturate = true,
 				perrow = 6,
 				numrows = 1,
 				attachTo = 'BUFFS',
@@ -4058,7 +4043,7 @@ P.unitframe = {
 			buffIndicator = {
 				enable = true,
 				size = 8,
-				fontSize = 10,
+				style = 'texturedIcon',
 				profileSpecific = false,
 			},
 			rdebuffs = {
@@ -4133,11 +4118,17 @@ P.cooldown = {
 	enable = true,
 	threshold = 3,
 	hideBlizzard = false,
+	useIndicatorColor = false,
 	expiringColor = { r = 1, g = 0, b = 0 },
 	secondsColor = { r = 1, g = 1, b = 0 },
 	minutesColor = { r = 1, g = 1, b = 1 },
 	hoursColor = { r = 0.4, g = 1, b = 1 },
 	daysColor = { r = 0.4, g = 0.4, b = 1 },
+	expireIndicator = { r = 1, g = 1, b = 1 },
+	secondsIndicator = { r = 1, g = 1, b = 1 },
+	minutesIndicator = { r = 1, g = 1, b = 1 },
+	hoursIndicator = { r = 1, g = 1, b = 1 },
+	daysIndicator = { r = 1, g = 1, b = 1 },
 
 	checkSeconds = false,
 	hhmmColor = { r = 0.43, g = 0.43, b = 0.43 },
@@ -4171,6 +4162,9 @@ P.actionbar = {
 	countTextXOffset = 0,
 	countTextYOffset = 2,
 
+	equippedItem = false,
+	equippedItemColor = { r = 0.4, g = 1.0, b = 0.4 },
+
 	useRangeColorText = false,
 	noRangeColor = { r = 0.8, g = 0.1, b = 0.1 },
 	noPowerColor = { r = 0.5, g = 0.5, b = 1 },
@@ -4187,11 +4181,17 @@ P.actionbar = {
 		override = false,
 		reverse = false,
 		hideBlizzard = false,
+		useIndicatorColor = false,
 		expiringColor = { r = 1, g = 0, b = 0 },
 		secondsColor = { r = 1, g = 1, b = 1 },
 		minutesColor = { r = 1, g = 1, b = 1 },
 		hoursColor = { r = 1, g = 1, b = 1 },
 		daysColor = { r = 1, g = 1, b = 1 },
+		expireIndicator = { r = 1, g = 1, b = 1 },
+		secondsIndicator = { r = 1, g = 1, b = 1 },
+		minutesIndicator = { r = 1, g = 1, b = 1 },
+		hoursIndicator = { r = 1, g = 1, b = 1 },
+		daysIndicator = { r = 1, g = 1, b = 1 },
 
 		checkSeconds = false,
 		hhmmColor = { r = 1, g = 1, b = 1 },
@@ -4225,127 +4225,6 @@ P.actionbar = {
 	rightClickSelfCast = false,
 	desaturateOnCooldown = false,
 	chargeCooldown = true,
-
-	bar1 = {
-		enabled = true,
-		buttons = 12,
-		mouseover = false,
-		buttonsPerRow = 12,
-		point = 'BOTTOMLEFT',
-		backdrop = false,
-		heightMult = 1,
-		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
-		backdropSpacing = 2,
-		alpha = 1,
-		inheritGlobalFade = false,
-		showGrid = true,
-		flyoutDirection = 'AUTOMATIC',
-		paging = {
-			DRUID = '[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;',
-			PRIEST = '[bonusbar:1] 7;',
-			ROGUE = '[stance:1] 7;  [stance:2] 7; [stance:3] 7;', -- set to '[stance:1] 7; [stance:3] 10;' if you want a shadow dance bar
-			MONK = '[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9;',
-			WARRIOR = '[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3]9;'
-		},
-		visibility = 'show',
-	},
-	bar2 = {
-		enabled = false,
-		mouseover = false,
-		buttons = 12,
-		buttonsPerRow = 12,
-		point = 'BOTTOMLEFT',
-		backdrop = false,
-		heightMult = 1,
-		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
-		backdropSpacing = 2,
-		alpha = 1,
-		inheritGlobalFade = false,
-		showGrid = true,
-		flyoutDirection = 'AUTOMATIC',
-		paging = {},
-		visibility = 'show',
-	},
-	bar3 = {
-		enabled = true,
-		mouseover = false,
-		buttons = 6,
-		buttonsPerRow = 6,
-		point = 'BOTTOMLEFT',
-		backdrop = false,
-		heightMult = 1,
-		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
-		backdropSpacing = 2,
-		alpha = 1,
-		inheritGlobalFade = false,
-		showGrid = true,
-		flyoutDirection = 'AUTOMATIC',
-		paging = {},
-		visibility = 'show',
-	},
-	bar4 = {
-		enabled = true,
-		mouseover = false,
-		buttons = 12,
-		buttonsPerRow = 1,
-		point = 'TOPRIGHT',
-		backdrop = true,
-		heightMult = 1,
-		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
-		backdropSpacing = 2,
-		alpha = 1,
-		inheritGlobalFade = false,
-		showGrid = true,
-		flyoutDirection = 'AUTOMATIC',
-		paging = {},
-		visibility = 'show',
-	},
-	bar5 = {
-		enabled = true,
-		mouseover = false,
-		buttons = 6,
-		buttonsPerRow = 6,
-		point = 'BOTTOMLEFT',
-		backdrop = false,
-		heightMult = 1,
-		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
-		backdropSpacing = 2,
-		alpha = 1,
-		inheritGlobalFade = false,
-		showGrid = true,
-		flyoutDirection = 'AUTOMATIC',
-		paging = {},
-		visibility = 'show',
-	},
-	bar6 = {
-		enabled = false,
-		mouseover = false,
-		buttons = 12,
-		buttonsPerRow = 12,
-		point = 'BOTTOMLEFT',
-		backdrop = false,
-		heightMult = 1,
-		widthMult = 1,
-		buttonsize = 32,
-		buttonspacing = 2,
-		backdropSpacing = 2,
-		alpha = 1,
-		inheritGlobalFade = false,
-		showGrid = true,
-		flyoutDirection = 'AUTOMATIC',
-		paging = {},
-		visibility = 'show',
-	},
 	barPet = {
 		enabled = true,
 		mouseover = false,
@@ -4386,3 +4265,47 @@ P.actionbar = {
 		inheritGlobalFade = false,
 	},
 };
+
+for i = 1, 10 do
+	P.actionbar['bar'..i] = {
+		enabled = false,
+		mouseover = false,
+		buttons = 12,
+		buttonsPerRow = 12,
+		point = 'BOTTOMLEFT',
+		backdrop = false,
+		heightMult = 1,
+		widthMult = 1,
+		buttonsize = 32,
+		buttonspacing = 2,
+		backdropSpacing = 2,
+		alpha = 1,
+		inheritGlobalFade = false,
+		showGrid = true,
+		flyoutDirection = 'AUTOMATIC',
+		paging = {},
+		visibility = 'show',
+	}
+end
+
+P.actionbar.bar1.enabled = true
+P.actionbar.bar1.paging = {
+	DRUID = '[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;',
+	PRIEST = '[bonusbar:1] 7;',
+	ROGUE = '[stance:1] 7;  [stance:2] 7; [stance:3] 7;', -- set to '[stance:1] 7; [stance:3] 10;' if you want a shadow dance bar
+	MONK = '[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9;',
+	WARRIOR = '[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3]9;'
+}
+
+P.actionbar.bar3.enabled = true
+P.actionbar.bar3.buttons = 6
+P.actionbar.bar3.buttonsPerRow = 6
+
+P.actionbar.bar4.enabled = true
+P.actionbar.bar4.buttonsPerRow = 1
+P.actionbar.bar4.point = 'TOPRIGHT'
+P.actionbar.bar4.backdrop = true
+
+P.actionbar.bar5.enabled = true
+P.actionbar.bar5.buttons = 6
+P.actionbar.bar5.buttonsPerRow = 6

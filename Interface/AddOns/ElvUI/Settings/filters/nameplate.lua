@@ -38,8 +38,43 @@ G.nameplate.filters = {
 			}
 		},
 		actions = {
-			alpha = 30
+			alpha = 90 --by eui.cc
 		}
+	},
+	ElvUI_TankNonTarget = {
+		actions = {
+			color = {
+				healthColor = {r = 254/255, g = 045/255, b = 045/255},
+				health = true,
+			},
+		},
+		triggers = {
+			isNotTapDenied = true,
+			inCombatUnit = true,
+			nameplateType = {
+				enemyNPC = true,
+				enable = true,
+			},
+			inCombat = true,
+		},
+	},
+	ElvUI_TankTarget = {
+		actions = {
+			color = {
+				healthColor = {r = 050/255, g = 180/255, b = 000/255},
+				health = true,
+			},
+		},
+		triggers = {
+			isNotTapDenied = true,
+			inCombatUnit = true,
+			nameplateType = {
+				enemyNPC = true,
+				enable = true,
+			},
+			inCombat = true,
+			targetMe = true,
+		},
 	},
 }
 

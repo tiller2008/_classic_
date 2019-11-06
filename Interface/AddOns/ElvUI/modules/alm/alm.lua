@@ -333,7 +333,7 @@ local function UpdateFrame()
 		local db2 = Module.db.targetBuff.whiteList
 		repeat
 			name, icon, count, _, duration, expires, caster, _, _, spellID = UnitBuff('target', i)
-			if LibClassicDurations then
+			if LibClassicDurations and spellID then
 				local durationNew, expirationTimeNew = LibClassicDurations:GetAuraDurationByUnit('target', spellID, caster, name)
 
 				if durationNew and durationNew > 0 then
@@ -546,13 +546,13 @@ function Module:UpdateOption()
 end
 
 function Module:GetSpecID()
-	local spec = GetSpecialization()
-	if not spec then
-		spec = 0
-	else
-		spec = GetSpecializationInfo(GetSpecialization())
-	end;
-	return spec
+	-- local spec = GetSpecialization()
+	-- if not spec then
+		-- spec = 0
+	-- else
+		-- spec = GetSpecializationInfo(GetSpecialization())
+	-- end;
+	return '123'
 end
 
 function Module:SpellCD_Combat(event)

@@ -8,6 +8,7 @@
 	<Script file='CustomText.lua'/>
 	<Script file='Cutaway.lua'/>
 	<Script file='DebuffHighlight.lua'/>
+	<Script file='EnergyManaRegen.lua'/>
 	<Script file='HealPrediction.lua'/>
 	<Script file='Health.lua'/>
 	<Script file='InfoPanel.lua'/>
@@ -25,7 +26,9 @@
 	<Script file='ReadyCheckIcon.lua'/>
 	<Script file='RestingIndicator.lua'/>
 	<Script file='ResurrectionIcon.lua'/>
+	<Script file='Threat.lua'/>
+
 	<Script file='FrameGlow.lua'/>
-	
 	<Script file='happiness.lua'/>
+	<Script file='rareElite.lua'/>
 </Ui>

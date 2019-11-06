@@ -15,12 +15,14 @@ local IsLoggedIn = IsLoggedIn
 local IsShiftKeyDown = IsShiftKeyDown
 local C_WowTokenPublic = C_WowTokenPublic
 local C_Timer_NewTicker = C_Timer.NewTicker
+local PRIEST_COLOR = RAID_CLASS_COLORS.PRIEST
 -- GLOBALS: ElvDB
 
 local Ticker
 local Profit, Spent = 0, 0
 local resetCountersFormatter = strjoin("", "|cffaaaaaa", L["Reset Counters: Hold Shift + Left Click"], "|r")
 local resetInfoFormatter = strjoin("", "|cffaaaaaa", L["Reset Data: Hold Shift + Right Click"], "|r")
+local cdate = date("%d/%m/%y");
 
 local function OnEvent(self)
 	if not IsLoggedIn() then return end
@@ -39,6 +41,24 @@ local function OnEvent(self)
 	ElvDB.class = ElvDB.class or {}
 	ElvDB.class[E.myrealm] = ElvDB.class[E.myrealm] or {}
 	ElvDB.class[E.myrealm][E.myname] = E.myclass
+
+
+	local dateGold = {
+		['lastsessiondate'] = '',
+		['lastgold'] = 0,
+		['sessiondate'] = cdate,
+		['sessiongold'] = NewMoney,
+	}
+	ElvDB.dateGold = ElvDB.dateGold or {}
+	ElvDB.dateGold[E.myrealm] = ElvDB.dateGold[E.myrealm] or {}
+	ElvDB.dateGold[E.myrealm][E.myname] = ElvDB.dateGold[E.myrealm][E.myname] or dateGold
+
+	if ElvDB.dateGold[E.myrealm][E.myname]['sessiondate'] ~= cdate then
+		ElvDB.dateGold[E.myrealm][E.myname]['lastsessiondate'] = ElvDB.dateGold[E.myrealm][E.myname]['sessiondate']
+		ElvDB.dateGold[E.myrealm][E.myname]['lastgold'] = ElvDB.dateGold[E.myrealm][E.myname]['sessiongold']
+	end
+	ElvDB.dateGold[E.myrealm][E.myname]['sessiongold'] = NewMoney
+	ElvDB.dateGold[E.myrealm][E.myname]['sessiondate'] = cdate
 
 	local OldMoney = ElvDB.gold[E.myrealm][E.myname] or NewMoney
 
@@ -84,16 +104,25 @@ local function OnEnter(self)
 	elseif (Profit-Spent)>0 then
 		DT.tooltip:AddDoubleLine(L["Profit:"], E:FormatMoney(Profit-Spent, style, textOnly), 0, 1, 0, 1, 1, 1)
 	end
+
+	local todayGold = ElvDB.dateGold[E.myrealm][E.myname]['sessiongold'] - ElvDB.dateGold[E.myrealm][E.myname]['lastgold']
 	DT.tooltip:AddLine(' ')
+	DT.tooltip:AddLine(L["Today: "])
+	if todayGold >= 0 then
+		DT.tooltip:AddDoubleLine(L["Profit:"], E:FormatMoney(todayGold, style, textOnly), 0, 1, 0, 1, 1, 1)
+	else
+		DT.tooltip:AddDoubleLine(L["Deficit:"], E:FormatMoney(todayGold*(-1), style, textOnly), 1, 0, 0, 1, 1, 1)
+	end
 
 	local totalGold = 0
+	DT.tooltip:AddLine(' ')
 	DT.tooltip:AddLine(L["Character: "])
 
 	wipe(myGold)
 	for k,_ in pairs(ElvDB.gold[E.myrealm]) do
 		if ElvDB.gold[E.myrealm][k] then
 			local class = ElvDB.class[E.myrealm][k] or "PRIEST"
-			local color = class and (_G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class])
+			local color = E:ClassColor(class) or PRIEST_COLOR
 			tinsert(myGold,
 				{
 					name = k,

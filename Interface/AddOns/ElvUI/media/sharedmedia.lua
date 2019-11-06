@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(select(2, ...)) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local LSM = E.Libs.LSM
 local M = [[Interface\AddOns\ElvUI\Media\]]
 
@@ -65,16 +65,16 @@ E.Media = {
 		ZZZ = M..[[ChatEmojis\ZZZ.tga]]
 	},
 	ChatLogos = {
-		ElvRainbow = M..[[ChatLogos\ElvRainbow.tga]],
-		ElvMelon = M..[[ChatLogos\ElvMelon.tga]],
+		Bathrobe = M..[[ChatLogos\Bathrobe.tga]],
 		ElvBlue = M..[[ChatLogos\ElvBlue.tga]],
 		ElvGreen = M..[[ChatLogos\ElvGreen.tga]],
+		ElvMelon = M..[[ChatLogos\ElvMelon.tga]],
 		ElvOrange = M..[[ChatLogos\ElvOrange.tga]],
 		ElvPink = M..[[ChatLogos\ElvPink.tga]],
 		ElvPurple = M..[[ChatLogos\ElvPurple.tga]],
-		ElvYellow = M..[[ChatLogos\ElvYellow.tga]],
+		ElvRainbow = M..[[ChatLogos\ElvRainbow.tga]],
 		ElvRed = M..[[ChatLogos\ElvRed.tga]],
-		Bathrobe = M..[[ChatLogos\Bathrobe.tga]],
+		ElvYellow = M..[[ChatLogos\ElvYellow.tga]],
 		HelloKitty = M..[[ChatLogos\HelloKitty.tga]],
 		Illuminati = M..[[ChatLogos\Illuminati.tga]],
 		MrHankey = M..[[ChatLogos\MrHankey.tga]],
@@ -85,11 +85,11 @@ E.Media = {
 		Arrow = M..[[Textures\Arrow.tga]],
 		ArrowRight = M..[[Textures\ArrowRight.tga]],
 		ArrowUp = M..[[Textures\ArrowUp.tga]],
+		BagJunkIcon = M..[[Textures\BagJunkIcon.blp]],
 		BagNewItemGlow = M..[[Textures\BagNewItemGlow.tga]],
 		BagQuestIcon = M..[[Textures\BagQuestIcon.tga]],
-		Black8x8 = M..[[Textures\Black8x8.tga]],
-		White8x8 = [[Interface\BUTTONS\WHITE8X8]], -- not elvui
 		BagUpgradeIcon = M..[[Textures\BagUpgradeIcon.tga]],
+		Black8x8 = M..[[Textures\Black8x8.tga]],
 		BubbleTex = M..[[Textures\BubbleTex.tga]],
 		ChatEmojis = M..[[Textures\ChatEmojis]],
 		ChatLogos = M..[[Textures\ChatLogos]],
@@ -98,6 +98,7 @@ E.Media = {
 		Copy = M..[[Textures\Copy.tga]],
 		Cross = M..[[Textures\Cross.tga]],
 		DPS = M..[[Textures\DPS.tga]],
+		ExitVehicle = M..[[Textures\ExitVehicle.tga]],
 		GlowTex = M..[[Textures\GlowTex.tga]],
 		Healer = M..[[Textures\Healer.tga]],
 		HelloKitty = M..[[Textures\HelloKitty.tga]],
@@ -126,17 +127,18 @@ E.Media = {
 		Spark = M..[[Textures\Spark.tga]],
 		Tank = M..[[Textures\Tank.tga]],
 		TukuiLogo = M..[[Textures\TukuiLogo.tga]],
-		ExitVehicle = M..[[Textures\ExitVehicle.tga]]
+		White8x8 = [[Interface\BUTTONS\WHITE8X8]] -- not elvui
 	}
 }
 
+LSM:Register('background','ElvUI Blank',E.Media.Textures.White8x8)
 LSM:Register('border','ElvUI GlowBorder',E.Media.Textures.GlowTex)
+LSM:Register('font','Action Man',E.Media.Fonts.ActionMan)
 LSM:Register('font','Continuum Medium',E.Media.Fonts.ContinuumMedium)
 LSM:Register('font','Die Die Die!',E.Media.Fonts.DieDieDie)
-LSM:Register('font','Action Man',E.Media.Fonts.ActionMan)
 LSM:Register('font','Expressway',E.Media.Fonts.Expressway,LSM.LOCALE_BIT_ruRU+LSM.LOCALE_BIT_western)
-LSM:Register('font','PT Sans Narrow',E.Media.Fonts.PTSansNarrow,LSM.LOCALE_BIT_ruRU+LSM.LOCALE_BIT_western)
 LSM:Register('font','Homespun',E.Media.Fonts.Homespun,LSM.LOCALE_BIT_ruRU+LSM.LOCALE_BIT_western)
+LSM:Register('font','PT Sans Narrow',E.Media.Fonts.PTSansNarrow,LSM.LOCALE_BIT_ruRU+LSM.LOCALE_BIT_western)
 LSM:Register('sound','Awww Crap',E.Media.Sounds.AwwCrap)
 LSM:Register('sound','BBQ Ass',E.Media.Sounds.BbqAss)
 LSM:Register('sound','Big Yankie Devil',E.Media.Sounds.YankieBangBang)
@@ -146,58 +148,49 @@ LSM:Register('sound','Runaway Fast',E.Media.Sounds.RunFast)
 LSM:Register('sound','Stop Running',E.Media.Sounds.StopRunningSlimeBall)
 LSM:Register('sound','Warning',E.Media.Sounds.Warning)
 LSM:Register('sound','Whisper Alert',E.Media.Sounds.Whisper)
-LSM:Register('statusbar','Melli',E.Media.Textures.Melli)
+LSM:Register('statusbar','ElvUI Blank',E.Media.Textures.White8x8)
 LSM:Register('statusbar','ElvUI Gloss',E.Media.Textures.NormTex)
 LSM:Register('statusbar','ElvUI Norm',E.Media.Textures.NormTex2)
+LSM:Register('statusbar','Melli',E.Media.Textures.Melli)
 LSM:Register('statusbar','Minimalist',E.Media.Textures.Minimalist)
-LSM:Register('statusbar','ElvUI Blank',E.Media.Textures.White8x8)
-LSM:Register('background','ElvUI Blank',E.Media.Textures.White8x8)
 
-LSM:Register("statusbar","Eui_0", [[Interface\AddOns\ElvUI\media\textures\statusbar\0]])
-LSM:Register("statusbar","Eui_1", [[Interface\AddOns\ElvUI\media\textures\statusbar\1]])
-LSM:Register("statusbar","Eui_2", [[Interface\AddOns\ElvUI\media\textures\statusbar\2]])
-LSM:Register("statusbar","Eui_3", [[Interface\AddOns\ElvUI\media\textures\statusbar\3]])
-LSM:Register("statusbar","Eui_4", [[Interface\AddOns\ElvUI\media\textures\statusbar\4]])
-LSM:Register("statusbar","Eui_5", [[Interface\AddOns\ElvUI\media\textures\statusbar\5]])
-LSM:Register("statusbar","Eui_6", [[Interface\AddOns\ElvUI\media\textures\statusbar\6]])
-LSM:Register("statusbar","Eui_7", [[Interface\AddOns\ElvUI\media\textures\statusbar\7]])
-LSM:Register("statusbar","Eui_8", [[Interface\AddOns\ElvUI\media\textures\statusbar\8]])
-LSM:Register("statusbar","Eui_9", [[Interface\AddOns\ElvUI\media\textures\statusbar\9]])
-LSM:Register("statusbar","Eui_10", [[Interface\AddOns\ElvUI\media\textures\statusbar\10]])
-LSM:Register("statusbar","Eui_11", [[Interface\AddOns\ElvUI\media\textures\statusbar\11]])
-LSM:Register("statusbar","Line", [[Interface\AddOns\ElvUI\media\textures\statusbar\line]])
-LSM:Register("statusbar","Glaze", [[Interface\AddOns\ElvUI\media\textures\statusbar\glaze]])
+LSM:Register("statusbar","Eui_0", [[Interface\AddOns\ElvUI\media\textures\statusbar\0.tga]])
+LSM:Register("statusbar","Eui_1", [[Interface\AddOns\ElvUI\media\textures\statusbar\1.tga]])
+LSM:Register("statusbar","Eui_2", [[Interface\AddOns\ElvUI\media\textures\statusbar\2.tga]])
+LSM:Register("statusbar","Eui_3", [[Interface\AddOns\ElvUI\media\textures\statusbar\3.tga]])
+LSM:Register("statusbar","Eui_4", [[Interface\AddOns\ElvUI\media\textures\statusbar\4.tga]])
+LSM:Register("statusbar","Eui_5", [[Interface\AddOns\ElvUI\media\textures\statusbar\5.tga]])
+LSM:Register("statusbar","Eui_6", [[Interface\AddOns\ElvUI\media\textures\statusbar\6.tga]])
+LSM:Register("statusbar","Eui_7", [[Interface\AddOns\ElvUI\media\textures\statusbar\7.tga]])
+LSM:Register("statusbar","Eui_8", [[Interface\AddOns\ElvUI\media\textures\statusbar\8.tga]])
+LSM:Register("statusbar","Eui_9", [[Interface\AddOns\ElvUI\media\textures\statusbar\9.tga]])
+LSM:Register("statusbar","Eui_10", [[Interface\AddOns\ElvUI\media\textures\statusbar\10.tga]])
+LSM:Register("statusbar","Eui_11", [[Interface\AddOns\ElvUI\media\textures\statusbar\11.tga]])
+LSM:Register("statusbar","Line", [[Interface\AddOns\ElvUI\media\textures\statusbar\line.tga]])
+LSM:Register("statusbar","Glaze", [[Interface\AddOns\ElvUI\media\textures\statusbar\glaze.tga]])
 
+LSM:Register("statusbar","MaUI 1", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI1.tga]])
+LSM:Register("statusbar","MaUI 2", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI2.tga]])
+LSM:Register("statusbar","MaUI 3", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI3.tga]])
+LSM:Register("statusbar","MaUI 4", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI4.tga]])
+LSM:Register("statusbar","MaUI 5", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI5.tga]])
+LSM:Register("statusbar","MaUI 6", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI6.tga]])
+LSM:Register("statusbar","MaUI 7", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI7.tga]])
+LSM:Register("statusbar","MaUI 8", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI8.tga]])
+LSM:Register("statusbar","MaUI 9", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI9.tga]])
+LSM:Register("statusbar","MaUI 10", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI10.tga]])
+LSM:Register("statusbar","MaUI 11", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI11.tga]])
+LSM:Register("statusbar","MaUI 12", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI12.tga]])
+LSM:Register("statusbar","MaUI 13", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI13.tga]])
+LSM:Register("statusbar","MaUI 14", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI14.tga]])
+LSM:Register("statusbar","MaUI 15", [[Interface\AddOns\ElvUI\media\textures\newstatusbar\MaUI15.tga]])
 
--- Statusbar Textures 
-LSM:Register("statusbar", "KMT01", [[Interface\Addons\ElvUI\media\KMediaTags\KMT01.tga]]) 
-LSM:Register("statusbar", "KMT02", [[Interface\Addons\ElvUI\media\KMediaTags\KMT02.tga]]) 
-LSM:Register("statusbar", "KMT03", [[Interface\Addons\ElvUI\media\KMediaTags\KMT03.tga]]) 
-LSM:Register("statusbar", "KMT04", [[Interface\Addons\ElvUI\media\KMediaTags\KMT04.tga]]) 
-LSM:Register("statusbar", "KMT05", [[Interface\Addons\ElvUI\media\KMediaTags\KMT05.tga]]) 
-LSM:Register("statusbar", "KMT06", [[Interface\Addons\ElvUI\media\KMediaTags\KMT06.tga]]) 
-LSM:Register("statusbar", "KMT07", [[Interface\Addons\ElvUI\media\KMediaTags\KMT07.tga]]) 
-LSM:Register("statusbar", "KMT08", [[Interface\Addons\ElvUI\media\KMediaTags\KMT08.tga]]) 
-LSM:Register("statusbar", "KMT09", [[Interface\Addons\ElvUI\media\KMediaTags\KMT09.tga]]) 
-LSM:Register("statusbar", "KMT10", [[Interface\Addons\ElvUI\media\KMediaTags\KMT10.tga]]) 
-LSM:Register("statusbar", "KMT11", [[Interface\Addons\ElvUI\media\KMediaTags\KMT11.tga]]) 
-LSM:Register("statusbar", "KMT12", [[Interface\Addons\ElvUI\media\KMediaTags\KMT12.tga]]) 
-LSM:Register("statusbar", "KMT13", [[Interface\Addons\ElvUI\media\KMediaTags\KMT13.tga]]) 
-LSM:Register("statusbar", "KMT14", [[Interface\Addons\ElvUI\media\KMediaTags\KMT14.tga]]) 
-LSM:Register("statusbar", "KMT15", [[Interface\Addons\ElvUI\media\KMediaTags\KMT15.tga]]) 
-LSM:Register("statusbar", "KMT16", [[Interface\Addons\ElvUI\media\KMediaTags\KMT16.tga]]) 
-LSM:Register("statusbar", "KMT17", [[Interface\Addons\ElvUI\media\KMediaTags\KMT17.tga]]) 
-LSM:Register("statusbar", "KMT18", [[Interface\Addons\ElvUI\media\KMediaTags\KMT18.tga]]) 
-LSM:Register("statusbar", "KMT19", [[Interface\Addons\ElvUI\media\KMediaTags\KMT19.tga]]) 
-LSM:Register("statusbar", "KMT20", [[Interface\Addons\ElvUI\media\KMediaTags\KMT20.tga]]) 
-LSM:Register("statusbar", "KMT21", [[Interface\Addons\ElvUI\media\KMediaTags\KMT21.tga]]) 
-LSM:Register("statusbar", "KMT22", [[Interface\Addons\ElvUI\media\KMediaTags\KMT22.tga]]) 
-LSM:Register("statusbar", "KMT23", [[Interface\Addons\ElvUI\media\KMediaTags\KMT23.tga]]) 
-LSM:Register("statusbar", "KMT24", [[Interface\Addons\ElvUI\media\KMediaTags\KMT24.tga]]) 
-LSM:Register("statusbar", "KMT25", [[Interface\Addons\ElvUI\media\KMediaTags\KMT25.tga]]) 
-LSM:Register("statusbar", "KMT26", [[Interface\Addons\ElvUI\media\KMediaTags\KMT26.tga]]) 
-LSM:Register("statusbar", "KMT27", [[Interface\Addons\ElvUI\media\KMediaTags\KMT27.tga]]) 
-LSM:Register("statusbar", "KMT28", [[Interface\Addons\ElvUI\media\KMediaTags\KMT28.tga]]) 
-LSM:Register("statusbar", "KMT29", [[Interface\Addons\ElvUI\media\KMediaTags\KMT29.tga]]) 
-LSM:Register("statusbar", "KMT30", [[Interface\Addons\ElvUI\media\KMediaTags\KMT30.tga]]) 
-LSM:Register("statusbar", "KMT31", [[Interface\Addons\ElvUI\media\KMediaTags\KMT31.tga]]) 
+LSM:Register("statusbar", "MaoRSkada", [[Interface\Addons\ElvUI\media\textures\newstatusbar\MaoRSkada]])
+LSM:Register("statusbar", "AtlzSkada", [[Interface\Addons\ElvUI\media\textures\newstatusbar\AtlzSkada]])
+LSM:Register("statusbar", "YaSkada", [[Interface\Addons\ElvUI\media\textures\newstatusbar\Yaskada]])
+LSM:Register("statusbar", "YaSkada02", [[Interface\Addons\ElvUI\media\textures\newstatusbar\Yaskada02]])
+LSM:Register("statusbar", "YaSkada03", [[Interface\Addons\ElvUI\media\textures\newstatusbar\Yaskada03]])
+LSM:Register("statusbar", "YaSkada04", [[Interface\Addons\ElvUI\media\textures\newstatusbar\Yaskada04]])
+LSM:Register("statusbar", "YaSkada05", [[Interface\Addons\ElvUI\media\textures\newstatusbar\Yaskada05]])
+LSM:Register("statusbar", "elvskada", [[Interface\Addons\ElvUI\media\textures\newstatusbar\elvskada]])
+LSM:Register("statusbar", "elvskada2", [[Interface\Addons\ElvUI\media\textures\newstatusbar\elvskada2]])

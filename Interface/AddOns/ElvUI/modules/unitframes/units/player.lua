@@ -33,19 +33,25 @@ function UF:Construct_PlayerFrame(frame)
 	frame.ClassBarHolder:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 150)
 
 	--Combo points was moved to the ClassPower element, so all classes need to have a ClassBar now.
-	frame.ClassPower = self:Construct_ClassBar(frame)
-	frame.ClassBar = 'ClassPower'
+	if E.myclass == "SHAMAN" then
+		frame.Totems = self:Construct_Totems(frame)
+	else
+		frame.ClassPower = self:Construct_ClassBar(frame)
+		frame.ClassBar = 'ClassPower'
 
-	--Some classes need another set of different classbars.
-	if E.myclass == "DRUID" then
-		frame.AdditionalPower = self:Construct_AdditionalPowerBar(frame)
+		--Some classes need another set of different classbars.
+		if E.myclass == "DRUID" then
+			frame.AdditionalPower = self:Construct_AdditionalPowerBar(frame)
+		end
 	end
 
 	frame.PowerPrediction = self:Construct_PowerPrediction(frame) -- must be AFTER Power & AdditionalPower
+	frame.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
 	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
+	frame.ResurrectIndicator = UF:Construct_ResurrectionIcon(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
 	frame.HealthPrediction = self:Construct_HealComm(frame)
 	frame.PvPText = self:Construct_PvPIndicator(frame)
@@ -55,6 +61,8 @@ function UF:Construct_PlayerFrame(frame)
 	frame.Cutaway = self:Construct_Cutaway(frame)
 	frame.Fader = self:Construct_Fader()
 	frame.customTexts = {}
+
+	frame.EnergyManaRegen = self:Construct_EnergyManaRegen(frame)
 
 	frame:Point('BOTTOMLEFT', E.UIParent, 'BOTTOM', -413, 135) --Set to default position
 	E:CreateMover(frame, frame:GetName()..'Mover', L["Player Frame"], nil, nil, nil, 'ALL,SOLO', nil, 'unitframe,player,generalGroup')
@@ -144,6 +152,9 @@ function UF:Update_PlayerFrame(frame, db)
 	UF:Configure_Auras(frame, 'Buffs')
 	UF:Configure_Auras(frame, 'Debuffs')
 
+	-- Resurrect
+	UF:Configure_ResurrectionIcon(frame)
+
 	--Castbar
 	frame:DisableElement('Castbar')
 	UF:Configure_Castbar(frame)
@@ -175,6 +186,10 @@ function UF:Update_PlayerFrame(frame, db)
 	if E.db.unitframe.units.target.aurabar.attachTo == "PLAYER_AURABARS" and ElvUF_Target then
 		UF:Configure_AuraBars(ElvUF_Target)
 	end
+
+	UF:Configure_RaidRoleIcons(frame)
+
+	UF:Configure_EnergyManaRegen(frame)
 
 	--PvP & Prestige Icon
 	UF:Configure_PVPIcon(frame)

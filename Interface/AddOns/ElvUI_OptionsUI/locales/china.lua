@@ -1504,6 +1504,8 @@ do
 	L['DebuffBlacklist'] = "DEBUFF黑名单"
 	L['RaidDebuffs'] = "团队副本DEBUFF"
 	L['RaidDebuffs2'] = "团队副本DEBUFF图标2"
+	L['DungeonDebuffs'] = "地下城Debuff"
+	L['RaidBuffsElvUI'] = '副本Buff'
 	
 	L['Totem Time'] = "显示图腾时间和星月条能量值"
 	L['Attention Frames'] = "关注框体"
@@ -1814,6 +1816,7 @@ end
 
 --Tooltip
 do
+	L["profession icons"] = "专业图标"
 	L["Item Level:"] = "装备等级: "
 	L["Max Stack Size: "] = "最大可堆叠数: "
 	L["RelicInspector"] = "圣物观察"
@@ -2067,6 +2070,7 @@ end
 
 --Misc
 do
+	L["Available Tags"] = '可用的TAG标签'
 	L["Left Click:"] = "左键:"
 	L["Right Click:"] = "右键:"
 	L["Average Group iLvl:"] = '平均队伍装等';
@@ -2391,6 +2395,10 @@ end
 
 --singleFunc
 do
+	L['singleFunc desc'] = "EUI集成插件的统一设置"
+	L["ButterQuestTracker"] = "任务追踪框"
+	L["GatherMate2"] = "采集助手"
+	L['Ex_AutoEquip'] = "一键换装"
 	L['AuctionFaster'] = "拍卖助手"
 	L["ClassicThreatMeter"] = "仇恨助手"
 	L['MerInspect'] = "装等观察显示"
@@ -2421,6 +2429,10 @@ do
 	L['ClassicCodex'] = "任务助手"
 	L["Clear Lua Error"] = "清空LUA错误"
 	L['AtlasLootClassic'] = "副本战利品查询"
+	L["BaudAuction"] = "拍卖增强"
+	L['SilverDragon'] = "稀有扫描"
+	L['FriendsMenuXP'] = "右键菜单增强"
+	L['ExRT'] = "ExRT团队管理"
 end
 
 --Sequences
@@ -2433,6 +2445,7 @@ end
 
 --euiscript
 do
+	L['Show Zone Info'] = "显示区域信息"
 	L["Announce Every"] = "通报进度每第 x 步"
 	L["dismount"] = "自动下马"
 	L["CharacterStatsClassic"] = "角色属性增强"

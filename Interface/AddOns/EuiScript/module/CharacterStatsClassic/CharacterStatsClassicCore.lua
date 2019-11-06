@@ -24,3 +24,15 @@ characterStatsClassicEventFrame:SetScript("OnEvent",
 
         core.UIConfig:UpdateStats();
     end)
+
+--locale
+CSC_DEFENSE = DEFENSE;
+
+local locale = GetLocale()
+
+if locale == 'zhCN' or locale == 'zhTW' then
+	CSC_WEAPON_SKILLS_HEADER    = "武器技能";
+else
+	CSC_WEAPON_SKILLS_HEADER    = "Weapon Skills";
+end
+	

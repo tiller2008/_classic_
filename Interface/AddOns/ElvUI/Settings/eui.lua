@@ -46,7 +46,7 @@ P.unitframe.units.target.portrait.detachedWidth = 48
 P.unitframe.units.target.portrait.detachedHeight = 48
 P.unitframe.units.target.portrait.parent = "FRAME"
 P.unitframe.units.target.portrait.detachFromFrame = false
-
+P.unitframe.units.target.DragonOverlayStyle = 'none'
 P.unitframe.units.party.debuffs.priority = 'Blacklist,Boss,RaidDebuffs,CCDebuffs,Dispellable,Whitelist,ShowAll'
 P.unitframe.units.party.rdebuffs.font = 'EUI'
 P.unitframe.units.party.rdebuffs.fontOutline = 'OUTLINE'
@@ -95,6 +95,14 @@ P.SingleAddons = {
 	["AtlasLootClassic"] = true,
 	["AuctionFaster"] = true,
 	["ClassicThreatMeter"] = false,
+	["Masque"] = true,
+	["Ex_AutoEquip"] = true,
+	["GatherMate2"] = true,
+	["ButterQuestTracker"] = true,
+	["SilverDragon"] = true,
+	["FriendsMenuXP"] = true,
+	["WebDKP"] = false,
+	["ExRT"] = false,
 }
 
 P.cooldown.fontSize = 20
@@ -474,7 +482,7 @@ P.actionbar.barPet.buttonspacing = 4
 
 P.actionbar.stanceBar.buttonspacing = 4
 
-for i = 6, 9 do
+for i = 6, 10 do
 	P.actionbar['bar'..i] = {
 		enabled = false,
 		mouseover = false,
@@ -485,10 +493,14 @@ for i = 6, 9 do
 		heightMult = 1,
 		widthMult = 1,
 		buttonsize = 30,
+		backdropSpacing = 2,
 		buttonspacing = 4,		
 		alpha = 1,
-		flyoutDirection = "AUTOMATIC",
+		inheritGlobalFade = false,
+		showGrid = true,
+		flyoutDirection = 'AUTOMATIC',
 		paging = {},
+		visibility = 'show',
 	}
 end
 
@@ -551,6 +563,7 @@ P.tooltip.mountinfo = true
 P.tooltip.itemCount = 'BOTH'
 P.tooltip.offsetX = 0
 P.tooltip.offsetY = 0
+P.tooltip.professionicons = true
 
 P.unitframe.number = "K"
 P.unitframe.colors.nameclasscolor = false
@@ -647,14 +660,7 @@ P.unitframe.units.target.debuffs.enable = true
 P.unitframe.units.target.threatStyle = 'HEALTHBORDER'
 
 P.unitframe.units.party.threatStyle = 'HEALTHBORDER'
-P.unitframe.units.party.portrait = {
-	enable = false,
-	width = 45,
-	overlay = false,
-	camDistanceScale = 1,
-	rotation = 0,
-	style = '3D'
-}
+
 P.unitframe.units.party.verticalSpacing = 30
 
 P.unitframe.units.raid.width = 70
@@ -887,6 +893,7 @@ G.BossSwing = {
 }
 
 P.euiscript = {
+	ZoneInfo = true,
 	spellactivation = true,
 	dismount = true,
 	csc = true,

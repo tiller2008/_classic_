@@ -216,7 +216,7 @@ local function Chat_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg
 
 	local accessID = ChatHistory_GetAccessID(chatGroup, chatTarget)
 	local typeID = ChatHistory_GetAccessID(type, chatTarget, arg12 == "" and arg13 or arg12)
-	if CH.db.shortChannels then
+	if CH.db and CH.db.shortChannels then
 		body = body:gsub("|Hchannel:(.-)|h%[(.-)%]|h", CH.ShortChannel)
 		body = body:gsub("^(.-|h) "..L["whispers"], "%1")
 		body = body:gsub("<"..AFKstr..">", "[|cffFF0000"..L["AFK"].."|r] ")
@@ -242,7 +242,7 @@ end
 function AFK:Initialize()
 	self.Initialized = true
 
-	local classColor = _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[E.myclass] or _G.RAID_CLASS_COLORS[E.myclass]
+	local classColor = E:ClassColor(E.myclass)
 
 	self.AFKMode = CreateFrame("Frame", "ElvUIAFKFrame")
 	self.AFKMode:SetFrameLevel(1)

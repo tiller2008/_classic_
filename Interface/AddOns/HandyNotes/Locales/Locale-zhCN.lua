@@ -47,3 +47,9 @@ L["Add Handy Note"] = "添加随记"
 L["Add this location to TomTom waypoints"] = "在 TomTom 中添加此位置"
 L["Hide HandyNotes Icons"] = "隐藏地图标记图标"
 L["Show HandyNotes Icons"] = "显示地图标记图标"
+
+L["TEXT_TOOLTIP_HIDE_ICONS"] = "隐藏地图标记图标"
+L["TEXT_TOOLTIP_SHOW_ICONS"] = "显示地图标记图标"
+
+L["RIGHTBUTTON_TEXT_TOOLTIP_HIDE_GATHERMATEICONS"] = "右键隐藏采集助手图标"
+L["RIGHTBUTTON_TEXT_TOOLTIP_SHOW_GATHERMATEICONS"] = "右键显示采集助手图标"

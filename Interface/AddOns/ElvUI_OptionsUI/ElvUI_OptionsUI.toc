@@ -27,6 +27,7 @@ Skins.lua
 Profiles.lua
 Maps.lua
 ModuleControl.lua
+Tags.lua
 
 
 Watch.lua

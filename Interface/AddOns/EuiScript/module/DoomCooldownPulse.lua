@@ -1,11 +1,8 @@
-local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, showSpellName, ignoredSpells, invertIgnored
-local E, L = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
-local CF = E:NewModule("CooldownFlash", "AceEvent-3.0", "AceHook-3.0")
-CF.modName = L["中部冷却闪光"]
-
+local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, showSpellName, invertIgnored
 local cooldowns, animating, watching = { }, { }, { }
 local GetTime = GetTime
-
+local E, L = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
+local ignoredSpells = { }
 local defaultSettings = {
     fadeInTime = 0.3,
     fadeOutTime = 0.7,
@@ -25,14 +22,24 @@ local defaultSettingsPerCharacter = {
 }
 
 local DCP = CreateFrame("frame", "DCP", E.UIParent)
-DCP:SetAlpha(0)
 DCP:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
+DCP:SetMovable(true)
+DCP:RegisterForDrag("LeftButton")
+DCP:SetScript("OnDragStart", function(self) self:StartMoving() end)
+DCP:SetScript("OnDragStop", function(self)
+    self:StopMovingOrSizing()
+    E.db.CooldownFlash.x = self:GetLeft()+self:GetWidth()/2
+    E.db.CooldownFlash.y = self:GetBottom()+self:GetHeight()/2
+    self:ClearAllPoints()
+    self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",E.db.CooldownFlash.x,E.db.CooldownFlash.y)
+end)
 DCP.TextFrame = DCP:CreateFontString(nil, "ARTWORK")
-DCP.TextFrame:SetPoint("TOP",DCP,"BOTTOM",0,-5)
+DCP.TextFrame:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+DCP.TextFrame:SetShadowOffset(2,-2)
+DCP.TextFrame:SetPoint("CENTER",DCP,"CENTER")
 DCP.TextFrame:SetWidth(185)
 DCP.TextFrame:SetJustifyH("CENTER")
 DCP.TextFrame:SetTextColor(1,1,1)
-DCP.ignoredSpells = {}
 
 local DCPT = DCP:CreateTexture(nil,"BACKGROUND")
 DCPT:SetTexCoord(.08, .92, .08, .92)
@@ -81,17 +88,17 @@ local function GetPetActionIndexByName(name)
 end
 
 local function RefreshLocals()
-    fadeInTime = CF.db.fadeInTime
-    fadeOutTime = CF.db.fadeOutTime
-    maxAlpha = CF.db.maxAlpha
-    animScale = CF.db.animScale
-    iconSize = CF.db.iconSize
-    holdTime = CF.db.holdTime
-    showSpellName = CF.db.showSpellName
-    invertIgnored = DCP_SavedPerCharacter.invertIgnored
+    fadeInTime = E.db.CooldownFlash.fadeInTime
+    fadeOutTime = E.db.CooldownFlash.fadeOutTime
+    maxAlpha = E.db.CooldownFlash.maxAlpha
+    animScale = E.db.CooldownFlash.animScale
+    iconSize = E.db.CooldownFlash.iconSize
+    holdTime = E.db.CooldownFlash.holdTime
+    showSpellName = E.db.CooldownFlash.showSpellName
+    invertIgnored = E.db.CooldownFlash.invertIgnored
 
     ignoredSpells = { }
-    for _,v in ipairs({strsplit(",",DCP_SavedPerCharacter.ignoredSpells)}) do
+    for _,v in ipairs({strsplit(",",E.db.CooldownFlash.ignoredSpells)}) do
         ignoredSpells[strtrim(v)] = true
     end
 end
@@ -183,15 +190,14 @@ local function OnUpdate(_,update)
             DCP.TextFrame:SetText(nil)
             DCPT:SetTexture(nil)
             DCPT:SetVertexColor(1,1,1)
-            DCP:SetSize(CF.db.iconSize, CF.db.iconSize)
-        elseif CF.db.enable then
+        else
             if (not DCPT:GetTexture()) then
                 if (animating[1][3] ~= nil and showSpellName) then
                     DCP.TextFrame:SetText(animating[1][3])
                 end
                 DCPT:SetTexture(animating[1][1])
                 if animating[1][2] then
-                    DCPT:SetVertexColor(unpack(CF.db.petOverlay))
+                    DCPT:SetVertexColor(unpack(E.db.CooldownFlash.petOverlay))
                 end
             end
             local alpha = maxAlpha
@@ -211,30 +217,81 @@ end
 --------------------
 -- Event Handlers --
 --------------------
-function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,spell,spellID)	
-    if (unit == "player") then
-        watching[spell] = {GetTime(),"spell",spellID}
-        self:SetScript("OnUpdate", OnUpdate)
+function DCP:ADDON_LOADED(addon)
+	if not E.db.CooldownFlash.enable then return end
+
+    if (not E.db.CooldownFlash) then
+        E.db.CooldownFlash = {unpack(defaultSettings)}
+    else
+        for i,v in pairs(defaultSettings) do
+            if (not E.db.CooldownFlash[i]) then
+                E.db.CooldownFlash[i] = v
+            end
+        end
+    end
+    if (not E.db.CooldownFlash) then
+        -- Unpack as shallow clone to avoid reset-to-default as considering the
+        -- value assigned from the legacy saved variable below.
+        E.db.CooldownFlash = {unpack(defaultSettingsPerCharacter)}
+
+        -- Backwards compatibility: Assign from legacy saved value if exists.
+        if (E.db.CooldownFlash.ignoredSpells) then
+            E.db.CooldownFlash.ignoredSpells = E.db.CooldownFlash.ignoredSpells
+        end
+    else
+        for i,v in pairs(defaultSettingsPerCharacter) do
+            if (not E.db.CooldownFlash[i]) then
+                E.db.CooldownFlash[i] = v
+            end
+        end
+    end
+	DCP:SetSize(E.db.CooldownFlash.iconSize, E.db.CooldownFlash.iconSize)
+    RefreshLocals()
+  --  self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",E.db.CooldownFlash.x,E.db.CooldownFlash.y)
+    self:SetPoint("CENTER", E.UIParent, "CENTER", -100, 50)
+	E:CreateMover(self, "CooldownFlashMover", L["Middle CD Reminder"], true, nil, nil, "ALL, EUI", nil, "Watch,CooldownFlash", "db,CooldownFlash,enable")  
+
+	self:UnregisterEvent("ADDON_LOADED")
+end
+DCP:RegisterEvent("ADDON_LOADED")
+
+function DCP:SPELL_UPDATE_COOLDOWN()
+    for i,getCooldownDetails in pairs(cooldowns) do
+        getCooldownDetails.resetCache()
     end
 end
+DCP:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 
-function DCP:COMBAT_LOG_EVENT_UNFILTERED()
-	local _, event, _, sourceGUID, sourceName, sourceFlags, _, _, _, _, _, spellID, _, _, arg15, arg16 = CombatLogGetCurrentEventInfo()
-    if (event == "SPELL_CAST_SUCCESS") then
-        if (band(sourceFlags,COMBATLOG_OBJECT_TYPE_PET) == COMBATLOG_OBJECT_TYPE_PET and bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE) then
-            local name = GetSpellInfo(spellID)
-            local index = GetPetActionIndexByName(name)
-            if (index and not select(6,GetPetActionInfo(index))) then
-                watching[name] = {GetTime(),"pet",index}
-            elseif (not index and name) then
-                watching[name] = {GetTime(),"spell",spellID}
-            else
-                return
-            end
+function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,lineID,spellID)
+    if (unit == "player") then
+        watching[spellID] = {GetTime(),"spell",spellID}
+        if (not self:IsMouseEnabled()) then
             self:SetScript("OnUpdate", OnUpdate)
         end
     end
 end
+DCP:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+
+function DCP:COMBAT_LOG_EVENT_UNFILTERED()
+    local _,event,_,_,_,sourceFlags,_,_,_,_,_,spellID = CombatLogGetCurrentEventInfo()
+    if (event == "SPELL_CAST_SUCCESS") then
+        if (bit.band(sourceFlags,COMBATLOG_OBJECT_TYPE_PET) == COMBATLOG_OBJECT_TYPE_PET and bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE) then
+            local name = GetSpellInfo(spellID)
+            local index = GetPetActionIndexByName(name)
+            if (index and not select(7,GetPetActionInfo(index))) then
+                watching[spellID] = {GetTime(),"pet",index}
+            elseif (not index and spellID) then
+                watching[spellID] = {GetTime(),"spell",spellID}
+            else
+                return
+            end
+            if (not self:IsMouseEnabled()) then
+                self:SetScript("OnUpdate", OnUpdate)
+            end
+        end
+    end
+end
+DCP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 function DCP:PLAYER_ENTERING_WORLD()
     local inInstance,instanceType = IsInInstance()
@@ -244,77 +301,237 @@ function DCP:PLAYER_ENTERING_WORLD()
         wipe(watching)
     end
 end
+DCP:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-function CF:UseAction(slot)
+hooksecurefunc("UseAction", function(slot)
     local actionType,itemID = GetActionInfo(slot)
     if (actionType == "item") then
         local texture = GetActionTexture(slot)
         watching[itemID] = {GetTime(),"item",texture}
-	--	DCP:SetScript("OnUpdate", OnUpdate)
     end
-end
+end)
 
-function CF:UseInventoryItem(slot)
+hooksecurefunc("UseInventoryItem", function(slot)
     local itemID = GetInventoryItemID("player", slot);
     if (itemID) then
         local texture = GetInventoryItemTexture("player", slot)
         watching[itemID] = {GetTime(),"item",texture}
-	--	DCP:SetScript("OnUpdate", OnUpdate)
     end
-end
-
-function CF:UseContainerItem(bag,slot)
+end)
+hooksecurefunc("UseContainerItem", function(bag,slot)
     local itemID = GetContainerItemID(bag, slot)
     if (itemID) then
         local texture = select(10, GetItemInfo(itemID))
         watching[itemID] = {GetTime(),"item",texture}
-	--	DCP:SetScript("OnUpdate", OnUpdate)
+    end
+end)
+
+-------------------
+-- Options Frame --
+-------------------
+
+SlashCmdList["DOOMCOOLDOWNPULSE"] = function() if (not DCP_OptionsFrame) then DCP:CreateOptionsFrame() end DCP_OptionsFrame:Show() end
+SLASH_DOOMCOOLDOWNPULSE1 = "/dcp"
+SLASH_DOOMCOOLDOWNPULSE2 = "/cooldownpulse"
+SLASH_DOOMCOOLDOWNPULSE3 = "/doomcooldownpulse"
+
+function DCP:CreateOptionsFrame()
+    local sliders = {
+        { text = "图标大小", value = "iconSize", min = 30, max = 125, step = 5 },
+        { text = "淡进时间", value = "fadeInTime", min = 0, max = 1.5, step = 0.1 },
+        { text = "淡出时间", value = "fadeOutTime", min = 0, max = 1.5, step = 0.1 },
+        { text = "最大透明度", value = "maxAlpha", min = 0, max = 1, step = 0.1 },
+        { text = "最大透明度保持时间", value = "holdTime", min = 0, max = 1.5, step = 0.1 },
+        { text = "动画大小", value = "animScale", min = 0, max = 2, step = 0.1 },
+    }
+
+    local buttons = {
+        { text = "取消", func = function(self) self:GetParent():Hide() end },
+        { text = "测试", func = function(self)
+            DCP_OptionsFrameButton3:SetText("解锁")
+            DCP:EnableMouse(false)
+            RefreshLocals()
+            tinsert(animating,{"Interface\\Icons\\Spell_Nature_Earthbind",nil,"Spell Name"})
+            DCP:SetScript("OnUpdate", OnUpdate)
+            end },
+        { text = "解锁", func = function(self)
+            if (self:GetText() == "解锁") then
+                RefreshLocals()
+                DCP:SetWidth(iconSize)
+                DCP:SetHeight(iconSize)
+                self:SetText("锁定")
+                DCP:SetScript("OnUpdate", nil)
+                DCP:SetAlpha(1)
+                DCPT:SetTexture("Interface\\Icons\\Spell_Nature_Earthbind")
+                DCP:EnableMouse(true)
+            else
+                DCP:SetAlpha(0)
+                self:SetText("解锁")
+                DCP:EnableMouse(false)
+            end end },
+        { text = "默认", func = function(self)
+            for i,v in pairs(defaultSettings) do
+                E.db.CooldownFlash[i] = v
+            end
+            for i,v in pairs(defaultSettingsPerCharacter) do
+                E.db.CooldownFlash[i] = v
+            end
+            for i,v in pairs(sliders) do
+                getglobal("DCP_OptionsFrameSlider"..i):SetValue(E.db.CooldownFlash[v.value])
+            end
+            DCP_OptionsFramePetColorBox:GetNormalTexture():SetVertexColor(unpack(E.db.CooldownFlash.petOverlay))
+            DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
+            DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(true)
+            DCP_OptionsFrameIgnoreBox:SetText("")
+            DCP:ClearAllPoints()
+            DCP:SetPoint("CENTER",UIParent,"BOTTOMLEFT",E.db.CooldownFlash.x,E.db.CooldownFlash.y)
+            end },
+    }
+
+    local optionsframe = CreateFrame("frame","DCP_OptionsFrame",UIParent)
+    optionsframe:SetBackdrop({
+      bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
+      edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
+      tile=1, tileSize=32, edgeSize=32,
+      insets={left=11, right=12, top=12, bottom=11}
+    })
+    optionsframe:SetWidth(220)
+    optionsframe:SetHeight(540)
+    optionsframe:SetPoint("CENTER",UIParent)
+    optionsframe:EnableMouse(true)
+    optionsframe:SetMovable(true)
+    optionsframe:RegisterForDrag("LeftButton")
+    optionsframe:SetScript("OnDragStart", function(self) self:StartMoving() end)
+    optionsframe:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+    optionsframe:SetFrameStrata("FULLSCREEN_DIALOG")
+    optionsframe:SetScript("OnHide", function() RefreshLocals() end)
+    tinsert(UISpecialFrames, "DCP_OptionsFrame")
+
+    local header = optionsframe:CreateTexture(nil,"ARTWORK")
+    header:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header.blp")
+    header:SetWidth(350)
+    header:SetHeight(68)
+    header:SetPoint("TOP",optionsframe,"TOP",0,12)
+
+    local headertext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormal")
+    headertext:SetPoint("TOP",header,"TOP",0,-14)
+    headertext:SetText("Doom_CooldownPulse")
+
+    for i,v in pairs(sliders) do
+        local slider = CreateFrame("slider", "DCP_OptionsFrameSlider"..i, optionsframe, "OptionsSliderTemplate")
+        if (i == 1) then
+            slider:SetPoint("TOP",optionsframe,"TOP",0,-40)
+        else
+            slider:SetPoint("TOP",getglobal("DCP_OptionsFrameSlider"..(i-1)),"BOTTOM",0,-35)
+        end
+        local valuetext = slider:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+        valuetext:SetPoint("TOP",slider,"BOTTOM",0,-1)
+        valuetext:SetText(format("%.1f",E.db.CooldownFlash[v.value]))
+        getglobal("DCP_OptionsFrameSlider"..i.."Text"):SetText(v.text)
+        getglobal("DCP_OptionsFrameSlider"..i.."Low"):SetText(v.min)
+        getglobal("DCP_OptionsFrameSlider"..i.."High"):SetText(v.max)
+        slider:SetMinMaxValues(v.min,v.max)
+        slider:SetValueStep(v.step)
+        slider:SetValue(E.db.CooldownFlash[v.value])
+        slider:SetScript("OnValueChanged",function()
+            local val=slider:GetValue() E.db.CooldownFlash[v.value]=val
+            valuetext:SetText(format("%.1f",val))
+            if (DCP:IsMouseEnabled()) then
+                DCP:SetWidth(E.db.CooldownFlash.iconSize)
+                DCP:SetHeight(E.db.CooldownFlash.iconSize)
+            end end)
+    end
+
+    local pettext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    pettext:SetPoint("TOPLEFT","DCP_OptionsFrameSlider"..#sliders,"BOTTOMLEFT",-15,-30)
+    pettext:SetText("宠物彩色叠加:")
+
+    local petcolorselect = CreateFrame('Button',"DCP_OptionsFramePetColorBox",optionsframe)
+    petcolorselect:SetPoint("LEFT",pettext,"RIGHT",10,0)
+    petcolorselect:SetWidth(20)
+    petcolorselect:SetHeight(20)
+    petcolorselect:SetNormalTexture('Interface/ChatFrame/ChatFrameColorSwatch')
+    petcolorselect:GetNormalTexture():SetVertexColor(unpack(E.db.CooldownFlash.petOverlay))
+    petcolorselect:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("注意：如果你不想宠物冷却时间使用任何覆盖，请使用白色") end)
+    petcolorselect:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
+    petcolorselect:SetScript('OnClick', function(self)
+        self.r,self.g,self.b = unpack(E.db.CooldownFlash.petOverlay)
+        OpenColorPicker(self)
+        ColorPickerFrame:SetPoint("TOPLEFT",optionsframe,"TOPRIGHT")
+        end)
+    petcolorselect.swatchFunc = function(self) E.db.CooldownFlash.petOverlay={ColorPickerFrame:GetColorRGB()} petcolorselect:GetNormalTexture():SetVertexColor(ColorPickerFrame:GetColorRGB()) end
+    petcolorselect.cancelFunc = function(self) E.db.CooldownFlash.petOverlay={self.r,self.g,self.b} petcolorselect:GetNormalTexture():SetVertexColor(unpack(E.db.CooldownFlash.petOverlay)) end
+
+    local petcolorselectbg = petcolorselect:CreateTexture(nil, 'BACKGROUND')
+    petcolorselectbg:SetWidth(17)
+    petcolorselectbg:SetHeight(17)
+    petcolorselectbg:SetTexture(1,1,1)
+    petcolorselectbg:SetPoint('CENTER')
+
+    local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    spellnametext:SetPoint("TOPLEFT",pettext,"BOTTOMLEFT",0,-18)
+    spellnametext:SetText("显示法术名:")
+
+    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
+    spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
+    spellnamecbt:SetChecked(E.db.CooldownFlash.showSpellName)
+    spellnamecbt:SetScript("OnClick", function(self)
+        local newState = self:GetChecked()
+        self:SetChecked(newState)
+        E.db.CooldownFlash.showSpellName = newState
+        RefreshLocals()
+    end)
+
+    local ignoretext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    ignoretext:SetPoint("TOPLEFT",spellnametext,"BOTTOMLEFT",0,-18)
+    ignoretext:SetText("过滤法术:")
+
+    local ignoretypebuttonblacklist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonBlacklist",optionsframe,"UIRadioButtonTemplate")
+    ignoretypebuttonblacklist:SetPoint("TOPLEFT",ignoretext,"BOTTOMLEFT",0,-4)
+    ignoretypebuttonblacklist:SetChecked(not E.db.CooldownFlash.invertIgnored)
+    ignoretypebuttonblacklist:SetScript("OnClick", function()
+        DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
+        E.db.CooldownFlash.invertIgnored = false
+        RefreshLocals()
+    end)
+
+    local ignoretypetextblacklist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    ignoretypetextblacklist:SetPoint("LEFT",ignoretypebuttonblacklist,"RIGHT",4,0)
+    ignoretypetextblacklist:SetText("黑名单")
+
+    local ignoretypebuttonwhitelist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonWhitelist",optionsframe,"UIRadioButtonTemplate")
+    ignoretypebuttonwhitelist:SetPoint("LEFT",ignoretypetextblacklist,"RIGHT",10,0)
+    ignoretypebuttonwhitelist:SetChecked(E.db.CooldownFlash.invertIgnored)
+    ignoretypebuttonwhitelist:SetScript("OnClick", function()
+        DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(false)
+        E.db.CooldownFlash.invertIgnored = true
+        RefreshLocals()
+    end)
+
+    local ignoretypetextwhitelist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    ignoretypetextwhitelist:SetPoint("LEFT",ignoretypebuttonwhitelist,"RIGHT",4,0)
+    ignoretypetextwhitelist:SetText("白名单")
+
+    local ignorebox = CreateFrame("EditBox","DCP_OptionsFrameIgnoreBox",optionsframe,"InputBoxTemplate")
+    ignorebox:SetAutoFocus(false)
+    ignorebox:SetPoint("TOPLEFT",ignoretypebuttonblacklist,"BOTTOMLEFT",4,2)
+    ignorebox:SetWidth(170)
+    ignorebox:SetHeight(32)
+    ignorebox:SetText(E.db.CooldownFlash.ignoredSpells)
+    ignorebox:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("注意：用逗号分隔多个法术") end)
+    ignorebox:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
+    ignorebox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+    ignorebox:SetScript("OnEditFocusLost",function(self)
+        E.db.CooldownFlash.ignoredSpells = ignorebox:GetText()
+        RefreshLocals()
+    end)
+
+    for i,v in pairs(buttons) do
+        local button = CreateFrame("Button", "DCP_OptionsFrameButton"..i, optionsframe, "UIPanelButtonTemplate")
+        button:SetHeight(24)
+        button:SetWidth(75)
+        button:SetPoint("BOTTOM", optionsframe, "BOTTOM", ((i%2==0 and -1) or 1)*45, ceil(i/2)*15 + (ceil(i/2)-1)*15)
+        button:SetText(v.text)
+        button:SetScript("OnClick", function(self) PlaySound(852) v.func(self) end)
     end
 end
-
-function CF:EnableCooldownFlash()
-    self:SecureHook("UseContainerItem")
-    self:SecureHook("UseInventoryItem")
-    self:SecureHook("UseAction")
---	self:SecureHook("UseItemByName")
-    DCP:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    DCP:RegisterEvent("PLAYER_ENTERING_WORLD")
-	if self.db.enablePet then
-		DCP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	end
-end
-
-function CF:DisableCooldownFlash()
-    self:Unhook("UseContainerItem")
-    self:Unhook("UseInventoryItem")
-    self:Unhook("UseAction")
---	self:Unhook("UseItemByName")
-    DCP:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    DCP:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    DCP:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-end
-
-function CF:Initialize()
-	CF.db = E.db.CooldownFlash
-    DCP:SetSize(CF.db.iconSize, CF.db.iconSize)
-    DCP:CreateShadow()
-    DCP.TextFrame:FontTemplate(E["media"].font, 18, "OUTLINE")
-    DCP.TextFrame:SetShadowOffset(2, -2)
-    if self.db.enable then
-        self:EnableCooldownFlash()
-    end
-    DCP:SetPoint("CENTER", E.UIParent, "CENTER", -100, 50)
-	E:CreateMover(DCP, "CooldownFlashMover", L["Middle CD Reminder"], true, nil, nil, "ALL, EUI", nil, "Watch,CooldownFlash", "db,CooldownFlash,enable")  
-
-    for _,v in ipairs({strsplit(",",CF.db.ignoredSpells)}) do
-        DCP.ignoredSpells[strtrim(v)] = true
-    end
-	
-    local spellname,_, icon = GetSpellInfo(16914)
-    testtable = { icon, nil, spellname }
-	
-	DCP.animating = animating
-	DCP.testtable = testtable
-end
-
-E:RegisterModule(CF:GetName())

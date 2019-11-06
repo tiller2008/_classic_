@@ -43,6 +43,7 @@ function UF:Construct_RaidFrames()
 	self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
 	self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
 	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
+	self.ResurrectIndicator = UF:Construct_ResurrectionIcon(self)
 	self.PhaseIndicator = UF:Construct_PhaseIcon(self)
 	self.MouseGlow = UF:Construct_MouseGlow(self)
 	self.TargetGlow = UF:Construct_TargetGlow(self)
@@ -112,7 +113,7 @@ function UF:Update_RaidHeader(header, db)
 
 	if not headerHolder.positioned then
 		headerHolder:ClearAllPoints()
-		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
+		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 225)
 
 		E:CreateMover(headerHolder, headerHolder:GetName()..'Mover', L["Raid Frames"], nil, nil, nil, 'ALL,RAID', nil, 'unitframe,raid,generalGroup')
 
@@ -195,6 +196,8 @@ function UF:Update_RaidFrames(frame, db)
 	UF:Configure_Auras(frame, 'Buffs')
 	UF:Configure_Auras(frame, 'Debuffs')
 
+	UF:Configure_ResurrectionIcon(frame)
+
 	--RaidDebuffs
 	UF:Configure_RaidDebuffs(frame)
 
@@ -214,7 +217,7 @@ function UF:Update_RaidFrames(frame, db)
 	UF:Configure_Fader(frame)
 
 	--Buff Indicators
-	UF:UpdateAuraWatch(frame)
+	UF:Configure_AuraWatch(frame)
 
 	--ReadyCheck
 	UF:Configure_ReadyCheckIcon(frame)

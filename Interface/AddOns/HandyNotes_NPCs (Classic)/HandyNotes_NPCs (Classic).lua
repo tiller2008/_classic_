@@ -4,10 +4,13 @@ local S = E:GetModule("Skins")
 
 local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true)
 if not HandyNotes then return end
-local Search = LibStub("AceAddon-3.0"):GetAddon("HandyNotes_NPCs", true)
+
+local Addon = LibStub("AceAddon-3.0"):NewAddon("HandyNotes_NPCs (Classic)", "AceConsole-3.0", "AceEvent-3.0")
+local Search, AltRecipes -- Modules
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes_NPCs (Classic)")
 local LibQTip = LibStub('LibQTip-1.0')
-local iconDefault = "Interface\\MINIMAP\\TRACKING\\FlightMaster"
+
+local iconDefault = "Interface\\MINIMAP\\TRACKING\\FlightMaster" -- Remove this later or something
 
 local nodes = data["nodes"]
 
@@ -25,9 +28,9 @@ local icons = {
 	trainers = "Interface\\MINIMAP\\TRACKING\\Profession",
 	vendors = "Interface\\MINIMAP\\TRACKING\\Food",
 	classTrainer = "Interface\\MINIMAP\\TRACKING\\Class",
-	ammovendor = "Interface\\MINIMAP\\TRACKING\\Ammunition",
-	reagentvendor = "Interface\\MINIMAP\\TRACKING\\Reagents",
-	poisonvendor = "Interface\\MINIMAP\\TRACKING\\Poisons",
+	ammo = "Interface\\MINIMAP\\TRACKING\\Ammunition",
+	reagent = "Interface\\MINIMAP\\TRACKING\\Reagents",
+	poison = "Interface\\MINIMAP\\TRACKING\\Poisons",
 	primaryProfession = "Interface\\MINIMAP\\TRACKING\\Profession", -- Just in case I want seperate icons later
 	secondaryProfession = "Interface\\MINIMAP\\TRACKING\\Profession", -- Same
 	rares = "Interface\\MINIMAP\\Minimap_skull_normal",
@@ -43,6 +46,7 @@ local icons = {
 	mining = "Interface\\ICONS\\Trade_Mining",
 	skinning = "Interface\\ICONS\\inv_misc_pelt_wolf_01",
 	tailoring = "Interface\\ICONS\\Trade_Tailoring",
+	mountTrainer = "Interface\\MINIMAP\\TRACKING\\Profession",
 }
 
 local PROFESSIONS = { }
@@ -103,7 +107,7 @@ function pluginHandler:OnEnter(uiMapId, coord)
 		if (nodeData.description) then
 			tooltip:AddLine(nodeData.description, 0, 0.6, 0.1)
 		end
-		if nodeData.subcategory == "weaponmaster" then
+		if nodeData.subcategories and nodeData.subcategories["weaponmaster"] then
 			if nodeData.npcID and data["weaponmasters"][nodeData.npcID] then
 				for skill in data["weaponmasters"][nodeData.npcID]:gmatch("([^,]+)") do
 					skill = tonumber(skill)
@@ -133,11 +137,14 @@ do
 	local tablepool = setmetatable({}, {__mode = 'k'})
 
 	local function iter(t, prestate)
+		local vendors = {
+			ammo = db.showAmmoVendors,
+		}
 		if not t then return end
 		local data = t.data
 
 		local state, value = next(data, prestate)
-
+		
 		while(state) do
 			if value then
 				-- "Do you think God stays in heaven because he, too, lives in fear of what he's created here on earth?"
@@ -146,33 +153,52 @@ do
 				if not (value.category == "flightmasters") or db.showFlightMasters and (not value.classes or value.classes[class]) then
 				if not (value.category == "guildmasters") or db.showGuildMasters then
 				if not (value.category == "rares") or db.showRares then
-				if not (value.subcategory == "weaponmaster") or db.showWeaponMasters then
+				if not (value.category == "trainers" and value.subcategories and value.subcategories["weaponmaster"]) or db.showWeaponMasters then
 				if not (value.category == "spirithealers") or db.showSpiritHealers then
-				if not (value.category == "vendors") or ((db.showAmmoVendors and (value.subcategories and value.subcategories['ammo'])) or (db.showReagentVendors and (value.subcategory == "reagentvendor" or value.subcategory == "reagentpoisonvendor")) or (db.showPoisonVendors and (value.subcategory == "poisonvendor" or value.subcategory == "reagentpoisonvendor")) or (db.showMisc)) then
-				if not (value.category == "repair") or ((db.showAmmoVendors and (value.subcategories and value.subcategories['ammo'])) or db.showRepair) then
+				if not (value.category == "vendors") or ((db.showAmmoVendors and (value.vendors and value.vendors['ammo'])) or (db.showReagentVendors and (value.subcategories and value.subcategories["reagent"])) or (db.showPoisonVendors and (value.subcategories and value.subcategories["poison"])) or (db.showMisc)) then
+				if not (value.category == "repair") or ((db.showAmmoVendors and (value.vendors and value.vendors['ammo'])) or db.showRepair) then
 				if not (value.category == "auctioneers") or db.showAuctioneers then
 				if not (value.category == "bankers") or db.showBankers then
 				if not (value.category == "innkeepers") or db.showInnkeepers then
 				if not (value.category == "mailboxes") or db.showMailboxes then
+				if not (value.category == "mountTrainer") or db.showMountTrainers then
 				if not (value.category == "stablemasters") or class == "HUNTER" then -- Hide stablemasters for non-hunters
-				if not (value.category == "trainers" and value.description == "Pet Trainer") or class == "HUNTER" or db.showClassTrainers == "ALL" then -- Hide pet trainers for non-hunters
-				if not (value.category == "trainers" and value.subcategory == "classTrainer") or ((db.showClassTrainers == "ALL") or (db.showClassTrainers == "MINE" and value.classes and value.classes[class])) then
-				if not value.profession or ((db.showProfessions == "ALL") or (db.showProfessions == "MINE" and professions[value.profession])) then
+				if not (value.category == "trainers" and value.description == L["Pet Trainer"]) or class == "HUNTER" or db.showClassTrainers == "ALL" then -- Hide pet trainers for non-hunters
+				if not (value.category == "trainers" and value.subcategories and value.subcategories["classTrainer"]) or ((db.showClassTrainers == "ALL") or (db.showClassTrainers == "MINE" and value.classes and value.classes[class])) then
+				if not (value.category == "primaryProfession" or value.category == "secondaryProfession") or ((db.showProfessions == "ALL") or (db.showProfessions == "MINE" and professions[value.profession])) then
 					-- TODO merge subcategory and subcategories
-					local icon = icons[value.subcategory] or icons[value.category] or iconDefault
-					if value.category == "vendors" and not db.vendorsUseProfessionIcons then
-						icon = icons[value.category]
-					end
+					-- TODO Maybe unmerge them again; I've made this worse
 					
-					if db.showAmmoVendors and value.subcategories and value.subcategories['ammo'] then
-						icon = icons['ammovendor']
+					local icon = icons[value.category] or iconDefault
+					if value.category == "vendors" and value.subcategories then
+						if db.showReagentVendors and value.subcategories['reagent'] then
+							icon = icons['reagent']
+						elseif db.showPoisonVendors and value.subcategories['poison'] then
+							icon = icons['poison']
+						end
 					end
+
+					if (value.category == "vendors" or value.category == "repair") then
+						if db.vendorsUseProfessionIcons and value.profession then
+							--local i = next(value.subcategories)
+							icon = icons[value.profession]
+						end
+						-- The whole point of this was to allow the player to further filter the vendors based on sold items
+						-- but I don't like this
+						for k, v in pairs(vendors) do
+							if v and value.vendors and value.vendors[k] then
+								icon = icons[k]
+							end
+						end
+					end
+
 						
 					if value.category == "flightmasters" and db.undiscoveredFlightmasters and not (value.classes and value.classes[class]) then
 						icon = learned[value.fpName] and icons[value.category] or icons["flightmastersUndiscovered"]
 					end
-					--if (icon == iconDefault) then print(value.subcategory, value.category) end
+
 					return state, nil, icon, db.zoneScale, db.zoneAlpha
+				end
 				end
 				end
 				end
@@ -201,6 +227,9 @@ do
 	local function iterCont(t, prestate)
 		if not t then return end
 		if not db.continent and not db.alwaysShowFlightmastersOnContinent then return end
+		local vendors = {
+			ammo = db.showAmmoVendors,
+		}
 		local zone = t.C[t.Z]
 		local data = nodes[zone]
 		local state, value
@@ -214,27 +243,47 @@ do
 					if not (value.category == "flightmasters") or db.showFlightMasters and (not value.classes or value.classes[class]) then
 					if not (value.category == "guildmasters") or db.showGuildMasters then
 					if not (value.category == "rares") or db.showRares then
-					if not (value.subcategory == "weaponmaster") or db.showWeaponMasters then
+					if not (value.subcategories and value.subcategories["weaponmaster"]) or db.showWeaponMasters then
 					if not (value.category == "spirithealers") or db.showSpiritHealers then
-					if not (value.category == "vendors") or ((db.showAmmoVendors and (value.subcategories and value.subcategories['ammo'])) or (db.showReagentVendors and value.subcategory == "reagentvendor") or (db.showPoisonVendors and value.subcategory == "poisonvendor") or (db.showMisc and value.subcategory == nil)) then
-					if not (value.category == "repair") or ((db.showAmmoVendors and (value.subcategories and value.subcategories['ammo'])) or db.showRepair) then
+					if not (value.category == "vendors") or ((db.showAmmoVendors and (value.vendors and value.vendors['ammo'])) or (db.showReagentVendors and (value.subcategories and value.subcategories["reagent"])) or (db.showPoisonVendors and (value.subcategories and value.subcategories["poison"])) or (db.showMisc)) then
+					if not (value.category == "repair") or ((db.showAmmoVendors and (value.vendors and value.vendors['ammo'])) or db.showRepair) then
 					if not (value.category == "auctioneers") or db.showAuctioneers then
 					if not (value.category == "bankers") or db.showBankers then
 					if not (value.category == "innkeepers") or db.showInnkeepers then
 					if not (value.category == "mailboxes") or db.showMailboxes then
+					if not (value.category == "mountTrainer") or db.showMountTrainers then
 					if not (value.category == "stablemasters") or class == "HUNTER" then -- Hide stablemasters for non-hunters
-					if not (value.category == "trainers" and value.description == "Pet Trainer") or class == "HUNTER" or db.showClassTrainers == "ALL" then -- Hide pet trainers for non-hunters
-					if not (value.category == "trainers" and value.subcategory == "classTrainer") or ((db.showClassTrainers == "ALL") or (db.showClassTrainers == "MINE" and value.classes and value.classes[class])) then
-					if not value.profession or ((db.showProfessions == "ALL") or (db.showProfessions == "MINE" and professions[value.profession])) then
-						local icon = icons[value.subcategory] or icons[value.category] or iconDefault
+					if not (value.category == "trainers" and value.description == L["Pet Trainer"]) or class == "HUNTER" or db.showClassTrainers == "ALL" then -- Hide pet trainers for non-hunters
+					if not (value.category == "trainers" and value.subcategories and value.subcategories["classTrainer"]) or ((db.showClassTrainers == "ALL") or (db.showClassTrainers == "MINE" and value.classes and value.classes[class])) then
+					if not (value.category == "primaryProfession" or value.category == "secondaryProfession") or ((db.showProfessions == "ALL") or (db.showProfessions == "MINE" and professions[value.profession])) then
+						
+					local icon = icons[value.category] or iconDefault
+						if value.category == "vendors" and value.subcategories then
+							if db.showReagentVendors and value.subcategories['reagent'] then
+								icon = icons['reagent']
+							elseif db.showPoisonVendors and value.subcategories['poison'] then
+								icon = icons['poison']
+							end
+						end
+
+						if (value.category == "vendors" or value.category == "repair") then
+							if db.vendorsUseProfessionIcons and value.profession then
+								--local i = next(value.subcategories)
+								icon = icons[value.profession]
+							end
+						-- The whole point of this was to allow the player to further filter the vendors based on sold items
+						-- but I don't like this
+							for k, v in pairs(vendors) do
+								if v and value.vendors and value.vendors[k] then
+									icon = icons[k]
+								end
+							end
+						end
 						if value.category == "flightmasters" and db.undiscoveredFlightmasters and not (value.classes and value.classes[class]) then
 							icon = learned[value.fpName] and icons[value.category] or icons["flightmastersUndiscovered"]
 						end
-						if db.showAmmoVendors and value.subcategories and value.subcategories['ammo'] then
-							icon = icons['ammovendor']
-						end
-						--if (icon == iconDefault) then print(value.subcategory, value.category) end
 						return state, zone, icon, db.continentScale, db.continentAlpha
+					end
 					end
 					end
 					end
@@ -294,8 +343,12 @@ local waypoints = {}
 local function setWaypoint(mapFile, coord)
 	if not TomTom then return end
 	local x, y = HandyNotes:getXY(coord)
+	title = nodes[mapFile][coord].name
+	if nodes[mapFile][coord].description then
+		title = title .. '\n' .. nodes[mapFile][coord].description
+	end
 	TomTom:AddWaypoint(mapFile, x, y, {
-		title = nodes[mapFile][coord].name,
+		title = title,
 		persistent = nil,
 		minimap = true,
 		world = true
@@ -323,6 +376,7 @@ local defaults = {
 		continentAlpha = 1,
 		continent = true,
 		tomtom = true,
+		showAltRecipes = false,
 		showVendorData = false,
 		vendorsUseProfessionIcons = false,
 		showInnkeepers = true,
@@ -335,6 +389,7 @@ local defaults = {
 		showWeaponMasters = true,
 		showProfessions = "ALL",
 		showClassTrainers = "MINE",
+		showMountTrainers = true,
 		showMisc = true,
 		showReagentVendors = true,
 		showPoisonVendors = true,
@@ -360,12 +415,21 @@ local defaults = {
 	}
 }
 
-local Addon = CreateFrame("Frame")
-Addon:RegisterEvent("ADDON_LOADED")
-Addon:RegisterEvent("SKILL_LINES_CHANGED")
-Addon:RegisterEvent("TAXIMAP_OPENED")
-Addon:SetScript("OnEvent", function(self, event, arg1,...) return self[event](self, arg1,...) end)
-local function updateStuff()
+function Addon:OnInitialize()
+	self.db = LibStub("AceDB-3.0"):New("HandyNotes_NPCsClassicDB", defaults, true)
+	db = self.db.profile
+	learned = self.db.char.learned
+
+	Addon:RegisterEvent("ADDON_LOADED")
+	Addon:RegisterEvent("SKILL_LINES_CHANGED")
+	Addon:RegisterEvent("TAXIMAP_OPENED")
+	Search = Addon:GetModule("Search")
+	AltRecipes = Addon:GetModule("AltRecipes")
+	self.PROFESSIONS = PROFESSIONS -- For sub modules
+	self.professions = professions
+end
+
+function Addon:updateStuff()
 	HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "HandyNotes_NPCs")
 end
 
@@ -374,10 +438,10 @@ function Addon:PLAYER_ENTERING_WORLD()
 	data["faction"] = faction
 	_, class = UnitClass("player")
 	data["class"] = class
-	updateStuff()
+	self:updateStuff()
 end
 
-function Addon:ADDON_LOADED(arg1)
+function Addon:ADDON_LOADED(event, arg1)
  if arg1 ~= 'HandyNotes_NPCs (Classic)' then return end
  local options = {
  type = "group",
@@ -455,6 +519,12 @@ function Addon:ADDON_LOADED(arg1)
    desc = L["Allow right click to create waypoints with TomTom"],
    order = 1.1,
   },
+  showAltRecipes = {
+	type = "toggle",
+	name = L["Show Alt Recipes"],
+	desc = L["Show which alts can learn a recipe in the item's tooltip"],
+	order = 1.09,
+  },
   showVendorData = {
 	type = "toggle",
 	name = L["Advanced Vendor Tooltip"],
@@ -505,6 +575,11 @@ function Addon:ADDON_LOADED(arg1)
 	type = "toggle",
 	name = L["Show Weapon Masters"],
 	order = 3.7,
+  },
+  showMountTrainers = {
+	type = "toggle",
+	name = L["Show Mount Trainers"],
+	order = 3.71,
   },
   showRares = {
 	type = "toggle",
@@ -584,9 +659,7 @@ function Addon:ADDON_LOADED(arg1)
 }
 
  HandyNotes:RegisterPluginDB("HandyNotes_NPCs", pluginHandler, options)
- self.db = LibStub("AceDB-3.0"):New("HandyNotes_NPCsClassicDB", defaults, true)
- db = self.db.profile
- learned = self.db.char.learned
+
  
  local button = CreateFrame("Button", nil, WorldMapFrame, "UIPanelButtonTemplate")
  button:SetMovable(true)
@@ -640,7 +713,6 @@ function Addon:SKILL_LINES_CHANGED()
 	for i = 1, GetNumSkillLines() do
 		local skillName = GetSkillLineInfo(i)
 		if PROFESSIONS[skillName] then
-			--print('Added', skillName, 'as', PROFESSIONS[skillName])
 			professions[PROFESSIONS[skillName]] = true
 		end
 		--[[for k, v in pairs(data["weaponskills"]) do Weapon skills learned have slightly different name, for instance one-handed maces to maces
@@ -649,14 +721,14 @@ function Addon:SKILL_LINES_CHANGED()
 			end
 		end--]]
 	end
-	updateStuff()
+	self:updateStuff()
 end
 
 function Addon:TAXIMAP_OPENED()
 	for i = 1, NumTaxiNodes() do
 		self.db.char.learned[TaxiNodeName(i)] = true
 	end
-	updateStuff()
+	self:updateStuff()
 end
 
 function HandyNotes_NPCsDropDownMenu_OnClick(self, arg1, arg2, checked)
@@ -685,6 +757,7 @@ function HandyNotes_NPCsDropDownMenu(frame, level, menuList)
 			showAuctioneers = L["Show Auctioneers"],
 			showInnkeepers = L["Show Innkeepers"],
 			showGuildMasters = L["Show Guildmasters"],
+			showMountTrainers = L["Show Mount Trainers"],
 			showRares = L["Show Rares"],
 		}
 
@@ -777,11 +850,12 @@ function Addon:CheckSettings()
 	else
 		self.button:Hide()
 	end
+	AltRecipes:Toggle()
 end
 
 local xB = 0
 local yB = 0
-function Addon:DragStart(frame, button) -- Copied from BartrubySummonPet
+function Addon:DragStart(frame, button) -- Copied from BartrubySummonPet, button seems to jump a little when done moving; FIX ME
  if (button == "LeftButton" and IsShiftKeyDown() and not frame.isMoving) then
   frame.isMoving = true
   frame:StartMoving()

@@ -53,11 +53,10 @@ UF.badHeaderPoints = {
 
 UF.headerFunctions = {}
 UF.classMaxResourceBar = {
-	['DEATHKNIGHT'] = 6,
 	['PALADIN'] = 5,
 	['WARLOCK'] = 5,
-	['MONK'] = 6,
 	['MAGE'] = 4,
+	['SHAMAN'] = 4,
 	['ROGUE'] = 6,
 	["DRUID"] = 5
 }
@@ -86,24 +85,17 @@ UF.instanceMapIDs = {
 
 UF.headerGroupBy = {
 	['CLASS'] = function(header)
-		header:SetAttribute("groupingOrder", "DEATHKNIGHT,DEMONHUNTER,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR,MONK")
+		header:SetAttribute("groupingOrder", "DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR")
 		header:SetAttribute('sortMethod', 'NAME')
 		header:SetAttribute("groupBy", 'CLASS')
 	end,
+	['ROLE'] = function(header) UF.headerGroupBy['CLASS'](header) end,
+	['ROLE2'] = function(header) UF.headerGroupBy['CLASS'](header) end,
+	['CLASSROLE'] = function(header) UF.headerGroupBy['CLASS'](header) end,
 	['MTMA'] = function(header)
 		header:SetAttribute("groupingOrder", "MAINTANK,MAINASSIST,NONE")
 		header:SetAttribute('sortMethod', 'NAME')
 		header:SetAttribute("groupBy", 'ROLE')
-	end,
-	['ROLE'] = function(header)
-		header:SetAttribute("groupingOrder", "TANK,HEALER,DAMAGER,NONE")
-		header:SetAttribute('sortMethod', 'NAME')
-		header:SetAttribute("groupBy", 'ASSIGNEDROLE')
-	end,
-	['ROLE2'] = function(header)
-		header:SetAttribute("groupingOrder", "TANK,DAMAGER,HEALER,NONE")
-		header:SetAttribute('sortMethod', 'NAME')
-		header:SetAttribute("groupBy", 'ASSIGNEDROLE')
 	end,
 	['NAME'] = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
@@ -114,11 +106,6 @@ UF.headerGroupBy = {
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
 		header:SetAttribute('sortMethod', 'INDEX')
 		header:SetAttribute("groupBy", 'GROUP')
-	end,
-	['CLASSROLE'] = function(header)
-		header:SetAttribute("groupingOrder", "DEATHKNIGHT,WARRIOR,DEMONHUNTER,ROGUE,MONK,PALADIN,DRUID,SHAMAN,HUNTER,PRIEST,MAGE,WARLOCK")
-		header:SetAttribute('sortMethod', 'NAME')
-		header:SetAttribute("groupBy", 'CLASS')
 	end,
 	['PETNAME'] = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
@@ -531,32 +518,36 @@ function UF:Configure_FontString(obj)
 end
 
 function UF:Update_AllFrames()
-	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
+	if InCombatLockdown() then UF:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
 	if E.private.unitframe.enable ~= true then return; end
-	self:UpdateColors()
-	self:Update_FontStrings()
-	self:Update_StatusBars()
+	UF:UpdateColors()
+	UF:Update_FontStrings()
+	UF:Update_StatusBars()
 
-	for unit in pairs(self.units) do
-		if self.db.units[unit].enable then
-			self[unit]:Update()
-			self[unit]:Enable()
-			E:EnableMover(self[unit].mover:GetName())
-		else
-			self[unit]:Update()
-			self[unit]:Disable()
-			E:DisableMover(self[unit].mover:GetName())
+	for unit in pairs(UF.units) do
+		if UF.db.units[unit] then
+			if UF.db.units[unit].enable then
+				UF[unit]:Update()
+				UF[unit]:Enable()
+				E:EnableMover(UF[unit].mover:GetName())
+			else
+				UF[unit]:Update()
+				UF[unit]:Disable()
+				E:DisableMover(UF[unit].mover:GetName())
+			end
 		end
 	end
 
-	for unit, group in pairs(self.groupunits) do
-		if self.db.units[group].enable then
-			self[unit]:Enable()
-			self[unit]:Update()
-			E:EnableMover(self[unit].mover:GetName())
-		else
-			self[unit]:Disable()
-			E:DisableMover(self[unit].mover:GetName())
+	for unit, group in pairs(UF.groupunits) do
+		if UF.db.units[group] then
+			if UF.db.units[group].enable then
+				UF[unit]:Enable()
+				UF[unit]:Update()
+				E:EnableMover(UF[unit].mover:GetName())
+			else
+				UF[unit]:Disable()
+				E:DisableMover(UF[unit].mover:GetName())
+			end
 		end
 	end
 
@@ -980,61 +971,63 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 end
 
 function UF:PLAYER_REGEN_ENABLED()
-	self:Update_AllFrames()
-	self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+	UF:Update_AllFrames()
+	UF:UnregisterEvent('PLAYER_REGEN_ENABLED')
 end
 
 function UF:CreateAndUpdateUF(unit)
 	assert(unit, 'No unit provided to create or update.')
-	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
+	if InCombatLockdown() then UF:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
 
 	local frameName = E:StringTitle(unit)
 	frameName = frameName:gsub('t(arget)', 'T%1')
-	if not self[unit] then
-		self[unit] = ElvUF:Spawn(unit, 'ElvUF_'..frameName)
-		self.units[unit] = unit
+	if not UF[unit] then
+		UF[unit] = ElvUF:Spawn(unit, 'ElvUF_'..frameName)
+		UF.units[unit] = unit
 	end
 
-	self[unit].Update = function()
-		UF["Update_"..frameName.."Frame"](self, self[unit], self.db.units[unit])
+	UF[unit].Update = function()
+		UF["Update_"..frameName.."Frame"](UF, UF[unit], UF.db.units[unit])
 	end
 
-	if self[unit]:GetParent() ~= ElvUF_Parent then
-		self[unit]:SetParent(ElvUF_Parent)
+	if UF[unit]:GetParent() ~= ElvUF_Parent then
+		UF[unit]:SetParent(ElvUF_Parent)
 	end
 
-	if self.db.units[unit].enable then
-		self[unit]:Enable()
-		self[unit].Update()
-		E:EnableMover(self[unit].mover:GetName())
-	else
-		self[unit].Update()
-		self[unit]:Disable()
-		E:DisableMover(self[unit].mover:GetName())
+	if UF.db.units[unit] then
+		if UF.db.units[unit].enable then
+			UF[unit]:Enable()
+			UF[unit].Update()
+			E:EnableMover(UF[unit].mover:GetName())
+		else
+			UF[unit].Update()
+			UF[unit]:Disable()
+			E:DisableMover(UF[unit].mover:GetName())
+		end
 	end
 end
 
 function UF:LoadUnits()
-	for _, unit in pairs(self.unitstoload) do
-		self:CreateAndUpdateUF(unit)
+	for _, unit in pairs(UF.unitstoload) do
+		UF:CreateAndUpdateUF(unit)
 	end
-	self.unitstoload = nil
+	UF.unitstoload = nil
 
-	for group, groupOptions in pairs(self.unitgroupstoload) do
+	for group, groupOptions in pairs(UF.unitgroupstoload) do
 		local numGroup, template = unpack(groupOptions)
-		self:CreateAndUpdateUFGroup(group, numGroup, template)
+		UF:CreateAndUpdateUFGroup(group, numGroup, template)
 	end
-	self.unitgroupstoload = nil
+	UF.unitgroupstoload = nil
 
-	for group, groupOptions in pairs(self.headerstoload) do
+	for group, groupOptions in pairs(UF.headerstoload) do
 		local groupFilter, template, headerTemplate
 		if type(groupOptions) == 'table' then
 			groupFilter, template, headerTemplate = unpack(groupOptions)
 		end
 
-		self:CreateAndUpdateHeaderGroup(group, groupFilter, template, nil, headerTemplate)
+		UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, nil, headerTemplate)
 	end
-	self.headerstoload = nil
+	UF.headerstoload = nil
 end
 
 function UF:RegisterRaidDebuffIndicator()
@@ -1083,11 +1076,6 @@ function UF:UpdateAllHeaders(event)
 			shouldUpdateHeader = true
 		end
 		self:CreateAndUpdateHeaderGroup(group, nil, nil, shouldUpdateHeader)
-
-		if group == 'party' or group == 'raid' or group == 'raid40' then
-			--Update BuffIndicators on profile change as they might be using profile specific data
-			self:UpdateAuraWatchFromHeader(group)
-		end
 	end
 end
 

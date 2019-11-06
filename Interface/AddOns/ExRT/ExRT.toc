@@ -1,0 +1,47 @@
+## Interface: 11302
+## Title: Exorsus Raid Tools
+## Title-zhCN: |cffC495DDEUI|rExRT团队助手
+## Title-zhTW: |cffC495DDEUI|rExRT團隊助手
+## Author: ykiigor
+## Notes: Exorsus Raid Tools
+## SavedVariables: VExRT
+## Version: 4101
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+
+core.lua
+Functions.lua
+embeds.xml
+ExLib.lua
+localization\localization.en.lua
+localization\localization.cn.lua
+localization\localization.tw.lua
+localization\localization.lua
+BlizzFix.lua
+Options.lua
+ExCD2.lua
+Inspect.lua
+BattleRes.lua
+BossWatcher.lua
+InspectViewer.lua
+Note.lua
+VisNote.lua
+RaidCheck.lua
+InviteTool.lua
+MarksBar.lua
+Marks.lua
+Timers.lua
+Coins.lua
+RaidAttendance.lua
+Encounter.lua
+WhoPulled.lua
+Pets.lua
+AutoLogging.lua
+LootLink.lua
+WAChecker.lua
+Bindings.lua
+Bindings.xml
+Blank.lua
+Profiles.lua
+Changelog.lua

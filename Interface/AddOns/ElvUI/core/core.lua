@@ -35,6 +35,7 @@ local GetNumGroupMembers = GetNumGroupMembers
 local hooksecurefunc = hooksecurefunc
 local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
+local GetAddOnEnableState = GetAddOnEnableState
 local IsInGroup = IsInGroup
 local IsInGuild = IsInGuild
 local IsInRaid = IsInRaid
@@ -77,6 +78,10 @@ E.myfullname = E.myname..'-'..E.myrealm
 E.NewSign = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:14:14|t' -- not used by ElvUI yet, but plugins like BenikUI and MerathilisUI use it.
 E.InfoColor = '|cfffe7b2c'
 E.TexturePath = [[Interface\\AddOns\\ElvUI_Classic\\Media\\Textures\\]]
+
+-- oUF Defines
+E.oUF.Tags.Vars.E = E
+E.oUF.Tags.Vars.L = L
 
 --Tables
 E.media = {}
@@ -150,16 +155,21 @@ E.ClassRole = {
 }
 
 E.DispelClasses = {
+	DRUID = { Curse = true, Poison = true },
+	MAGE = { Curse = true },
+	PALADIN = { Magic = true, Poison = true, Disease = true },
 	PRIEST = { Magic = true, Disease = true },
-	SHAMAN = { Magic = false, Curse = true },
-	PALADIN = { Poison = true, Magic = false, Disease = true },
-	DRUID = { Magic = false, Curse = true, Poison = true, Disease = false },
-	MONK = { Magic = false, Disease = true, Poison = true },
-	MAGE = { Curse = true }
+	SHAMAN = { Poison = true, Disease = true },
+	WARLOCK = { Magic = true }
+}
+
+E.BadDispels = {
+	[34914] = 'Vampiric Touch', --horrifies
+	[233490] = 'Unstable Affliction' --silences
 }
 
 --Workaround for people wanting to use white and it reverting to their class color.
-E.PriestColors = { r = 0.99, g = 0.99, b = 0.99, colorStr = 'fcfcfc' }
+E.PriestColors = { r = 0.99, g = 0.99, b = 0.99, colorStr = 'fffcfcfc' }
 
 --This frame everything in ElvUI should be anchored to for Eyefinity support.
 E.UIParent = CreateFrame('Frame', 'ElvUIParent', _G.UIParent)
@@ -210,7 +220,7 @@ function E:CheckClassColor(r, g, b)
 	local matchFound = false
 	for class in pairs(_G.RAID_CLASS_COLORS) do
 		if class ~= E.myclass then
-			local colorTable = class == 'PRIEST' and E.PriestColors or (_G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class])
+			local colorTable = E:ClassColor(class, true)
 			local red, green, blue = E:GrabColorPickerValues(colorTable.r, colorTable.g, colorTable.b)
 			if red == r and green == g and blue == b then
 				matchFound = true
@@ -284,7 +294,7 @@ function E:UpdateMedia()
 	--Border Color
 	local border = E.db.general.bordercolor
 	if self:CheckClassColor(border.r, border.g, border.b) then
-		local classColor = E.myclass == 'PRIEST' and E.PriestColors or (_G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[E.myclass] or _G.RAID_CLASS_COLORS[E.myclass])
+		local classColor = E:ClassColor(E.myclass, true)
 		E.db.general.bordercolor.r = classColor.r
 		E.db.general.bordercolor.g = classColor.g
 		E.db.general.bordercolor.b = classColor.b
@@ -295,7 +305,7 @@ function E:UpdateMedia()
 	--UnitFrame Border Color
 	border = E.db.unitframe.colors.borderColor
 	if self:CheckClassColor(border.r, border.g, border.b) then
-		local classColor = E.myclass == 'PRIEST' and E.PriestColors or (_G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[E.myclass] or _G.RAID_CLASS_COLORS[E.myclass])
+		local classColor = E:ClassColor(E.myclass, true)
 		E.db.unitframe.colors.borderColor.r = classColor.r
 		E.db.unitframe.colors.borderColor.g = classColor.g
 		E.db.unitframe.colors.borderColor.b = classColor.b
@@ -312,7 +322,7 @@ function E:UpdateMedia()
 	local value = self.db.general.valuecolor
 
 	if self:CheckClassColor(value.r, value.g, value.b) then
-		value = E.myclass == 'PRIEST' and E.PriestColors or (_G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[E.myclass] or _G.RAID_CLASS_COLORS[E.myclass])
+		value = E:ClassColor(E.myclass, true)
 		self.db.general.valuecolor.r = value.r
 		self.db.general.valuecolor.g = value.g
 		self.db.general.valuecolor.b = value.b
@@ -478,6 +488,10 @@ function E:UpdateStatusBars()
 	end
 end
 
+function E:IsAddOnEnabled(addon)
+	return GetAddOnEnableState(E.myname, addon) == 2
+end
+
 function E:IncompatibleAddOn(addon, module)
 	E.PopupDialogs.INCOMPATIBLE_ADDON.button1 = addon
 	E.PopupDialogs.INCOMPATIBLE_ADDON.button2 = 'EUI '..module
@@ -488,16 +502,17 @@ end
 
 function E:CheckIncompatible()
 	if E.global.ignoreIncompatible then return end
-	if IsAddOnLoaded('Prat-3.0') and E.private.chat.enable then E:IncompatibleAddOn('Prat-3.0', 'Chat') end
-	if IsAddOnLoaded('Chatter') and E.private.chat.enable then E:IncompatibleAddOn('Chatter', 'Chat') end
-	if IsAddOnLoaded('TidyPlates') and E.private.nameplates.enable then E:IncompatibleAddOn('TidyPlates', 'NamePlates') end
-	if IsAddOnLoaded('Aloft') and E.private.nameplates.enable then E:IncompatibleAddOn('Aloft', 'NamePlates') end
-	if IsAddOnLoaded('Healers-Have-To-Die') and E.private.nameplates.enable then E:IncompatibleAddOn('Healers-Have-To-Die', 'NamePlates') end
+	if E:IsAddOnEnabled('Prat-3.0') and E.private.chat.enable then E:IncompatibleAddOn('Prat-3.0', 'Chat') end
+	if E:IsAddOnEnabled('Chatter') and E.private.chat.enable then E:IncompatibleAddOn('Chatter', 'Chat') end
+	if E:IsAddOnEnabled('TidyPlates') and E.private.nameplates.enable then E:IncompatibleAddOn('TidyPlates', 'NamePlates') end
+	if E:IsAddOnEnabled('Aloft') and E.private.nameplates.enable then E:IncompatibleAddOn('Aloft', 'NamePlates') end
+	if E:IsAddOnEnabled('Healers-Have-To-Die') and E.private.nameplates.enable then E:IncompatibleAddOn('Healers-Have-To-Die', 'NamePlates') end
+	if E:IsAddOnEnabled('Bartender4') and E.private.actionbar.enable then E:IncompatibleAddOn('Bartender4', 'ActionBar') end
 
-	if IsAddOnLoaded('Kui_Nameplates') and E.private.nameplates.enable then E:IncompatibleAddOn('Kui_Nameplates', 'NamePlates') end
-	if IsAddOnLoaded('rNamePlates') and E.private.nameplates.enable then E:IncompatibleAddOn('rNamePlates', 'NamePlates') end
-	if IsAddOnLoaded('EKplates') and E.private.nameplates.enable then E:IncompatibleAddOn('EKplates', 'NamePlates') end
-	if IsAddOnLoaded('Aloft') and E.private.nameplates.enable then
+	if E:IsAddOnEnabled('Kui_Nameplates') and E.private.nameplates.enable then E:IncompatibleAddOn('Kui_Nameplates', 'NamePlates') end
+	if E:IsAddOnEnabled('rNamePlates') and E.private.nameplates.enable then E:IncompatibleAddOn('rNamePlates', 'NamePlates') end
+	if E:IsAddOnEnabled('EKplates') and E.private.nameplates.enable then E:IncompatibleAddOn('EKplates', 'NamePlates') end
+	if E:IsAddOnEnabled('Aloft') and E.private.nameplates.enable then
 		E:IncompatibleAddOn('Aloft', 'NamePlates')
 	end
 
@@ -505,14 +520,17 @@ function E:CheckIncompatible()
 		E:IncompatibleAddOn('Healers-Have-To-Die', 'NamePlates')
 	end
 
-	if not IsAddOnLoaded('EuiScript') then
+	if not E:IsAddOnEnabled('EuiScript') then
 		E:StaticPopup_Show('EUISCRIPT_REQUEST')
 	end
-	if IsAddOnLoaded('Duowan') or IsAddOnLoaded('BigFoot') then
+	if E:IsAddOnEnabled('Duowan') or E:IsAddOnEnabled('BigFoot') then
 		E:StaticPopup_Show('BigDW_Loaded')
 	end
-	if IsAddOnLoaded('AzeriteTooltip') then
+	if E:IsAddOnEnabled('AzeriteTooltip') then
 		E.db.tooltip.azerite = false
+	end
+	if E.db.SingleAddons.BaudAuction and E.db.SingleAddons.AuctionFaster then
+		E:StaticPopup_Show('AH_ADDON_SELECT')
 	end
 end
 
@@ -1468,16 +1486,20 @@ function E:RefreshModulesDB()
 	UnitFrames.db = self.db.unitframe --new ref
 end
 
+
 local convertAddonName = {
 	["HandyNotes_DungeonLocations"] = "HandyNotes_DungeonLocations (Classic)",
 	["HandyNotes_FlightMasters"] = "HandyNotes_FlightMasters (Classic)",
 	["HandyNotes_NPCs"] = "HandyNotes_NPCs (Classic)",
+	["AuctionLite"] = "AuctionLite-classic",
 }
 
 function E:LoadSingleAddon()
 	for k, v in pairs(E.db.SingleAddons) do
 		k = k and convertAddonName[k] or k;
-		if v and E:IsConfigurableAddOn(k) then
+		local LoadWith = GetAddOnMetadata(k, 'X-LoadWith')
+
+		if v and E:IsConfigurableAddOn(k) and not LoadWith then
 			EnableAddOn(k)
 			LoadAddOn(k)
 		end

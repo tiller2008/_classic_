@@ -1,0 +1,4 @@
+
+CharacterStatsClassicDB = {
+}
+BetterQuestFrameDB = nil

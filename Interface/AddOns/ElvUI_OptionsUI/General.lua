@@ -54,7 +54,7 @@ E.Options.args.general = {
 					type = 'execute',
 					name = L["Auto Scale"],
 					func = function()
-						E.global.general.UIScale = E:PixelClip(E:PixelBestSize())
+						E.global.general.UIScale = E:PixelBestSize()
 						E:StaticPopup_Show("UISCALE_CHANGE")
 					end,
 				},
@@ -62,7 +62,7 @@ E.Options.args.general = {
 					order = 3,
 					type = "range",
 					name = L["UI_SCALE"],
-					min = 0.1, max = 1.25, step = 0.00001,
+					min = 0.1, max = 1.25, step = 0.000000000000001,
 					softMin = 0.40, softMax = 1.15, bigStep = 0.01,
 					get = function(info) return E.global.general.UIScale end,
 					set = function(info, value)
@@ -173,9 +173,15 @@ E.Options.args.general = {
 						E:StaticPopup_Show("CONFIG_RL")
 					end,
 					values = {
+					--	["deDE"] = "Deutsch",
 						["enUS"] = "English",
+					--	["esMX"] = "Español",
+					--	["frFR"] = "Français",
+					--	["ptBR"] = "Português",
+					--	["ruRU"] = "Русский",
 						["zhCN"] = "简体中文",
 						["zhTW"] = "正體中文",
+					--	["koKR"] = "한국어",
 					},
 				}
 			},
@@ -439,48 +445,6 @@ E.Options.args.general = {
 				},
 			},
 		},
---[=[
-		objectiveFrameGroup = {
-			order = 8,
-			type = "group",
-			name = L["Objective Frame"],
-			get = function(info) return E.db.general[info[#info]] end,
-			args = {
-				objectiveFrameHeader = {
-					order = 30,
-					type = "header",
-					name = L["Objective Frame"],
-				},
-				--objectiveFrameAutoHide = {
-					--order = 31,
-					--type = "toggle",
-					--name = L["Auto Hide"],
-					--desc = L["Automatically hide the objetive frame during boss or arena fights."],
-					--disabled = function() return IsAddOnLoaded("!KalielsTracker") end,
-					--set = function(info, value) E.db.general.objectiveFrameAutoHide = value; Blizzard:SetObjectiveFrameAutoHide(); end,
-				--},
-				objectiveFrameHeight = {
-					order = 32,
-					type = 'range',
-					name = L["Objective Frame Height"],
-					desc = L["Height of the objective tracker. Increase size to be able to see more objectives."],
-					min = 400, max = E.screenheight, step = 1,
-					set = function(info, value) E.db.general.objectiveFrameHeight = value; Blizzard:SetQuestWatchFrameHeight(); end,
-				},
-				--bonusObjectivePosition = {
-					--order = 33,
-					--type = 'select',
-					--name = L["Bonus Reward Position"],
-					--desc = L["Position of bonus quest reward frame relative to the objective tracker."],
-					--values = {
-						--['RIGHT'] = L["Right"],
-						--['LEFT'] = L["Left"],
-						--['AUTO'] = L["Automatic"],
-					--},
-				--},
-			},
-		},
-]=]
 		blizzUIImprovements = {
 			order = 11,
 			type = "group",
@@ -528,6 +492,28 @@ E.Options.args.general = {
 					desc = L["Enables the ElvUI Raid Control panel."],
 					get = function(info) return E.private.general.raidUtility end,
 					set = function(info, value) E.private.general.raidUtility = value; E:StaticPopup_Show("PRIVATE_RL") end
+				},
+				DurabilityGroup = {
+					order = 7,
+					type = "group",
+					name = L["Durability"],
+					guiInline = true,
+					get = function(info) return E.db.general.durabilityScale end,
+					set = function(info, value) E.db.general.durabilityScale = value; E:StaticPopup_Show("PRIVATE_RL") end,
+					args = {
+						scale = {
+							order = 1,
+							type = "range",
+							name = L["Scale"],
+							min = 0.5, max = 8, step = 0.5,
+						}
+					}
+				},
+				objectiveTracker = {
+					order = 8,
+					type = 'toggle',
+					disabled = function() return IsAddOnLoaded('ButterQuestTracker') end,
+					name = L["ObjectiveTracker Enhancements"],
 				},
 --[=[
 				itemLevelInfo = {
@@ -596,7 +582,7 @@ E.Options.args.general = {
 			},
 		},
 		misc = {
-			order = 12,
+			order = 20,
 			type = "group",
 			name = L["Miscellaneous"],
 			get = function(info) return E.db.general[info[#info]] end,
@@ -615,6 +601,7 @@ E.Options.args.general = {
 					values = {
 						['NONE'] = L["NONE"],
 						['SAY'] = L["SAY"],
+						['YELL'] = L["YELL"],
 						['PARTY'] = L["Party Only"],
 						['RAID'] = L["Party / Raid"],
 						['RAID_ONLY'] = L["Raid Only"],
@@ -636,7 +623,6 @@ E.Options.args.general = {
 					type = 'select',
 					values = {
 						['NONE'] = L["NONE"],
-						['GUILD'] = L["GUILD"],
 						['PLAYER'] = L["PLAYER"],
 					},
 				},
@@ -653,7 +639,14 @@ E.Options.args.general = {
 					type = 'toggle',
 					disabled = function() return not E.private.general.lootRoll end
 				},
+				questRewardMostValueIcon = {
+					order = 5,
+					type = "toggle",
+					name = L["Mark Quest Reward"],
+					desc = L["Marks the most valuable quest reward with a gold coin."],
+				},
 			},
 		},
 	},
 }
+

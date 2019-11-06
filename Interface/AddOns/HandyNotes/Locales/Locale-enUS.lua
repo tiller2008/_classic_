@@ -49,3 +49,8 @@ L["Portal"] = true
 L["(No Title)"] = true
 
 -- vim: ts=4 noexpandtab
+L["TEXT_TOOLTIP_HIDE_ICONS"] = "Hide HandyNotes Icons"
+L["TEXT_TOOLTIP_SHOW_ICONS"] = "Show HandyNotes Icons"
+
+L["RIGHTBUTTON_TEXT_TOOLTIP_HIDE_GATHERMATEICONS"] = "RightBtn Hide GatherMate2 Icons"
+L["RIGHTBUTTON_TEXT_TOOLTIP_SHOW_GATHERMATEICONS"] = "RightBtn Show GatherMate2 Icons"

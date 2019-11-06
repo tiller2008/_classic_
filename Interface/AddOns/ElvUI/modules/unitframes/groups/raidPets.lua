@@ -162,7 +162,7 @@ function UF:Update_RaidpetFrames(frame, db)
 	UF:Configure_Fader(frame)
 
 	--BuffIndicator
-	UF:UpdateAuraWatch(frame, true) --2nd argument is the petOverride
+	UF:Configure_AuraWatch(frame, true) --2nd argument is the petOverride
 
 	--Cutaway
 	UF:Configure_Cutaway(frame)

@@ -26,30 +26,14 @@ local menuList = {
 	{text = _G.CHARACTER_BUTTON,
 	func = function() ToggleCharacter("PaperDollFrame") end},
 	{text = _G.SPELLBOOK_ABILITIES_BUTTON,
-	func = function()
-		if not _G.SpellBookFrame:IsShown() then
-			ShowUIPanel(_G.SpellBookFrame)
-		else
-			HideUIPanel(_G.SpellBookFrame)
-		end
-	end},
+	func = function() ToggleFrame(_G.SpellBookFrame) end},
 	{text = _G.TALENTS_BUTTON,
-	func = function()
-		if not _G.TalentFrame then
-			_G.TalentFrame_LoadUI()
-		end
-
-		if not TalentFrame:IsShown() then
-			ShowUIPanel(TalentFrame)
-		else
-			HideUIPanel(TalentFrame)
-		end
-	end},
+	func = ToggleTalentFrame},
 	{text = _G.CHAT_CHANNELS,
-	func = _G.ToggleChannelFrame},
+	func = ToggleChannelFrame},
 	{text = _G.TIMEMANAGER_TITLE,
-	func = function() ToggleFrame(_G.TimeManagerFrame) end},
-	{text = _G.SOCIAL_LABEL,
+	func = function() TimeManager_Toggle() end},
+	{text = _G.SOCIAL_BUTTON,
 	func = ToggleFriendsFrame},
 	{text = _G.GUILD,
 	func = function()
@@ -63,24 +47,25 @@ local menuList = {
 	func = function()
 		if not _G.GameMenuFrame:IsShown() then
 			if _G.VideoOptionsFrame:IsShown() then
-				_G.VideoOptionsFrameCancel:Click();
+				_G.VideoOptionsFrameCancel:Click()
 			elseif _G.AudioOptionsFrame:IsShown() then
-				_G.AudioOptionsFrameCancel:Click();
+				_G.AudioOptionsFrameCancel:Click()
 			elseif _G.InterfaceOptionsFrame:IsShown() then
-				_G.InterfaceOptionsFrameCancel:Click();
+				_G.InterfaceOptionsFrameCancel:Click()
 			end
 
-			CloseMenus();
+			CloseMenus()
 			CloseAllWindows()
 			PlaySound(850) --IG_MAINMENU_OPEN
-			ShowUIPanel(_G.GameMenuFrame);
+			ShowUIPanel(_G.GameMenuFrame)
 		else
 			PlaySound(854) --IG_MAINMENU_QUIT
-			HideUIPanel(_G.GameMenuFrame);
-			MainMenuMicroButton_SetNormal();
+			HideUIPanel(_G.GameMenuFrame)
+			MainMenuMicroButton_SetNormal()
 		end
 	end},
-	{text = _G.HELP_BUTTON, func = ToggleHelpFrame}
+	{text = _G.HELP_BUTTON,
+	func = ToggleHelpFrame}
 }
 
 LO.menuList = menuList

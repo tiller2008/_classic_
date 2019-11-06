@@ -35,59 +35,65 @@ AB.RegisterCooldown = E.RegisterCooldown
 AB.handledBars = {} --List of all bars
 AB.handledbuttons = {} --List of all buttons that have been modified.
 AB.barDefaults = {
-	["bar1"] = {
-		['page'] = 1,
-		['bindButtons'] = "ACTIONBUTTON",
-		['conditions'] = "[shapeshift] 13; [form,noform] 0; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;",
-		['position'] = "BOTTOM,ElvUIParent,BOTTOM,0,4",
+	bar1 = {
+		page = 1,
+		bindButtons = "ACTIONBUTTON",
+		conditions = "[shapeshift] 13; [form,noform] 0; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;",
+		position = "BOTTOM,ElvUIParent,BOTTOM,0,4",
 	},
-	["bar2"] = {
-		['page'] = 5,
-		['bindButtons'] = "MULTIACTIONBAR2BUTTON",
-		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,2",
+	bar2 = {
+		page = 5,
+		bindButtons = "MULTIACTIONBAR2BUTTON",
+		conditions = "",
+		position = "BOTTOM,ElvUI_Bar1,TOP,0,2",
 	},
-	["bar3"] = {
-		['page'] = 6,
-		['bindButtons'] = "MULTIACTIONBAR1BUTTON",
-		['conditions'] = "",
-		['position'] = "LEFT,ElvUI_Bar1,RIGHT,4,0",
+	bar3 = {
+		page = 6,
+		bindButtons = "MULTIACTIONBAR1BUTTON",
+		conditions = "",
+		position = "LEFT,ElvUI_Bar1,RIGHT,4,0",
 	},
-	["bar4"] = {
-		['page'] = 4,
-		['bindButtons'] = "MULTIACTIONBAR4BUTTON",
-		['conditions'] = "",
-		['position'] = "RIGHT,ElvUIParent,RIGHT,-4,0",
+	bar4 = {
+		page = 4,
+		bindButtons = "MULTIACTIONBAR4BUTTON",
+		conditions = "",
+		position = "RIGHT,ElvUIParent,RIGHT,-4,0",
 	},
-	["bar5"] = {
-		['page'] = 3,
-		['bindButtons'] = "MULTIACTIONBAR3BUTTON",
-		['conditions'] = "",
-		['position'] = "RIGHT,ElvUI_Bar1,LEFT,-4,0",
+	bar5 = {
+		page = 3,
+		bindButtons = "MULTIACTIONBAR3BUTTON",
+		conditions = "",
+		position = "RIGHT,ElvUI_Bar1,LEFT,-4,0",
 	},
-	["bar6"] = {
-		['page'] = 8,
-		['bindButtons'] = "ELVUIBAR6BUTTON",
-		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,100",
+	bar6 = {
+		page = 8,
+		bindButtons = "ELVUIBAR6BUTTON",
+		conditions = "",
+		position = "BOTTOM,ElvUI_Bar1,TOP,0,100",
 	},
-	["bar7"] = {
-		['page'] = 9,
-		['bindButtons'] = "ELVUIBAR7BUTTON",
-		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,150",
+	bar7 = {
+		page = 9,
+		bindButtons = "ELVUIBAR7BUTTON",
+		conditions = "",
+		position = "BOTTOM,ElvUI_Bar1,TOP,0,150",
 	},
-	["bar8"] = {
-		['page'] = 10,
-		['bindButtons'] = "ELVUIBAR8BUTTON",
-		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,200",
+	bar8 = {
+		page = 10,
+		bindButtons = "ELVUIBAR8BUTTON",
+		conditions = "",
+		position = "BOTTOM,ElvUI_Bar1,TOP,0,200",
 	},
-	["bar9"] = {
-		['page'] = 7,
-		['bindButtons'] = "ELVUIBAR9BUTTON",
-		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,250",
+	bar9 = {
+		page = 7,
+		bindButtons = "ELVUIBAR9BUTTON",
+		conditions = "",
+		position = "BOTTOM,ElvUI_Bar1,TOP,0,250",
+	},
+	bar10 = {
+		page = 2,
+		bindButtons = 'ELVUIBAR10BUTTON',
+		conditions = '',
+		position = 'BOTTOM,ElvUI_Bar1,TOP,0,202',
 	},
 }
 
@@ -377,7 +383,11 @@ function AB:RemoveBindings()
 end
 
 function AB:UpdateBar1Paging()
-	AB.barDefaults.bar1.conditions = "[shapeshift] 13; [form,noform] 0; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;"
+	if self.db.bar10.enabled then
+		AB.barDefaults.bar1.conditions = "[shapeshift] 13; [form,noform] 0; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;"
+	else
+		AB.barDefaults.bar1.conditions = "[shapeshift] 13; [form,noform] 0; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;"
+	end
 
 	if (E.private.actionbar.enable ~= true or InCombatLockdown()) or not self.isInitialized then return; end
 	local bar2Option = _G.InterfaceOptionsActionBarsPanelBottomRight
@@ -853,6 +863,11 @@ function AB:LAB_ButtonUpdate(button)
 	if button.config and (button.config.outOfRangeColoring ~= "hotkey") then
 		button.HotKey:SetTextColor(color.r, color.g, color.b)
 	end
+
+	if button.backdrop and AB.db.equippedItem then
+		color = (button:IsEquipped() and AB.db.equippedItemColor) or E.db.general.bordercolor
+		button.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	end
 end
 
 function AB:LAB_CooldownDone(button)
@@ -928,7 +943,7 @@ function AB:Initialize()
 	self:SetupMicroBar()
 	self:UpdateBar1Paging()
 
-	for i = 1, 9 do
+	for i = 1, 10 do
 		self:CreateBar(i)
 	end
 

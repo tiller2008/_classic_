@@ -49,6 +49,7 @@ function mod:SetAura(aura, index, name, icon, count, duration, expirationTime, s
 end
 
 function mod:HideAuraIcons(auras)
+	if not auras then return end
 	for i=1, #auras.icons do
 		auras.icons[i]:Hide()
 

@@ -1488,7 +1488,9 @@ do
 	L['CCDebuffs'] = "控場類DEBUFF"
 	L['DebuffBlacklist'] = "DEBUFF黑名單"
 	L['RaidDebuffs'] = "團隊副本DEBUFF"
-	L['RaidDebuffs2'] = "團隊副本DEBUFF圖標2"	
+	L['RaidDebuffs2'] = "團隊副本DEBUFF圖標2"
+	L['DungeonDebuffs'] = "地下城Debuff"
+	L['RaidBuffsElvUI'] = '副本Buff'
 	
 	L['Totem Time'] = "顯示圖騰時間和星月條能量值"
 	L['Attention Frames'] = "關注框體"
@@ -1781,6 +1783,7 @@ end
 
 --Tooltip
 do
+	L["profession icons"] = "專業圖示"
 	L["Item Level:"] = "裝備等級: "
 	L["Max Stack Size: "] = "最大可堆疊數: "
 	L["RelicInspector"] = "聖物觀察"
@@ -2027,6 +2030,7 @@ end
 
 --Misc
 do
+	L["Available Tags"] = '可用的TAG標籤'
 	L["Left Click:"] = "左鍵:"
 	L["Right Click:"] = "右鍵:"
 	L["Average Group iLvl:"] = '平均隊伍裝等';
@@ -2355,6 +2359,10 @@ end
 
 --singleFunc
 do
+	L['singleFunc desc'] = "EUI集成插件的統一設置"
+	L["ButterQuestTracker"] = "任務追蹤框"
+	L["GatherMate2"] = "採集助手"
+	L['Ex_AutoEquip'] = "一鍵換裝"
 	L['AuctionFaster'] = "拍賣助手"
 	L["ClassicThreatMeter"] = "仇恨助手"
 	L['WeaponSwingTimer'] = "平砍計時條"
@@ -2386,6 +2394,10 @@ do
 	L['ClassicCodex'] = "任務助手"
 	L["Clear Lua Error"] = "清空LUA錯誤"
 	L['AtlasLootClassic'] = "副本戰利品查詢"
+	L["BaudAuction"] = "拍賣增強"
+	L['SilverDragon'] = "稀有掃描"
+	L['FriendsMenuXP'] = "右鍵菜單增強"
+	L['ExRT'] = "ExRT團隊管理"
 end
 
 --Sequences
@@ -2398,6 +2410,7 @@ end
 
 --euiscript
 do
+	L['Show Zone Info'] = "顯示區域資訊"
 	L["Announce Every"] = "通報進度每第 x 步"
 	L["dismount"] = "自動下馬"
 	L["CharacterStatsClassic"] = "角色屬性增強"

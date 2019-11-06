@@ -6,7 +6,7 @@
 ## Author: Es (EsreverWoW)
 ## X-Curse-Project-ID: 336512
 ## X-WoWI-ID: 25165
-## Version: 1.08
+## Version: 1.10
 ## SavedVariables: CTM_Options
 ## Dependencies: ElvUI
 ## X-Revision: ElvUI

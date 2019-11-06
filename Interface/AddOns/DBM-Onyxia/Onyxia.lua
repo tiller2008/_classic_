@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190921194657")
+mod:SetRevision("20191011025919")
 mod:SetCreatureID(10184)
 mod:SetEncounterID(1084)
 mod:SetZone()
@@ -84,7 +84,7 @@ function mod:Whelps()--Not right, need to fix
 --		warnWhelpsSoon:Schedule(60)
 		self:ScheduleMethod(70, "Whelps")
 		-- we replay sounds as long as p2 is running
-		if self.Options.SoundWTF3 then
+		if self.Options.SoundWTF3 and not self.vb.warned_preP3 then
 			DBM:PlaySoundFile("Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
 			self:Schedule(35, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
 		end
@@ -116,7 +116,7 @@ do
 		elseif spellName == wingBuffet and args:IsSrcTypeHostile() then
 			warnWingBuffet:Show()
 		elseif spellName == fireball and args:IsSrcTypeHostile() then
-			self:BossTargetScanner(args.sourceGUID, "FireballTarget", 0.15, 12)
+			self:BossTargetScanner(args.sourceGUID, "FireballTarget", 0.3, 6)
 		end
 	end
 end
@@ -170,6 +170,7 @@ function mod:UNIT_HEALTH(uId)
 	elseif self.vb.phase == 2 and not self.vb.warned_preP3 and self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.45 then
 		self.vb.warned_preP3 = true
 		warnPhase3Soon:Show()
+		self:Unschedule(DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
 	end
 end
 
@@ -188,12 +189,12 @@ function mod:OnSync(msg)
 		--timerNextDeepBreath:Start(67)
 		timerNextFlameBreath:Cancel()
 		self:ScheduleMethod(5, "Whelps")
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Show(8)
+		end
 		if self.Options.SoundWTF3 then
 			self:Schedule(10, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
 			self:Schedule(17, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\whelps-left-side-even-side-handle-it.ogg")
-		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(8)
 		end
 	elseif msg == "Phase3" then
 		self.vb.phase = 3
@@ -203,15 +204,14 @@ function mod:OnSync(msg)
 		--timerNextDeepBreath:Stop()
 		--timerBigAddCD:Stop()
 		--warnWhelpsSoon:Cancel()
-		if self.Options.SoundWTF3 then
-			self:Schedule(15, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\dps-very-very-slowly.ogg")
-			self:Schedule(30, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
-   			--self:Schedule(40, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
-			self:Schedule(50, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
-			--self:Schedule(65, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
-		end
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
+		end
+		if self.Options.SoundWTF3 then
+			self:Unschedule(DBM.PlaySoundFile, DBM)
+			self:Schedule(15, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\dps-very-very-slowly.ogg")
+			self:Schedule(35, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
+			self:Schedule(45, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
 		end
 	end
 end

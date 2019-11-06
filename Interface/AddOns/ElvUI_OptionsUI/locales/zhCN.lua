@@ -104,6 +104,7 @@ L["Automatically hide the objetive frame during boss or arena fights."] = "在�
 L["Automatically repair using the following method when visiting a merchant."] = "使用以下方式来自动修理装备"
 L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."] = "当你满级时, 自动选择贪婪或分解绿色物品"
 L["Automatically vendor gray items when visiting a vendor."] = "当访问商人时自动出售灰色物品"
+L["Available Tags"] = true
 L["Backdrop color of transparent frames"] = "透明框架的背景颜色"
 L["Backdrop Color"] = "背景颜色"
 L["Backdrop Faded Color"] = "背景透明色"
@@ -268,7 +269,6 @@ L["Comparison Font Size"] = "比较字体大小"
 L["Completely hide the voice buttons."] = "完全隐藏语音按钮"
 L["Condensed"] = "紧凑"
 L["Configure Auras"] = "设置光环"
-L["Contribution"] = "捐献"
 L["Control enemy nameplates toggling on or off when in combat."] = "控制战斗中敌对姓名板的开启和关闭"
 L["Control friendly nameplates toggling on or off when in combat."] = "控制战斗中友方姓名板的开启和关闭"
 L["Controls how big of an area on the screen will accept clicks to target unit."] = "决定屏幕上一个多大的光环才允许通过点击选定到目标框体上"
@@ -519,6 +519,7 @@ L["Growth Direction"] = "增长方向"
 L["Growth X-Direction"] = "X方向生长"
 L["Growth Y-Direction"] = "Y方向生长"
 L["Guardians"] = "护卫"
+L["Guide:"] = true
 L["Guild Control Frame"] = "公会控制"
 L["Guild Ranks"] = "公会等级"
 L["Guild Registrar"] = "公会注册"
@@ -545,6 +546,7 @@ L["HH:MM Threshold"] = "时:分 阈值"
 L["Hide At Max Level"] = "在最高等级时隐藏"
 L["Hide Below Max Level"] = "非满级时隐藏"
 L["Hide Both"] = "全部隐藏"
+L["Hide Castbar text. Useful if your power height is very low or if you use power offset."] = true
 L["Hide Cooldown Bling"] = "隐藏冷却闪光"
 L["Hide Delay"] = "隐藏延迟"
 L["Hide Error Text"] = "隐藏错误文字"
@@ -554,6 +556,7 @@ L["Hide In Vehicle"] = "骑乘时隐藏"
 L["Hide Outside PvP"] = "PvP外隐藏"
 L["Hide specific sections in the datatext tooltip."] = "隐藏信息文字鼠标提示中的特定模块"
 L["Hide Spell Name"] = "隐藏法术名字"
+L["Hide Text"] = true
 L["Hide Time"] = "隐藏时间"
 L["Hide tooltip while in combat."] = "战斗时不显示提示"
 L["Hide Voice Buttons"] = "隐藏语音按钮"
@@ -721,6 +724,8 @@ L["Make the unitframe glow yellow when it is below this percent of health, it wi
 L["Make the world map smaller."] = "让世界地图更小"
 L["Map Opacity When Moving"] = "移动时地图透明度"
 L["Maps"] = "地图"
+L["Mark Quest Reward"] = true
+L["Marks the most valuable quest reward with a gold coin."] = true
 L["Masque Support"] = "Masque支持"
 L["Match Frame Width"] = "匹配框体宽度"
 L["Match if Name or NPC ID is NOT in the list."] = true
@@ -1145,11 +1150,9 @@ L["Testing:"] = "测试:"
 L["Text Color"] = "文字颜色"
 L["Text Font Size"] = "字体大小"
 L["Text Format"] = "文字格式"
-L["Text Position"] = "文字位置"
+L["Text Options"] = true
 L["Text Threshold"] = "文本阈值"
 L["Text Toggle On NPC"] = "NPC文字显示开关"
-L["Text xOffset"] = "文字X轴偏移"
-L["Text yOffset"] = "文字Y轴偏移"
 L["Text"] = "文本"
 L["Texture"] = "材质"
 L["Textured Icon"] = "图标"
@@ -1215,8 +1218,11 @@ L["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to
 L["Threshold before text goes into decimal form. Set to -1 to disable decimals."] = "文字变为小数时的阈值.设为-1以禁用小数"
 L["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"] = "冷却时间低于此秒数后将变为红色数字, 并以小数显示, 设为-1来使其不会变为红色"
 L["Threshold before the icon will fade out and back in. Set to -1 to disable."] = "图标闪烁时的阈值, 设为-1以禁用."
+L["Threshold Colors"] = true
 L["Ticks"] = "周期伤害"
 L["Tiers"] = "天赋层"
+L["Time Indicator Colors"] = true
+L["Time Options"] = true
 L["Time Remaining Reverse"] = "剩余时间反转"
 L["Time Remaining"] = "剩余时间"
 L["Time To Hold"] = "停留时间"
@@ -1286,6 +1292,11 @@ L["Use Dead Backdrop"] = "死亡背景"
 L["Use Default"] = "使用默认值"
 L["Use drag and drop to rearrange filter priority or right click to remove a filter."] = "使用拖拽的方式调整过滤器优先级, 或者右键移除一个过滤器"
 L["Use Health Texture on Background"] = "对背景使用生命条材质"
+L["Use Instance ID or Name"] = "使用副本ID或名字"
+L["Use Indicator Color"] = true
+L["Use Map ID or Name"] = "使用地图ID或名字"
+L["Use Subzone Names"] = "使用子区域名字"
+L["Use Zone Names"] = "使用区域名字"
 L["Use Portrait"] = "使用头像"
 L["Use Position Override"] = "使用位置覆盖"
 L["Use Real ID BattleTag"] = "显示战网昵称"
@@ -1333,10 +1344,8 @@ L["Will show Buffs in the Debuff position when there are no Debuffs active, or v
 L["Word Wrap"] = "自动换行"
 L["World Map Coordinates"] = "世界地图坐标"
 L["Wrap After"] = "每行行数"
-L["X-Offset"] = "X偏移"
-L["xOffset"] = "X轴偏移"
-L["Y-Offset"] = "Y偏移"
-L["yOffset"] = "Y轴偏移"
+L["X-Offset"] = "X轴偏移"
+L["Y-Offset"] = "Y轴偏移"
 L["You are going to copy settings for |cffD3CF00\"%s\"|r from your current |cff4beb2c\"%s\"|r profile to |cff4beb2c\"%s\"|r profile. Are you sure?"] = "|cffD3CF00\"%s\"|r 设置将从你当前配置文件 |cff4beb2c\"%s\"|r 导出到 |cff4beb2c\"%s\"|r 配置文件中. 你确定吗?"
 L["You are going to copy settings for |cffD3CF00\"%s\"|r from |cff4beb2c\"%s\"|r profile to your current |cff4beb2c\"%s\"|r profile. Are you sure?"] = "|cffD3CF00\"%s\"|r 设置将从 |cff4beb2c\"%s\"|r 配置文件导入到你当前配置文件 |cff4beb2c\"%s\"|r 中. 你确定吗?"
 L["You cannot copy settings from the same unit."] = "你不能从相同的单位复制设定"
@@ -1349,20 +1358,20 @@ L["Your Auras First"] = "自身光环优先"
 L["Zone Ability"] = "区域可见性"
 
 ----------------------------------
-L['blockCastByPlayers'] = "[屏蔽]玩家施放的"
-L['blockDispellable'] = "[屏蔽]可驱散的"
-L['blockNoDuration'] = "[屏蔽]永久的"
-L['blockNonPersonal'] = "[屏蔽]他人的"
-L['blockNotDispellable'] = "[屏蔽]不可驱散的"
-L['Boss'] = "首领的"
-L['CastByNPC'] = "NPC施放的"
-L['CastByPlayers'] = "玩家施放的"
-L['CastByUnit'] = "该单位施放的"
-L['Dispellable'] = "可驱散的"
-L['nonPersonal'] = "他人的"
-L['notCastByUnit'] = "非该单位的"
-L['notDispellable'] = "不可驱散的"
-L['Personal'] = "自己的"
+L["blockCastByPlayers"] = "[屏蔽]玩家施放的"
+L["blockDispellable"] = "[屏蔽]可驱散的"
+L["blockNoDuration"] = "[屏蔽]永久的"
+L["blockNonPersonal"] = "[屏蔽]他人的"
+L["blockNotDispellable"] = "[屏蔽]不可驱散的"
+L["Boss"] = "首领的"
+L["CastByNPC"] = "NPC施放的"
+L["CastByPlayers"] = "玩家施放的"
+L["CastByUnit"] = "该单位施放的"
+L["Dispellable"] = "可驱散的"
+L["nonPersonal"] = "他人的"
+L["notCastByUnit"] = "非该单位的"
+L["notDispellable"] = "不可驱散的"
+L["Personal"] = "自己的"
 ----------------------------------
 
 L["ACTIONBARS_DESC"] = "修改动作条设定"
@@ -1416,28 +1425,6 @@ L[ [=[This works like a macro, you can run different situations to get the actio
  Example: '[combat] show;hide']=] ] = [=[和宏写法类似, 能根据不同姿态切换动作条显示或隐藏.
  例如: '[combat] show;hide']=]
 
-L["TEXT_FORMAT_DESC"] = [=[提供一个更改文字格式的方式
-
-例如:
-[namecolor][name] [difficultycolor][smartlevel] [shortclassification]
-[healthcolor][health:current-max]
-[powercolor][power:current]
-
-生命条 / 能量条 格式:
-'current' - 当前值
-'percent' - 百分比
-'current-max' - 当前值 - 最大值. 当当前值等于最大值时只显示最大值
-'current-percent' - 当前值 - 百分比. 当百分比为100%时只显示当前值
-'current-max-percent' - 当前值 - 最大值 - 百分比. 当当前值不等于最大值时显示
-'deficit' - 失去值. 没有失去值时不显示
-
-姓名格式:
-'name:short' - 姓名显示限制于10字节内
-'name:medium' -姓名显示限制于15字节内
-'name:long' - 姓名显示限制于20字节内
-
-空白则为禁用. 如需技术支持请至http://www.tukui.org]=]
-
 L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
@@ -1466,7 +1453,6 @@ L["ALL"] = "全部";
 L["ALT_KEY_TEXT"] = "ALT";
 L["ARENA"] = "竞技场";
 L["AUCTIONS"] = "拍卖";
-L["AZERITE_RESPEC_TITLE"] = "艾泽里特重铸师";
 L["BAGSLOT"] = "背包";
 L["BAG_FILTER_CONSUMABLES"] = "消耗品";
 L["BAG_FILTER_EQUIPMENT"] = "装备";
@@ -1541,7 +1527,6 @@ L["INTERFACE_OPTIONS"] = "界面选项";
 L["ISLANDS_HEADER"] = "海岛探险";
 L["ITEM_BIND_QUEST"] = "任务物品";
 L["ITEM_QUALITY3_DESC"] = "精良";
-L["ITEM_QUALITY6_DESC"] = "神器";
 L["ITEMS"] = "物品";
 L["KEY_BINDINGS"] = "按键设置";
 L["LANGUAGE"] = "语言";

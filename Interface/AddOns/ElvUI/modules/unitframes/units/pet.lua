@@ -119,7 +119,7 @@ function UF:Update_PetFrame(frame, db)
 
 	UF:Configure_HappyIcon(frame)
 
-	UF:UpdateAuraWatch(frame)
+	UF:Configure_AuraWatch(frame)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 

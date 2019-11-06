@@ -1,8 +1,8 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Lib: RangeCheck-2.0
 ## Notes: A library to determine estimated range.
 ## Author: mitch0
-## Version: v4.0.0
+## Version: v4.3.2
 ## LoadOnDemand: 1
 ## X-Category: Library
 ## X-AceLibrary-LibRangeCheck-2.0: true

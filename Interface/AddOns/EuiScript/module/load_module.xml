@@ -21,7 +21,7 @@
 	<!-- <Script file='kill.lua'/> -->
 
 	<Script file='QuestNotifier.lua'/>
-	<Script file='ObjectiveTracker.lua'/>
+	<!-- <Script file='BetterQuestFrame.lua'/> -->
 	<Script file='EuiThreat.lua'/>
 	<Script file='InfoFilter.lua'/>
 
@@ -29,8 +29,8 @@
 	<!-- <Script file="Quester.lua"/> -->
 	<Script file="QuestLevelPatch.lua"/>
 	<!-- <Script file="AuraBarsMovers.lua"/> -->
-
-	<Script file="RightButtonMenu.lua"/>
+	
+	<!-- <Script file="RightButtonMenu.lua"/> -->
 
 	<Script file="AutoTrackQuests.lua"/>
 	<Script file="QuestFrameFixer.lua"/>
@@ -39,6 +39,7 @@
 	<Script file="CharacterStatsClassic\CharacterStatsClassicUI.lua"/>
 	<Script file="CharacterStatsClassic\CharacterStatsClassicCore.lua"/>
 	<Script file="CharacterStatsClassic\CharacterStatsClassicUtils.lua"/>
+	<Script file="CharacterStatsClassic\ClassUtils.lua"/>
 	
 	<Script file="ClassicSpellActivations.lua"/>
 </Ui>

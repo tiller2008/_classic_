@@ -51,8 +51,6 @@ function Mapster:OnInitialize()
 end
 
 function Mapster:OnEnable()
-	self:SetupMapButton()
-
 	LibWindow.RegisterConfig(WorldMapFrame, db)
 
 	-- remove from UI panel system
@@ -105,6 +103,8 @@ function Mapster:OnEnable()
 		break
 	end
 
+	self:SecureHook("ShowUIPanel", "ShowUIPanelHook")
+
 	-- classic compat stuff
 	if WoWClassic then
 		self:RawHook(WorldMapFrame, "HandleUserActionToggleSelf", function(frame) if frame:IsShown() then frame:Hide() else frame:Show() end end, true)
@@ -127,6 +127,10 @@ function Mapster:OnEnable()
 	self:SetPOIScale()
 	self:SetScale()
 	self:SetPosition()
+
+	if not db.hideMapButton then
+		self:SetupMapButton()
+	end
 end
 
 function Mapster:Refresh()
@@ -152,12 +156,15 @@ function Mapster:Refresh()
 	self:SetScale()
 	self:SetPosition()
 
-	if self.optionsButton then
-		if db.hideMapButton then
+	if db.hideMapButton then
+		if self.optionsButton then
 			self.optionsButton:Hide()
-		else
-			self.optionsButton:Show()
 		end
+	else
+		if not self.optionsButton then
+			self:SetupMapButton()
+		end
+		self.optionsButton:Show()
 	end
 end
 
@@ -262,6 +269,12 @@ function Mapster:SetPOIScale()
 	end
 	for pin in WorldMapFrame:EnumeratePinsByTemplate("QuestPinTemplate") do
 		self:QuestPOI_OnAcquired(pin)
+	end
+end
+
+function Mapster:ShowUIPanelHook(frame)
+	if frame == WorldMapFrame and InCombatLockdown() and not frame:IsShown() then
+		frame:Show()
 	end
 end
 

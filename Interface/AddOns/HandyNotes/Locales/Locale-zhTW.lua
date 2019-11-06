@@ -48,3 +48,9 @@ L["Add Handy Note"] = "新增註記"
 L["Add this location to TomTom waypoints"] = "新增這個位置到TomTom waypoints"
 L["Hide HandyNotes Icons"] = "隱藏地圖標記圖示"
 L["Show HandyNotes Icons"] = "顯示地圖標記圖示"
+
+L["TEXT_TOOLTIP_HIDE_ICONS"] = "隱藏地圖標記圖示"
+L["TEXT_TOOLTIP_SHOW_ICONS"] = "顯示地圖標記圖示"
+
+L["RIGHTBUTTON_TEXT_TOOLTIP_HIDE_GATHERMATEICONS"] = "右鍵隱藏採集助手圖示"
+L["RIGHTBUTTON_TEXT_TOOLTIP_SHOW_GATHERMATEICONS"] = "右鍵顯示採集助手圖示"

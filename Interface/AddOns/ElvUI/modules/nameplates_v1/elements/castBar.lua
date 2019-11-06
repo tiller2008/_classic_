@@ -7,11 +7,21 @@ local select, unpack = select, unpack
 --WoW API / Variables
 local GetTime = GetTime
 local CreateFrame = CreateFrame
-local UnitCastingInfo = CastingInfo
-local UnitChannelInfo = ChannelInfo
 local hooksecurefunc = hooksecurefunc
 local INTERRUPTED = INTERRUPTED
 local FAILED = FAILED
+local LibClassicCasterino = LibStub('LibClassicCasterino', true)
+local UnitCastingInfo = CastingInfo
+local UnitChannelInfo = ChannelInfo
+if LibClassicCasterino then
+	UnitCastingInfo = function(unit)
+		return LibClassicCasterino:UnitCastingInfo(unit)
+	end
+
+	UnitChannelInfo = function(unit)
+		return LibClassicCasterino:UnitChannelInfo(unit)
+	end
+end
 
 function mod:UpdateElement_CastBarOnUpdate(elapsed)
 	if ( self.casting ) then
@@ -63,6 +73,8 @@ function mod:UpdateElement_CastBarOnUpdate(elapsed)
 end
 
 function mod:UpdateElement_Cast(frame, event, ...)
+	if not frame then return end
+	frame.UnitType = frame.UnitType or "ENEMY_NPC"
 	if(self.db.units[frame.UnitType].castbar.enable ~= true) then return end
 
 	local arg1, arg2 = ...;
@@ -240,7 +252,7 @@ function mod:UpdateElement_Cast(frame, event, ...)
 	end
 
 	if frame.CastBar:IsShown() then --This is so we can trigger based on Cast Name or Interruptible
-		self:UpdateElement_Filters(frame, "UpdateElement_Cast")
+	--	self:UpdateElement_Filters(frame, "UpdateElement_Cast")
 	else
 		frame.CastBar.canInterrupt = nil --Only remove this when it's not shown so we can use it in style filter
 	end

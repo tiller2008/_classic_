@@ -31,6 +31,7 @@ A default texture will be applied if the widget is a Texture and doesn't have a 
 local _, ns = ...
 local oUF = ns.oUF
 local Private = oUF.Private
+local LCT = LibStub("ThreatClassic-1.0", true)
 
 local unitExists = Private.unitExists
 
@@ -53,9 +54,9 @@ local function Update(self, event, unit)
 	-- BUG: Non-existent '*target' or '*pet' units cause UnitThreatSituation() errors
 	if(unitExists(unit)) then
 		if(feedbackUnit and feedbackUnit ~= unit and unitExists(feedbackUnit)) then
-			status = UnitThreatSituation(feedbackUnit, unit)
+			status = LCT:UnitThreatSituation(feedbackUnit, unit)
 		else
-			status = UnitThreatSituation(unit)
+			status = LCT:UnitThreatSituation('player', unit)
 		end
 	end
 
@@ -108,8 +109,7 @@ local function Enable(self)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', Path)
-		self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', Path)
+		LCT.RegisterCallback(element, 'ThreatUpdated', function(unit_id, target_guid, threat) Path(self, nil, self.unit) end)
 
 		if(element:IsObjectType('Texture') and not element:GetTexture()) then
 			element:SetTexture([[Interface\RAIDFRAME\UI-RaidFrame-Threat]])
@@ -123,9 +123,7 @@ local function Disable(self)
 	local element = self.ThreatIndicator
 	if(element) then
 		element:Hide()
-
-		self:UnregisterEvent('UNIT_THREAT_SITUATION_UPDATE', Path)
-		self:UnregisterEvent('UNIT_THREAT_LIST_UPDATE', Path)
+		LCT.UnregisterCallback(element, 'ThreatUpdated', Path)
 	end
 end
 

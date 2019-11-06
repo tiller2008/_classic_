@@ -115,8 +115,7 @@ function UIConfig:CreateMenu()
     UIConfig:SetupDropdown();
 
     UIConfig:InitializeStatsFrames(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown);
-    UIConfig:SetCharacterStats(LeftStatsTable, statsDropdownList[UISettingsCharacter.selectedLeftStatsCategory]);
-    UIConfig:SetCharacterStats(RightStatsTable, statsDropdownList[UISettingsCharacter.selectedRightStatsCategory]);
+    UIConfig:UpdateStats();
 end
 
 function UIConfig:UpdateStats()
@@ -177,7 +176,6 @@ end
 
 -- Extend the functionality of the default CharacterFrameTab
 function ToggleCharacter(tab, onlyShow)
-
 	if E.db.euiscript.csc then
 		if ( tab == "PaperDollFrame") then
 			CSC_UIFrame.CharacterStatsPanel:Show();
@@ -224,8 +222,7 @@ dbLoader:RegisterEvent("PLAYER_LOGOUT");
 function dbLoader:OnEvent(event, arg1)
 	if not E.db.euiscript.csc then return end
 
-    if (event == "ADDON_LOADED" and arg1 == "EuiScript") then
-        -- Global DB
+    if (event == "ADDON_LOADED" and arg1 == "EuiScript") then        -- Global DB
         if (CharacterStatsClassicDB == nil) then
             CharacterStatsClassicDB = UISettingsGlobal;
         else

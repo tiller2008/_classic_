@@ -433,6 +433,9 @@ end
 local NotiCombatLockdown = false
 local function CreateToggleButton(f)
 	if not f then return; end
+	if f:GetName() == "ElvUI_ContainerFrame" and f.offlineButton then return end
+	if f:GetName() == "ContainerFrame1" and ContainerFrame1PortraitButton and ContainerFrame1PortraitButton.dropdownmenu then return end
+
 	if InCombatLockdown() and not NotiCombatLockdown then
 		print(L["Offline Data Center toggle button can not be created in Combating, please leave the combat before retry!"]);
 		NotiCombatLockdown = true

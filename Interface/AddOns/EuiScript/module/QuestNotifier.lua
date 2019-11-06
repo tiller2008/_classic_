@@ -19,7 +19,7 @@ local QN_Locale   = {
 	["Colon"]       = ":",
 	["Quest"]       = "Quest",
 	["Progress"]    = "Progress",
-	["Complete"]    = "Completed!", 
+	["Completed"]    = "Completed!", 
 	["Accept"]      = "AcceptQuest",
 }
 if GetLocale() == 'zhCN' then
@@ -27,7 +27,7 @@ if GetLocale() == 'zhCN' then
 		["Colon"]       = "：",
 		["Quest"]       = "任务",
 		["Progress"]    = "进度",
-		["Complete"]    = "已完成!",
+		["Completed"]    = "已完成!",
 		["Accept"]      = "接受任务",
 	}
 elseif GetLocale() == 'zhTW' then
@@ -35,7 +35,7 @@ elseif GetLocale() == 'zhTW' then
 		["Colon"]       = ":",
 		["Quest"]       = "任務",
 		["Progress"]    = "進度",
-		["Complete"]    = "已完成!",
+		["Completed"]    = "已完成!",
 		["Accept"]      = "接受任務",
 	}
 end

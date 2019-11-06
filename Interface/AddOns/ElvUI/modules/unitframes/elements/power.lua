@@ -48,9 +48,6 @@ function UF:Construct_PowerBar(frame, bg, text, textPos)
 			power.BG = power:CreateTexture(nil, 'BORDER')
 			power.BG:SetAllPoints()
 			power.BG:SetTexture(E["media"].blankTex)
-			if E.db.unitframe.transparent then
-				power.BG:SetAlpha(E.db.general.backdropfadecolor.a or 0.4)
-			end
 		end
 	end
 
@@ -117,6 +114,7 @@ function UF:Configure_Power(frame)
 		if db.power.orientation then
 			power:SetOrientation(db.power.orientation)
 		end
+
 		--Colors
 		power.colorClass = nil
 		power.colorReaction = nil
@@ -151,24 +149,25 @@ function UF:Configure_Power(frame)
 		if frame.POWERBAR_DETACHED then
 			power:Width(frame.POWERBAR_WIDTH - ((frame.BORDER + frame.SPACING)*2))
 			power:Height(frame.POWERBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
-			if not power.Holder or (power.Holder and not power.Holder.mover) then
+
+			if frame.unitframeType and (frame.unitframeType == "player" or frame.unitframeType == "target") and not power.Holder then
 				power.Holder = CreateFrame("Frame", nil, power)
 				power.Holder:Size(frame.POWERBAR_WIDTH, frame.POWERBAR_HEIGHT)
 				power.Holder:Point("BOTTOM", frame, "BOTTOM", 0, -20)
 				power:ClearAllPoints()
 				power:Point("BOTTOMLEFT", power.Holder, "BOTTOMLEFT", frame.BORDER+frame.SPACING, frame.BORDER+frame.SPACING)
 				--Currently only Player and Target can detach power bars, so doing it this way is okay for now
-				if frame.unitframeType and frame.unitframeType == "player" then
+				if frame.unitframeType == "player" then
 					E:CreateMover(power.Holder, 'PlayerPowerBarMover', L["Player Powerbar"], nil, nil, nil, 'ALL,SOLO', nil, 'unitframe,player,power')
-				elseif frame.unitframeType and frame.unitframeType == "target" then
+				elseif frame.unitframeType == "target" then
 					E:CreateMover(power.Holder, 'TargetPowerBarMover', L["Target Powerbar"], nil, nil, nil, 'ALL,SOLO', nil, 'unitframe,target,power')
 				end
-			else
+			end
+
+			if power.Holder then
+				E:EnableMover(power.Holder.mover:GetName())
 				power.Holder:Size(frame.POWERBAR_WIDTH, frame.POWERBAR_HEIGHT)
-				power:ClearAllPoints()
 				power:Point("BOTTOMLEFT", power.Holder, "BOTTOMLEFT", frame.BORDER+frame.SPACING, frame.BORDER+frame.SPACING)
-				power.Holder.mover:SetScale(1)
-				power.Holder.mover:SetAlpha(1)
 			end
 
 			power:SetFrameLevel(50) --RaisedElementParent uses 100, we want lower value to allow certain icons and texts to appear above power
@@ -183,7 +182,7 @@ function UF:Configure_Power(frame)
 				power:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 				power:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			end
-			power:SetFrameLevel(frame.Health:GetFrameLevel() -5) --Health uses 10
+			power:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
 		elseif frame.USE_INSET_POWERBAR then
 			power:Height(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2))
 			power:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.BORDER + (frame.BORDER*2), frame.BORDER + (frame.BORDER*2))
@@ -209,26 +208,25 @@ function UF:Configure_Power(frame)
 			power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER, -frame.SPACING*3)
 			power:Height(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2))
 
-			power:SetFrameLevel(frame.Health:GetFrameLevel() - 5)
+			power:SetFrameLevel(frame.Health:GetFrameLevel() + 5)
 		end
 
-		--Hide mover until we detach again
-		if not frame.POWERBAR_DETACHED then
-			if power.Holder and power.Holder.mover then
-				power.Holder.mover:SetScale(0.0001)
-				power.Holder.mover:SetAlpha(0)
-			end
+		if not frame.POWERBAR_DETACHED and power.Holder then
+			E:DisableMover(power.Holder.mover:GetName())
 		end
 
 		if db.power.strataAndLevel and db.power.strataAndLevel.useCustomStrata then
 			power:SetFrameStrata(db.power.strataAndLevel.frameStrata)
 		else
-			power:SetFrameStrata("LOW")
+			power:SetFrameStrata(frame:GetFrameStrata())
 		end
+
 		if db.power.strataAndLevel and db.power.strataAndLevel.useCustomLevel then
 			power:SetFrameLevel(db.power.strataAndLevel.frameLevel)
-			power.backdrop:SetFrameLevel(power:GetFrameLevel() - 1)
 		end
+
+		power.backdrop:SetFrameLevel(power:GetFrameLevel() - 1)
+
 
 		if frame.POWERBAR_DETACHED and db.power.parent == "UIPARENT" then
 			E.FrameLocks[power] = true
@@ -269,40 +267,25 @@ function UF:PostUpdatePowerColor()
 	end
 end
 
-function UF:PostUpdatePower(unit, _, _, max)
+function UF:PostUpdatePower(unit, cur, _, max)
 	local parent = self.origParent or self:GetParent()
 	if parent.isForced then
 		self:SetValue(random(1, max))
 	end
 
-	local db = parent.db
-
-	if (unit == 'player' and db and db.power.colorPerc and cur and cur > 0) then
-		local per = cur / max
-		if (per >= 0.9) then
-			self:SetStatusBarColor(db.power.color9.r, db.power.color9.g, db.power.color9.b)
-		elseif (per < 0.9 and per >= 0.8) then
-			self:SetStatusBarColor(db.power.color8.r, db.power.color8.g, db.power.color8.b)
-		elseif (per < 0.8 and per >= 0.7) then
-			self:SetStatusBarColor(db.power.color7.r, db.power.color7.g, db.power.color7.b)
-		elseif (per < 0.7 and per >= 0.6) then
-			self:SetStatusBarColor(db.power.color6.r, db.power.color6.g, db.power.color6.b)
-		elseif (per < 0.6 and per >= 0.5) then
-			self:SetStatusBarColor(db.power.color5.r, db.power.color5.g, db.power.color5.b)
-		elseif (per < 0.5 and per >= 0.4) then
-			self:SetStatusBarColor(db.power.color4.r, db.power.color4.g, db.power.color4.b)
-		elseif (per < 0.4 and per >= 0.3) then
-			self:SetStatusBarColor(db.power.color3.r, db.power.color3.g, db.power.color3.b)
-		elseif (per < 0.3 and per >= 0.2) then
-			self:SetStatusBarColor(db.power.color2.r, db.power.color2.g, db.power.color2.b)
-		elseif (per < 0.2 and per >= 0.1) then
-			self:SetStatusBarColor(db.power.color1.r, db.power.color1.g, db.power.color1.b)
-		elseif (per < 0.1 and per > 0) then
-			self:SetStatusBarColor(db.power.color0.r, db.power.color0.g, db.power.color0.b)
+	if parent.db and parent.db.power then
+		if unit == 'player' and parent.db.power.autoHide and parent.POWERBAR_DETACHED then
+			if (cur == 0) then
+				self:Hide()
+			else
+				self:Show()
+			end
+		elseif not self:IsShown() then
+			self:Show()
 		end
-	end
 
-	if parent.db and parent.db.power and parent.db.power.hideonnpc then
-		UF:PostNamePosition(parent, unit)
+		if parent.db.power.hideonnpc then
+			UF:PostNamePosition(parent, unit)
+		end
 	end
 end

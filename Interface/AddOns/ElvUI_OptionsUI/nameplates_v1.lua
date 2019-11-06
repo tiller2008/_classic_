@@ -2737,7 +2737,7 @@ end
 
 E.Options.args.nameplate_v1 = {
 	type = "group",
-	name = "05.1"..L["NamePlates"].."V1",
+	name = "05.1."..L["NamePlates"].."V1",
 	childGroups = "tree",
 	get = function(info) return E.db.nameplates_v1[ info[#info] ] end,
 	set = function(info, value) E.db.nameplates_v1[ info[#info] ] = value; NP:ConfigureAll() end,

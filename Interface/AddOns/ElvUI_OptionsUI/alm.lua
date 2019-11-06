@@ -182,11 +182,11 @@ local function UpdateSpellInfo(p, k)
 end	
 
 local function GetTalentName(spec)
-	if spec == 0 then
-		return TALENT.. ': '.. E.ValColor.. L['no talent'].. '|r';
-	else
-		return TALENT.. ': '.. E.ValColor.. select(2, GetSpecializationInfoByID(spec)).. '|r';
-	end
+	-- if spec == 0 then
+		-- return TALENT.. ': '.. E.ValColor.. L['no talent'].. '|r';
+	-- else
+		-- return TALENT.. ': '.. E.ValColor.. select(2, GetSpecializationInfoByID(spec)).. '|r';
+	-- end
 end
 
 function Module:GenerateOptions()
@@ -371,11 +371,11 @@ function Module:GenerateOptions()
 						name = L['useList'],
 						guiInline = true,
 						args = {
-							talent = {
-								order = 0,
-								name = GetTalentName(spec),
-								type = "description",
-							},	
+							-- talent = {
+								-- order = 0,
+								-- name = GetTalentName(spec),
+								-- type = "description",
+							-- },	
 							useList = {
 								order = 1,
 								type = 'multiselect',
@@ -484,11 +484,11 @@ function Module:GenerateOptions()
 						name = L['useList'],
 						guiInline = true,
 						args = {
-							talent = {
-								order = 0,
-								name = GetTalentName(spec),
-								type = "description",
-							},							
+							-- talent = {
+								-- order = 0,
+								-- name = GetTalentName(spec),
+								-- type = "description",
+							-- },							
 							useList = {
 								order = 1,
 								type = 'multiselect',
@@ -597,11 +597,11 @@ function Module:GenerateOptions()
 						name = L['useList'],
 						guiInline = true,
 						args = {
-							talent = {
-								order = 0,
-								name = GetTalentName(spec),
-								type = "description",
-							},						
+							-- talent = {
+								-- order = 0,
+								-- name = GetTalentName(spec),
+								-- type = "description",
+							-- },						
 							useList = {
 								order = 1,
 								type = 'multiselect',
@@ -710,11 +710,11 @@ function Module:GenerateOptions()
 						name = L['useList'],
 						guiInline = true,
 						args = {
-							talent = {
-								order = 0,
-								name = GetTalentName(spec),
-								type = "description",
-							},						
+							-- talent = {
+								-- order = 0,
+								-- name = GetTalentName(spec),
+								-- type = "description",
+							-- },						
 							useList = {
 								order = 1,
 								type = 'multiselect',
@@ -831,11 +831,11 @@ function Module:GenerateOptions()
 						disabled = function() return not E.db.ALM.spellCD.enable end,
 						func = function() wipe(E.db.ALM.spellCD); E:CopyTable(E.db.ALM.spellCD, P.ALM.spellCD); E:StaticPopup_Show("CONFIG_RL"); end,
 					},
-					talent = {
-						order = 10,
-						name = GetTalentName(spec),
-						type = "description",
-					},	
+					-- talent = {
+						-- order = 10,
+						-- name = GetTalentName(spec),
+						-- type = "description",
+					-- },	
 					SpellID = {
 						order = 11,
 						name = L['Add SpellID'],

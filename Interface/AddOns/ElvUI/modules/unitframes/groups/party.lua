@@ -59,6 +59,7 @@ function UF:Construct_PartyFrames()
 		self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
 		self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
 		self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
+		self.ResurrectIndicator = UF:Construct_ResurrectionIcon(self)
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.PhaseIndicator = UF:Construct_PhaseIcon(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
@@ -87,7 +88,7 @@ function UF:Update_PartyHeader(header, db)
 
 	if not headerHolder.positioned then
 		headerHolder:ClearAllPoints()
-		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
+		headerHolder:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 225)
 
 		E:CreateMover(headerHolder, headerHolder:GetName()..'Mover', L["Party Frames"], nil, nil, nil, 'ALL,PARTY', nil, 'unitframe,party,generalGroup')
 		headerHolder.positioned = true;
@@ -234,6 +235,8 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_Auras(frame, 'Buffs')
 		UF:Configure_Auras(frame, 'Debuffs')
 
+		UF:Configure_ResurrectionIcon(frame)
+
 		UF:Configure_RaidDebuffs(frame)
 
 		UF:Configure_RaidIcon(frame)
@@ -244,7 +247,7 @@ function UF:Update_PartyFrames(frame, db)
 
 		UF:Configure_RaidRoleIcons(frame)
 
-		UF:UpdateAuraWatch(frame)
+		UF:Configure_AuraWatch(frame)
 
 		UF:Configure_ReadyCheckIcon(frame)
 

@@ -1,6 +1,6 @@
 ﻿## Interface: 11302
 ## Author: Lag
-## Version: v1.1.10
+## Version: v1.3.3
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -13,8 +13,6 @@
 
 ## X-Category: Map
 ## X-License: GPL v2
-
-## X-AtlasLoot-LootModule: 0
 
 embeds.xml
 

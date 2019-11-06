@@ -10,6 +10,17 @@
 	
 	You can post the file here for it to be added to default ElvUI files: http://www.tukui.org/forums/forum.php?id=88
 ]]
+L['AH Enhance'] = '拍賣增強'
+L["Disabled? Re-enabled please enable in single-addon management!"] = '禁用？重新啟用需在單體插件管理中啟用！'
+L["Unit Price"] = '一口單價'
+L['Searching...'] = '搜索中'
+L['Search Complete'] = '搜索完成'
+L['<You are the highest bidder>'] = "<你是最高出價者>"
+L['<There is a bidding for this item.>'] = "<此物品有人競標>"
+L['Search Cancelled'] = "搜索已取消"
+L["Today: "] = "今日:"
+L["For compatibility issues, please select an auctioneer addon"] = "因相容性問題, 請選擇一個拍賣行插件！"
+
 --Static Popup
 do
 	L["A new major release of ElvUI is coming with patch 8.1.5 on March 12th. Nameplate settings will be reset in this release. Make sure you are prepared. Visit the link below for details."] = "姓名版配置在20190314A版本中被重置。"
@@ -2447,6 +2458,7 @@ end
 
 --euiscript
 do
+	L["MISC_BUY_STACK"] = "Alt+右鍵批量購買"
 	L["SlotItemLevel"] = "裝備等級"
 	L["CrucibleWeight"] = "熔爐類比模組";
 	L["Click Show/Hide Member Info"] = "點擊 顯示/隱藏 成員資料"

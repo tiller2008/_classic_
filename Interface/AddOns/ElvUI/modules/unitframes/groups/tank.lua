@@ -22,7 +22,6 @@ function UF:Construct_TankFrames()
 
 	self.Health = UF:Construct_HealthBar(self, true)
 	self.Name = UF:Construct_NameText(self)
-	self.ThreatIndicator = UF:Construct_Threat(self)
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 	self.MouseGlow = UF:Construct_MouseGlow(self)
 	self.TargetGlow = UF:Construct_TargetGlow(self)
@@ -45,7 +44,6 @@ function UF:Construct_TankFrames()
 		self.ClickSet = E.db["clickset"]
 	end
 
-	UF:Update_TankFrames(self, E.db.unitframe.units.tank)
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
@@ -146,9 +144,6 @@ function UF:Update_TankFrames(frame, db)
 	--Name
 	UF:UpdateNameSettings(frame)
 
-	--Threat
-	UF:Configure_Threat(frame)
-
 	--Fader
 	UF:Configure_Fader(frame)
 
@@ -170,7 +165,7 @@ function UF:Update_TankFrames(frame, db)
 		UF:Configure_DebuffHighlight(frame)
 
 		--Buff Indicator
-		UF:UpdateAuraWatch(frame)
+		UF:Configure_AuraWatch(frame)
 	end
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

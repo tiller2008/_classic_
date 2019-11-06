@@ -1,17 +1,15 @@
 ## Interface: 11302
 ## Title: |cffC495DDEUI|rClassicCodex
+## Notes: ClassicCodex
 ## Title-zhCN: |cffC495DDEUI|r任务助手
 ## Title-zhTW: |cffC495DDEUI|r任務助手
-## Notes: ClassicCodex
-## Notes-zhCN: 任务助手
-## Notes-zhTW: 任務助手
+## Notes-zhCN: |cff00ff00由网易有爱ALA在ClassicCodex原版基础上深度优化，并重做数据库|r
 ## Author: Pgarneau, Shagu
-## Version: 1.2.1
+## Version: 1.2.2-ALA1006-L1
 ## SavedVariablesPerCharacter: CodexConfig, CodexHiddenQuests, CodexBrowserFavorites, CodexColors
 ## Dependencies: ElvUI
 ## X-Revision: ElvUI
 ## LoadOnDemand: 1
-
 # database index
 db\init.lua
 db\items.lua
@@ -51,6 +49,9 @@ db\zhTW\professions.lua
 ..\libs\HereBeDragons\HereBeDragons-2.0.lua
 ..\libs\HereBeDragons\HereBeDragons-Pins-2.0.lua
 
+
+
+UI_LOCALE.lua
 # main
 command.lua
 config.lua
@@ -60,3 +61,4 @@ map.lua
 quest.lua
 ui.lua
 browser.lua
+

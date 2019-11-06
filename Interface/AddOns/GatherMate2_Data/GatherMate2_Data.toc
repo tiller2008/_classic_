@@ -1,0 +1,18 @@
+## Interface: 11302
+## Notes: Wowhead Data dump for GatherMate2 - Converted for Classic from Pre-Cata by TheSpanishInquisition
+## Notes-zhTW: Wowhead 資料轉存至採集助手 GatherMate2
+## Notes-zhCN: Wowhead 资料转存至采集助手 GatherMate2
+## Title: |cffC495DDEUI|rGatherMate2Data
+## Title-zhCN: |cffC495DDEUI|r采集助手数据库
+## Title-zhTW: |cffC495DDEUI|r採集助手資料庫
+## Author: kagaro, Xinhuan, Spinx
+## X-Category: Map
+## Version: v2019-09-25
+## LoadOnDemand: 1
+## Dependencies: GatherMate2
+
+MiningData.lua
+HerbalismData.lua
+FishData.lua
+TreasureData.lua
+GatherMateData.lua

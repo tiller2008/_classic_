@@ -100,6 +100,27 @@ E.PopupDialogs.ELVUI_UPDATED_WHILE_RUNNING = {
 	whileDead = 1,
 }
 
+E.PopupDialogs.AH_ADDON_SELECT = {
+	text = 	L["For compatibility issues, please select an auctioneer addon"],
+	button1 = GetAddOnMetadata('BaudAuction', 'Title'),
+	button2 = GetAddOnMetadata('AuctionFaster', 'Title'),
+	OnAccept = function(self)
+		E.db.SingleAddons.BaudAuction = true
+		AddonList_Enable("BaudAuction", true)
+		E.db.SingleAddons.AuctionFaster = false
+		E:StaticPopup_Show("PRIVATE_RL")
+	end,
+	OnCancel = function(self)
+		E.db.SingleAddons.BaudAuction = false
+		AddonList_Enable("BaudAuction", false)
+		E.db.SingleAddons.AuctionFaster = true
+		E:StaticPopup_Show("PRIVATE_RL")
+	end,
+	timeout = 0,
+	whileDead = 1,
+	showAlert = 1,
+}
+
 E.PopupDialogs.ELVUI_UPDATE_AVAILABLE = {
 	text = L["ElvUI is five or more revisions out of date. You can download the newest version from www.tukui.org. Get premium membership and have ElvUI automatically updated with the Tukui Client!"],
 	hasEditBox = 1,

@@ -4,7 +4,7 @@ local oUF = E.oUF
 
 --Lua functions
 local _G = _G
-local format, pairs, select, strsplit, type, wipe = format, pairs, select, strsplit, type, wipe
+local format, pairs, select, strsplit, type = format, pairs, select, strsplit, type
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local GetCVar = GetCVar
@@ -15,7 +15,6 @@ local SetCVar = SetCVar
 local UnitClass = UnitClass
 local UnitClassification = UnitClassification
 local UnitCreatureType = UnitCreatureType
-local UnitExists = UnitExists
 local UnitFactionGroup = UnitFactionGroup
 local UnitGUID = UnitGUID
 local UnitIsFriend = UnitIsFriend
@@ -26,22 +25,8 @@ local UnitName = UnitName
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitReaction = UnitReaction
 local C_NamePlate_SetNamePlateEnemyClickThrough = C_NamePlate.SetNamePlateEnemyClickThrough
-local C_NamePlate_SetNamePlateEnemySize = C_NamePlate.SetNamePlateEnemySize
 local C_NamePlate_SetNamePlateFriendlyClickThrough = C_NamePlate.SetNamePlateFriendlyClickThrough
-local C_NamePlate_SetNamePlateFriendlySize = C_NamePlate.SetNamePlateFriendlySize
 local C_NamePlate_SetNamePlateSelfClickThrough = C_NamePlate.SetNamePlateSelfClickThrough
-local C_NamePlate_SetNamePlateSelfSize = C_NamePlate.SetNamePlateSelfSize
-local hooksecurefunc = hooksecurefunc
-
-do
-	function NP:UnitExists(unit)
-		return UnitExists(unit)
-	end
-
-	function NP:UnitSelectionType(unit, considerHostile)
-		return 0
-	end
-end
 
 local function CopySettings(from, to)
 	for setting, value in pairs(from) do
@@ -88,6 +73,7 @@ function NP:CVarReset()
 	SetCVar("nameplateOverlapH", GetCVarDefault("nameplateOverlapH"))
 	SetCVar("nameplateOverlapV", GetCVarDefault("nameplateOverlapV"))
 	SetCVar("nameplateSelectedAlpha", 1)
+	SetCVar("nameplateNotSelectedAlpha", 1)
 	SetCVar("nameplateSelectedScale", 1)
 	SetCVar("nameplateSelfAlpha", 1)
 	SetCVar("nameplateSelfBottomInset", GetCVarDefault("nameplateSelfBottomInset"))
@@ -124,8 +110,6 @@ function NP:SetCVars()
 	SetCVar("nameplateShowFriendlyNPCs", NP.db.visibility.friendly.npcs and 1 or 0)
 	SetCVar("nameplateShowFriendlyPets", NP.db.visibility.friendly.pets and 1 or 0)
 	SetCVar("nameplateShowFriendlyTotems", NP.db.visibility.friendly.totems and 1 or 0)
-
---	SetCVar("nameplateMaxDistance", E.db.nameplates.loadDistance or "4e1")
 end
 
 function NP:PLAYER_REGEN_DISABLED()
@@ -195,23 +179,10 @@ function NP:StyleTargetPlate(nameplate)
 	--nameplate.Power.Text = NP:Construct_TagText(nameplate.RaisedElement)
 
 	nameplate.ClassPower = NP:Construct_ClassPower(nameplate)
-
-	if E.myclass == "DEATHKNIGHT" then
-		nameplate.Runes = NP:Construct_Runes(nameplate)
-	elseif E.myclass == "MONK" then
-		nameplate.Stagger = NP:Construct_Stagger(nameplate)
-	end
 end
 
 function NP:UpdateTargetPlate(nameplate)
 	NP:Update_ClassPower(nameplate)
-
-	if E.myclass == "DEATHKNIGHT" then
-		NP:Update_Runes(nameplate)
-	elseif E.myclass == "MONK" then
-		NP:Update_Stagger(nameplate)
-	end
-
 	nameplate:UpdateAllElements("OnShow")
 end
 
@@ -262,7 +233,7 @@ function NP:StylePlate(nameplate)
 
 	NP.Plates[nameplate] = nameplate:GetName()
 
---	NP:StyleFilterPlateStyled(nameplate)
+	NP:StyleFilterPlateStyled(nameplate)
 end
 
 function NP:UpdatePlate(nameplate)
@@ -294,7 +265,7 @@ function NP:UpdatePlate(nameplate)
 		end
 	end
 
-	--NP:StyleFilterEvents(nameplate)
+	NP:StyleFilterEvents(nameplate)
 end
 
 function NP:DisablePlate(nameplate, nameOnly)
@@ -386,16 +357,10 @@ function NP:PLAYER_ENTERING_WORLD()
 	if NP.db.units.PLAYER.enable and NP.db.units.PLAYER.useStaticPosition then
 		NP:UpdatePlate(_G.ElvNP_Player)
 	end
-
-	if instanceType == 'party' or instanceType == 'raid' then
-		NamePlateDriverFrame:UpdateNamePlateOptions()
-	end
 end
 
 function NP:ConfigureAll()
-	--NP:StyleFilterConfigure() -- keep this at the top
-
-	--local Scale = E.global.general.UIScale
+	NP:StyleFilterConfigure() -- keep this at the top
 
 	NP:PLAYER_REGEN_ENABLED()
 
@@ -437,7 +402,7 @@ function NP:ConfigureAll()
 				NP.PlayerNamePlateAnchor:Show()
 			end
 
-			--NP:StyleFilterUpdate(nameplate, "NAME_PLATE_UNIT_ADDED") -- keep this at the end of the loop
+			NP:StyleFilterUpdate(nameplate, "NAME_PLATE_UNIT_ADDED") -- keep this at the end of the loop
 		end
 	end
 
@@ -471,7 +436,7 @@ end
 
 function NP:NamePlateCallBack(nameplate, event, unit)
 	if event == "NAME_PLATE_UNIT_ADDED" then
---		NP:StyleFilterClear(nameplate) -- keep this at the top
+		NP:StyleFilterClear(nameplate) -- keep this at the top
 
 		unit = unit or nameplate.unit
 
@@ -492,7 +457,7 @@ function NP:NamePlateCallBack(nameplate, event, unit)
 			NP:UpdatePlateGUID(nameplate, nameplate.unitGUID)
 		end
 
-		--NP:StyleFilterSetVariables(nameplate) -- sets: isTarget, isTargetingMe, isFocused
+		NP:StyleFilterSetVariables(nameplate) -- sets: isTarget, isTargetingMe, isFocused
 
 		if UnitIsUnit(unit, "player") and NP.db.units.PLAYER.enable then
 			nameplate.frameType = "PLAYER"
@@ -532,9 +497,9 @@ function NP:NamePlateCallBack(nameplate, event, unit)
 
 		nameplate:UpdateTags()
 
-		--NP:StyleFilterUpdate(nameplate, event) -- keep this at the end
+		NP:StyleFilterUpdate(nameplate, event) -- keep this at the end
 	elseif event == "NAME_PLATE_UNIT_REMOVED" then
-		--NP:StyleFilterClear(nameplate) -- keep this at the top
+		NP:StyleFilterClear(nameplate) -- keep this at the top
 
 		if nameplate.frameType == "PLAYER" and (nameplate ~= _G.ElvNP_Test) then
 			NP.PlayerNamePlateAnchor:Hide()
@@ -553,7 +518,7 @@ function NP:NamePlateCallBack(nameplate, event, unit)
 		nameplate.Health.cur = nil
 		nameplate.Power.cur = nil
 
-		--NP:StyleFilterClearVariables(nameplate)
+		NP:StyleFilterClearVariables(nameplate)
 	elseif event == "PLAYER_TARGET_CHANGED" then -- we need to check if nameplate exists in here
 		NP:SetupTarget(nameplate) -- pass it, even as nil here
 	end
@@ -590,24 +555,6 @@ function NP:Initialize()
 	NP.StatusBars = {}
 	NP.GroupRoles = {}
 	NP.multiplier = 0.35
-
-	local BlizzPlateManaBar = _G.NamePlateDriverFrame.classNamePlatePowerBar
-	if BlizzPlateManaBar then
-		BlizzPlateManaBar:Hide()
-		BlizzPlateManaBar:UnregisterAllEvents()
-	end
-
-	hooksecurefunc(_G.NamePlateDriverFrame, "UpdateNamePlateOptions", function()
-		if not InCombatLockdown() then
-			local Scale = E.global.general.UIScale
-			C_NamePlate_SetNamePlateSelfSize(NP.db.plateSize.personalWidth * Scale, NP.db.plateSize.personalHeight * Scale)
-			C_NamePlate_SetNamePlateEnemySize(NP.db.plateSize.enemyWidth * Scale, NP.db.plateSize.enemyHeight * Scale)
-
-			if NP.InstanceType ~= 'party' and NP.InstanceType ~= 'raid' then
-				C_NamePlate_SetNamePlateFriendlySize(NP.db.plateSize.friendlyWidth * Scale, NP.db.plateSize.friendlyHeight * Scale)
-			end
-		end
-	end)
 
 	oUF:Spawn("player", "ElvNP_Player", "")
 
@@ -668,9 +615,9 @@ function NP:Initialize()
 	NP:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	NP:RegisterEvent("GROUP_ROSTER_UPDATE")
 	NP:RegisterEvent("GROUP_LEFT")
-	--NP:RegisterEvent("PLAYER_LOGOUT", NP.StyleFilterClearDefaults)
+	NP:RegisterEvent("PLAYER_LOGOUT", NP.StyleFilterClearDefaults)
 
-	--NP:StyleFilterInitialize()
+	NP:StyleFilterInitialize()
 	NP:HideInterfaceOptions()
 	NP:SetCVars()
 	NP:ConfigureAll()

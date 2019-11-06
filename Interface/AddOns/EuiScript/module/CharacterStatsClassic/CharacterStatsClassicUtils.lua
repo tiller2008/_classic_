@@ -6,6 +6,11 @@ local function DebugBreakPrint()
     print("ERROR");
 end
 
+local CSC_ScanTooltip = CreateFrame("GameTooltip", "CSC_ScanTooltip", nil, "GameTooltipTemplate");
+CSC_ScanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+local CSC_ScanTooltipPrefix = "CSC_ScanTooltip";
+
+-- GENERAL UTIL FUNCTIONS --
 local function CSC_GetAppropriateDamage(unit, category)
 	if category == PLAYERSTAT_MELEE_COMBAT then
 		return UnitDamage(unit);
@@ -77,11 +82,33 @@ local function CSC_PaperDollFormatStat(name, base, posBuff, negBuff)
 		-- positive buffs. Otherwise show the number in green
 		if ( negBuff < 0 ) then
 			effective = RED_FONT_COLOR_CODE..effective..FONT_COLOR_CODE_CLOSE;
+		elseif (posBuff > 0) then
+			effective = GREEN_FONT_COLOR_CODE..effective..FONT_COLOR_CODE_CLOSE;
 		end
 	end
     
     return effective, text;
 end
+
+local function CSC_GetMP5FromGear(unit)
+	local mp5 = 0;
+	for i=1,18 do
+		local itemLink = GetInventoryItemLink(unit, i);
+		if itemLink then
+			local stats = GetItemStats(itemLink);
+			if stats then
+				-- For some reason this returns (mp5 - 1) so I have to add 1 to the result
+				local statMP5 = stats["ITEM_MOD_POWER_REGEN0_SHORT"];
+				if (statMP5) then
+					mp5 = mp5 + statMP5 + 1;
+				end
+			end
+		end
+	end
+
+	return mp5;
+end
+-- GENERAL UTIL FUNCTIONS END --
 
 -- PRIMARY STATS --
 function CSC_PaperDollFrame_SetPrimaryStats(statFrames, unit)
@@ -181,7 +208,7 @@ function CSC_PaperDollFrame_SetDamage(statFrame, unit, category)
     
     local colorPos = "|cff20ff20";
     local colorNeg = "|cffff2020";
-    
+	
     -- epsilon check
 	if ( totalBonus < 0.1 and totalBonus > -0.1 ) then
 		totalBonus = 0.0;
@@ -361,13 +388,50 @@ function CSC_PaperDollFrame_SetSpellCritChance(statFrame, unit)
 		maxSpellCrit = max(maxSpellCrit, bonusCrit);
 	end
 
-    CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, maxSpellCrit, true, maxSpellCrit);
 	statFrame.holyCrit = GetSpellCritChance(2);
 	statFrame.fireCrit = GetSpellCritChance(3);
 	statFrame.natureCrit = GetSpellCritChance(4);
 	statFrame.frostCrit = GetSpellCritChance(5);
 	statFrame.shadowCrit = GetSpellCritChance(6);
 	statFrame.arcaneCrit = GetSpellCritChance(7);
+
+	local unitClassLoc = select(2, UnitClass(unit));
+	if (unitClassLoc == "MAGE") then
+		local arcaneInstabilityCrit, criticalMassCrit = CSC_GetMageCritStatsFromTalents();
+		if (arcaneInstabilityCrit > 0) then
+			-- increases the crit of all spell schools
+			statFrame.holyCrit = statFrame.holyCrit + arcaneInstabilityCrit;
+			statFrame.fireCrit = statFrame.fireCrit + arcaneInstabilityCrit;
+			statFrame.natureCrit = statFrame.natureCrit + arcaneInstabilityCrit;
+			statFrame.frostCrit = statFrame.frostCrit + arcaneInstabilityCrit;
+			statFrame.shadowCrit = statFrame.shadowCrit + arcaneInstabilityCrit;
+			statFrame.arcaneCrit = statFrame.arcaneCrit + arcaneInstabilityCrit;
+			-- set the new maximum
+			maxSpellCrit = maxSpellCrit + arcaneInstabilityCrit;
+		end
+		if (criticalMassCrit > 0) then
+			statFrame.fireCrit = statFrame.fireCrit + criticalMassCrit;
+			-- set the new maximum
+			maxSpellCrit = max(maxSpellCrit, statFrame.fireCrit);
+		end
+	elseif (unitClassLoc == "PRIEST") then
+		local priestHolyCrit = CSC_GetPriestCritStatsFromTalents();
+		if (priestHolyCrit > 0) then
+			statFrame.holyCrit = statFrame.holyCrit + priestHolyCrit;
+			-- set the new maximum
+			maxSpellCrit = max(maxSpellCrit, statFrame.holyCrit);
+		end
+	elseif (unitClassLoc == "PALADIN") then
+		local paladinHolyCrit = CSC_GetPaladinCritStatsFromTalents();
+		if (paladinHolyCrit > 0) then
+			statFrame.holyCrit = statFrame.holyCrit + paladinHolyCrit;
+			-- set the new maximum
+			maxSpellCrit = max(maxSpellCrit, statFrame.holyCrit);
+		end
+	end
+
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, maxSpellCrit, true, maxSpellCrit);
+
     statFrame:Show();
 end
 
@@ -485,13 +549,19 @@ function CSC_PaperDollFrame_SetDefense(statFrame, unit)
 
 	local numSkills = GetNumSkillLines();
 	local skillIndex = 0;
+	local currentHeader = nil;
 
 	for i = 1, numSkills do
 		local skillName = select(1, GetSkillLineInfo(i));
+		local isHeader = select(2, GetSkillLineInfo(i));
 
-		if (skillName == DEFENSE) then
-			skillIndex = i;
-			break;
+		if isHeader ~= nil and isHeader then
+			currentHeader = skillName;
+		else
+			if (currentHeader == CSC_WEAPON_SKILLS_HEADER and skillName == CSC_DEFENSE) then
+				skillIndex = i;
+				break;
+			end
 		end
 	end
 
@@ -513,7 +583,7 @@ function CSC_PaperDollFrame_SetDefense(statFrame, unit)
 	end
 	local valueText, tooltipText = CSC_PaperDollFormatStat(DEFENSE_COLON, skillRank, posBuff, negBuff);
 	local valueNum = max(0, skillRank + posBuff + negBuff);
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, DEFENSE, valueText, false, valueNum);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, CSC_DEFENSE, valueText, false, valueNum);
 	statFrame.tooltip = tooltipText;
 	tooltipText = format(DEFAULT_STATDEFENSE_TOOLTIP, valueNum, 0, valueNum*0.04, valueNum*0.04);
 	tooltipText = tooltipText:gsub('.-\n', '', 1);
@@ -538,50 +608,51 @@ function CSC_PaperDollFrame_SetParry(statFrame, unit)
 	statFrame:Show();
 end
 
-local function CSC_PaperDollFrame_GetArmorReduction(armor, attackerLevel)
-	return C_PaperDollInfo.GetArmorEffectiveness(armor, attackerLevel) * 100;
-end
+local function CSC_GetBlockValue(unit)
+	CSC_ScanTooltip:ClearLines();
 
-local function CSC_PaperDollFrame_GetArmorReductionAgainstTarget(armor)
-	local armorEffectiveness = C_PaperDollInfo.GetArmorEffectivenessAgainstTarget(armor);
-	if ( armorEffectiveness ) then
-		return armorEffectiveness * 100;
+	local blockFromShield = 0;
+	local offHandIndex = 17;
+
+	local hasItem = CSC_ScanTooltip:SetInventoryItem(unit, offHandIndex);
+	if hasItem then
+		local maxLines = CSC_ScanTooltip:NumLines();
+		for line=1, maxLines do
+			local leftText = getglobal(CSC_ScanTooltipPrefix.."TextLeft"..line);
+			if leftText:GetText() then
+				local valueTxt = string.match(leftText:GetText(), "%d+ "..ITEM_MOD_BLOCK_RATING_SHORT);
+				if valueTxt then
+					valueTxt = string.match(valueTxt, "%d+");
+					if valueTxt then
+						local numValue = tonumber(valueTxt);
+						if numValue then
+							blockFromShield = numValue;
+						end
+					end
+				end
+			end
+		end
 	end
+
+	local strStatIndex = 1;
+	local strength = select(2, UnitStat(unit, strStatIndex));
+	local blockValue = blockFromShield + (strength / 20);
+
+	return blockValue;
 end
 
 function CSC_PaperDollFrame_SetBlock(statFrame, unit)
-	local chance = GetBlockChance();
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, chance, true, chance);
-	statFrame.tooltip = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, BLOCK_CHANCE).." "..string.format("%.2F", chance).."%";
+
+	statFrame:SetScript("OnEnter", CSC_CharacterBlock_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 	
-	--[[
-	local shieldBlockArmor = GetShieldBlock();
-	local blockArmorReduction = CSC_PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit));
-	local blockArmorReductionAgainstTarget = CSC_PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
+	local blockChance = GetBlockChance();
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, blockChance, true, blockChance);
 
-	statFrame.tooltip2 = CR_BLOCK_TOOLTIP:format(blockArmorReduction);
-	if (blockArmorReductionAgainstTarget) then
-		--statFrame.tooltip3 = format(STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget);
-	else
-		statFrame.tooltip3 = nil;
-	end
-	--]]
-
-	statFrame:Show();
-end
-
-function CSC_PaperDollFrame_SetStagger(statFrame, unit)
-	local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage(unit);
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_STAGGER, stagger, true, stagger);
-
-	statFrame.tooltip = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAGGER).." "..string.format("%.2F%%",stagger);
-	statFrame.tooltip2 = format(STAT_STAGGER_TOOLTIP, stagger);
-	if (staggerAgainstTarget) then
-		statFrame.tooltip3 = format(STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget);
-	else
-		statFrame.tooltip3 = nil;
-	end
-
+	statFrame.blockChance = string.format("%.2F", blockChance).."%";
+	statFrame.blockValue = CSC_GetBlockValue(unit);
 	statFrame:Show();
 end
 
@@ -622,18 +693,25 @@ function CSC_PaperDollFrame_SetManaRegen(statFrame, unit)
 		return;
 	end
 
+	statFrame:SetScript("OnEnter", CSC_CharacterManaRegenFrame_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+    end)
+
+	-- There is a bug in GetManaRegen() so I have to manually calculate mp5
 	local base, combat = GetManaRegen();
+	local mp5 = CSC_GetMP5FromGear(unit);
 	
 	-- All mana regen stats are displayed as mana/5 sec.
-	base = floor(base * 5.0);
-	combat = floor(combat * 5.0);
+	base = floor(base * 5.0) + mp5;
+	combat = mp5; --floor(combat * 5.0);
+
 	local baseText = BreakUpLargeNumbers(base);
 	local combatText = BreakUpLargeNumbers(combat);
 	-- Combat mana regen is most important to the player, so we display it as the main value
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, MANA_REGEN, combatText, false, combat);
-	statFrame.tooltip = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, MANA_REGEN) .. " " .. combatText;
-	-- Base (out of combat) regen is displayed only in the subtext of the tooltip
-	statFrame.tooltip2 = format(MANA_REGEN_TOOLTIP, baseText);
+	statFrame.mp5Casting = combatText;
+	statFrame.mp5NotCasting = baseText;
 	statFrame:Show();
 end
 
@@ -690,6 +768,24 @@ function CSC_CharacterSpellCritFrame_OnEnter(self)
 	GameTooltip:AddDoubleLine(SPELL_SCHOOL6_CAP.." "..CRIT_ABBR..": ", format("%.2F", self.arcaneCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddDoubleLine(SPELL_SCHOOL5_CAP.." "..CRIT_ABBR..": ", format("%.2F", self.shadowCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddDoubleLine(SPELL_SCHOOL3_CAP.." "..CRIT_ABBR..": ", format("%.2F", self.natureCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:Show();
+end
+
+function CSC_CharacterManaRegenFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(MANA_REGEN_TOOLTIP, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine("!!! Currently detects MP5 from gear only !!!", "", 1, 0, 0);
+	GameTooltip:AddLine(" "); -- Blank line.
+	GameTooltip:AddDoubleLine(MANA_REGEN.." (While Casting):", self.mp5Casting);
+	GameTooltip:AddDoubleLine(MANA_REGEN.." (While Not Casting):", self.mp5NotCasting);
+	GameTooltip:Show();
+end
+
+function CSC_CharacterBlock_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(" ", HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(BLOCK_CHANCE..": ", self.blockChance);
+	GameTooltip:AddDoubleLine(ITEM_MOD_BLOCK_VALUE_SHORT..": ", self.blockValue);
 	GameTooltip:Show();
 end
 -- OnEnter Tooltip functions END

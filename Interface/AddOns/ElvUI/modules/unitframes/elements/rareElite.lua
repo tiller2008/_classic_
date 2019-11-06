@@ -24,7 +24,13 @@ function UF:Configure_RareElite(frame)
 	else
 		rare:Hide()
 	end
-	UF:UpdateTargetRare();
+	rare.DragonOverlayStyle = db.DragonOverlayStyle
+
+	if E.db.unitframe.units.pet.happy.enable and not frame:IsElementEnabled('RareElite') then
+		frame:EnableElement('RareElite')
+	elseif not E.db.unitframe.units.pet.happy.enable and frame:IsElementEnabled('RareElite') then
+		frame:DisableElement('RareElite')
+	end
 end
 
 function UF:Construct_RareElite(frame)
@@ -37,17 +43,4 @@ function UF:Construct_RareElite(frame)
 	SimpleRareElite.Texture:SetTexture(0, 1, 0, 1)	
 	
 	return SimpleRareElite
-end
-
-function UF:UpdateTargetRare(event)
-	if UnitName('target') then
-		local TargetClass = UnitIsPlayer('target') and select(2, UnitClass('target')) or UnitClassification('target')
-		if TargetClass == 'worldboss' or TargetClass == 'elite' or TargetClass == 'rare' or TargetClass == 'rareelite' then
-			ElvUF_Target.Rare.Texture:SetTexture('Interface\\AddOns\\EuiScript\\textures\\'.. E.db.unitframe.units.target.DragonOverlayStyle ..'\\'..TargetClass..'.tga')
-		else
-			ElvUF_Target.Rare.Texture:SetTexture()
-		end
-	else
-		ElvUF_Target.Rare.Texture:SetTexture()
-	end
 end

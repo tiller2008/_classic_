@@ -1,0 +1,28 @@
+## Interface: 11302
+## Title: |cffC495DDEUI|rButter Quest Tracker |cFFFFFFFFv1.9.13|r
+## Title-zhCN: |cffC495DDEUI|r任务追踪
+## Title-zhTW: |cffC495DDEUI|r任務追蹤
+## Author: Butter Cookie Kitkat
+## Notes: A butter smooth quest tracker with that Vanilla feel!
+## Version: 1.9.13
+## OptionalDeps: Ace3
+## SavedVariables: ButterQuestTrackerConfig
+## SavedVariablesPerCharacter: ButterQuestTrackerCharacterConfig, ButterQuestTrackerConfigCharacter
+## X-License: MIT
+## X-Curse-Project-ID: 342456
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## LoadOnDemand: 1
+
+embeds.xml
+
+# Localization
+Locale\ButterQuestTrackerLocale.lua
+Locale\enUS\locale.xml
+Locale\zhCN\locale.xml
+Locale\zhTW\locale.xml
+
+utilities\constants.lua
+
+ButterQuestTracker.lua
+Options.lua

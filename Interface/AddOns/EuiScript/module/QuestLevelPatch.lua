@@ -50,6 +50,11 @@ end
 local objective_count = "^(%d+)/(%d+) "
 
 local function EnvironmentProxy()
+	if IsAddOnLoaded('ButterQuestTracker') then
+		E.db.euiscript.QuestLevel = false
+		return
+	end
+
 	local env = setmetatable({
 		GetQuestLogTitle = function(index)
 			return GetTaggedTitle(index, false, true)

@@ -58,6 +58,7 @@ local CompactUnitFrame_UnregisterEvents = CompactUnitFrame_UnregisterEvents
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local UNKNOWN = UNKNOWN
 
+local LibClassicCasterino = LibStub('LibClassicCasterino', true)
 local PLAYER_REALM = gsub(E.myrealm,'[%s%-]','')
 --Global variables that we don't cache, list them here for the mikk's Find Globals script
 -- GLOBALS: NamePlateDriverFrame, UIParent, WorldFrame
@@ -959,16 +960,31 @@ function mod:RegisterEvents(frame, unit)
 		end
 
 		if(self.db.units[frame.UnitType].castbar.enable) then
-			frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-			frame:RegisterEvent("UNIT_SPELLCAST_DELAYED");
-			frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
-			frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
-			frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
-		--	frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
-		--	frame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
-			frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit, displayedUnit);
-			frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit, displayedUnit);
-			frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit, displayedUnit);
+			if LibClassicCasterino then
+				local CastbarEventHandler = function(event, ...)
+					return mod:UpdateElement_Cast(frame, event, ...)
+				end
+
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_START', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_DELAYED', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_STOP', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_FAILED', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_INTERRUPTED', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_START', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_UPDATE', CastbarEventHandler)
+				LibClassicCasterino.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_STOP', CastbarEventHandler)
+			else
+				frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+				frame:RegisterEvent("UNIT_SPELLCAST_DELAYED");
+				frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+				frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE");
+				frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP");
+			--	frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE");
+			--	frame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
+				frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit, displayedUnit);
+				frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit, displayedUnit);
+				frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit, displayedUnit);
+			end
 
 			if unit == 'player' then
 				frame:RegisterUnitEvent("UNIT_SPELLCAST_SENT", unit, displayedUnit);

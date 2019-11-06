@@ -108,6 +108,42 @@ end
 
 local _PROXY = setmetatable(_ENV, {__index = _G})
 
+local zhCN_L = {
+	['Ghost'] = '灵魂',
+	['Offline'] = '离线',
+	['Dead'] = '死亡',
+	['Rare'] = '稀有',
+	['Rare Elite'] = '稀有精英',
+	['Elite'] = '精英',
+	['Boss'] = '首领',
+	['Male'] = '男',
+	['Female'] = '女',
+	['Leader'] = '队长',
+}
+local zhTW_L = {
+	['Ghost'] = '鬼魂',
+	['Offline'] = '離線',
+	['Dead'] = '死亡',
+	['Rare'] = '稀有',
+	['Rare Elite'] = '稀有精英',
+	['Elite'] = '精英',
+	['Boss'] = '首領',
+	['Male'] = '男',
+	['Female'] = '女',
+	['Leader'] = '隊長',
+}
+local tL = GetLocale()
+
+function _tLocale(key)
+	if tL == 'zhCN' then
+		return zhCN_L[key] or key
+	elseif tL == 'zhTW' then
+		return zhTW_L[key] or key
+	else
+		return key
+	end
+end
+
 local tagStrings = {
 	['affix'] = [[function(u)
 		local c = UnitClassification(u)
@@ -119,13 +155,13 @@ local tagStrings = {
 	['classification'] = [[function(u)
 		local c = UnitClassification(u)
 		if(c == 'rare') then
-			return 'Rare'
+			return _tLocale('Rare')
 		elseif(c == 'rareelite') then
-			return 'Rare Elite'
+			return _tLocale('Rare Elite')
 		elseif(c == 'elite') then
-			return 'Elite'
+			return _tLocale('Elite')
 		elseif(c == 'worldboss') then
-			return 'Boss'
+			return _tLocale('Boss')
 		elseif(c == 'minus') then
 			return 'Affix'
 		end
@@ -149,9 +185,9 @@ local tagStrings = {
 
 	['dead'] = [[function(u)
 		if(UnitIsDead(u)) then
-			return 'Dead'
+			return _tLocale('Dead')
 		elseif(UnitIsGhost(u)) then
-			return 'Ghost'
+			return _tLocale('Ghost')
 		end
 	end]],
 
@@ -193,7 +229,7 @@ local tagStrings = {
 
 	['leaderlong']  = [[function(u)
 		if(UnitIsGroupLeader(u)) then
-			return 'Leader'
+			return _tLocale('Leader')
 		end
 	end]],
 
@@ -231,7 +267,7 @@ local tagStrings = {
 
 	['offline'] = [[function(u)
 		if(not UnitIsConnected(u)) then
-			return 'Offline'
+			return _tLocale('Offline')
 		end
 	end]],
 
@@ -295,7 +331,7 @@ local tagStrings = {
 	['rare'] = [[function(u)
 		local c = UnitClassification(u)
 		if(c == 'rare' or c == 'rareelite') then
-			return 'Rare'
+			return _tLocale('Rare')
 		end
 	end]],
 
@@ -308,9 +344,9 @@ local tagStrings = {
 	['sex'] = [[function(u)
 		local s = UnitSex(u)
 		if(s == 2) then
-			return 'Male'
+			return _tLocale('Male')
 		elseif(s == 3) then
-			return 'Female'
+			return _tLocale('Female')
 		end
 	end]],
 
@@ -340,7 +376,7 @@ local tagStrings = {
 	['smartlevel'] = [[function(u)
 		local c = UnitClassification(u)
 		if(c == 'worldboss') then
-			return 'Boss'
+			return _tLocale('Boss')
 		else
 			local plus = _TAGS['plus'](u)
 			local level = _TAGS['level'](u)
@@ -354,11 +390,11 @@ local tagStrings = {
 
 	['status'] = [[function(u)
 		if(UnitIsDead(u)) then
-			return 'Dead'
+			return _tLocale('Dead')
 		elseif(UnitIsGhost(u)) then
-			return 'Ghost'
+			return _tLocale('Ghost')
 		elseif(not UnitIsConnected(u)) then
-			return 'Offline'
+			return _tLocale('Offline')
 		else
 			return _TAGS['resting'](u)
 		end

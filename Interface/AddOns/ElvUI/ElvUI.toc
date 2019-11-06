@@ -1,6 +1,6 @@
 ## Interface: 11302
 ## Author: Elv
-## Version: 1.09
+## Version: 1.16
 ## Title: |cfffe7b2cEUI|rCore
 ## Title-zhCN: |cfffe7b2cEUI|r核心
 ## Title-zhTW: |cfffe7b2cEUI|r核心
