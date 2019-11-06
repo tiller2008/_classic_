@@ -3,5 +3,11 @@
 *.DLL
 Logs/
 UTILS/
+<<<<<<< HEAD
 WTF/
 WoW.mfil
+=======
+WoW.mfil
+World of Warcraft.app/
+WTF/
+>>>>>>> b7245e19def3f320582e6e1d5ffab2d5bc69644c
